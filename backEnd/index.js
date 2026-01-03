@@ -8,7 +8,7 @@ import cors from 'cors'
 import connectTODB from './dbConnect/dbConnect.js';
 import { connectRedis } from './redisConnect/redisConnect.js';
 import userRouter from './routes/user.route.js';
-
+import storeRouter from './routes/store.route.js'
 
 const app = express();
 
@@ -21,6 +21,7 @@ app.use(express.json());
 app.use(cookieParser());
 
 app.use("/user", userRouter);
+app.use("/store" , storeRouter )
 
 const PORT = process.env.PORT || 3000;
 

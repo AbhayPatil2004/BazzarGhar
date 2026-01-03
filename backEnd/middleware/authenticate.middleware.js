@@ -1,5 +1,5 @@
-import jwt from "jsonwebtoken";
 import ApiResponse from "../utils/ApiResponse.js";
+import jwt from 'jsonwebtoken'
 
 function handelUserAuthentication(req, res, next) {
   try {
@@ -14,7 +14,13 @@ function handelUserAuthentication(req, res, next) {
     }
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = decoded;
+
+    
+    req.user = {
+      _id: decoded.userId,
+      email: decoded.email,
+      username: decoded.username,
+    };
 
     next();
   } catch (error) {

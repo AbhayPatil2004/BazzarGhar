@@ -1,6 +1,6 @@
 import express from 'express'
 import { handleUserSignUp , verifyEmailOtp , handelUserLogin , handelUserLogout } from "../controllers/user.controller.js"
-import { handelUserAuthentication } from '../middleware/authenticate.js'
+import { handelUserAuthentication } from '../middleware/authenticate.middleware.js'
 
 const router = express.Router()
 
