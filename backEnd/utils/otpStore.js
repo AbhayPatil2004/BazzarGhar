@@ -1,11 +1,13 @@
+import redisClient from "../redisConnect/redisConnect.js";
+
 async function saveOtp(email, otp) {
   const key = `otp:${email}`;
 
   await redisClient.set(
     key,
-    otp.toString(),   // store only OTP
+    otp.toString(),   
     {
-      EX: 300         // ⏱️ expires in 5 minutes
+      EX: 300         
     }
   );
 
