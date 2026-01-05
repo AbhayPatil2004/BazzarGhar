@@ -3,6 +3,7 @@ import Store from "../models/store.model.js";
 import ApiResponse from "../utils/ApiResponse.js";
 import sendMailToUser from "../utils/sendMail.js";
 import storeApprovedEmailBody from "../emailBody/storeApproves.emailBody.js";
+import storeRejectedEmailBody from "../emailBody/storeReject.emailBody.js";
 
 async function handelStoreOpeningReq(req, res) {
 
@@ -44,7 +45,8 @@ async function handelStoreOpeningReq(req, res) {
 
 async function handelApproveStore(req, res) {
     try {
-        const { storeId } = req.params;
+        // const { storeId } = req.params;
+        const storeId = "695a9d7d800fbcb71de03c57"
 
         const store = await Store.findById(storeId)
             .populate("owner", "username email");
@@ -54,12 +56,10 @@ async function handelApproveStore(req, res) {
                 new ApiResponse(404, {}, "Store not found")
             );
         }
-
-        // calculate trial end date (7 days)
+        
         const trialEndsAt = new Date();
         trialEndsAt.setDate(trialEndsAt.getDate() + 7);
-
-        // update store
+       
         store.isApproved = true;
         store.trialEndsAt = trialEndsAt;
         await store.save();
@@ -67,17 +67,15 @@ async function handelApproveStore(req, res) {
         const ownerId = store.owner._id;
         const ownerName = store.owner.username;
         const ownerEmail = store.owner.email;
-
-        // update user role
+        
         await User.findByIdAndUpdate(ownerId, {
             role: "seller"
         });
-
-        // send email
+        
         const subject = "Your Store is Approved";
         const body = storeApprovedEmailBody(ownerName, store.storeName);
-
-        await sendMailToUser(ownerEmail, subject, body);
+        
+        sendMailToUser(ownerEmail, subject, body);
 
         return res.status(200).json(
             new ApiResponse(200, store, "Store approved successfully")
@@ -92,5 +90,50 @@ async function handelApproveStore(req, res) {
     }
 }
 
+async function handelRejectStore(req, res) {
+    try {
+        
+        const storeId = "695a9d7d800fbcb71de03c57"; // temp for testing
 
-export { handelStoreOpeningReq, handelApproveStore }
+        const store = await Store.findById(storeId)
+            .populate("owner", "username email");
+
+        if (!store) {
+            return res.status(404).json(
+                new ApiResponse(404, {}, "Store not found")
+            );
+        }
+        
+        if (store.isApproved === "rejected") {
+            return res.status(400).json(
+                new ApiResponse(400, {}, "Store already approved")
+            );
+        }
+
+        store.isApproved = "rejected";
+        await store.save();
+
+        const ownerName = store.owner.username;
+        const ownerEmail = store.owner.email;
+
+        const subject = "Your Store Application was Rejected";
+        const body = storeRejectedEmailBody(ownerName, store.storeName);
+
+        await sendMailToUser(ownerEmail, subject, body);
+
+        return res.status(200).json(
+            new ApiResponse(200, store, "Store rejected successfully")
+        );
+
+    } catch (error) {
+        console.error("Reject store error:", error);
+
+        return res.status(500).json(
+            new ApiResponse(500, {}, "Something went wrong")
+        );
+    }
+}
+
+
+
+export { handelStoreOpeningReq, handelApproveStore , handelRejectStore }
