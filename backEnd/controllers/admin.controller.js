@@ -9,6 +9,7 @@ async function handelStoreOpeningReq(req, res) {
 
     try {
 
+        console.log(req)
         const stores = await Store.find({ isApproved: "pending" });
 
         if (!stores.length) {
