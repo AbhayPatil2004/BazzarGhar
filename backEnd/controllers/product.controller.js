@@ -7,8 +7,9 @@ import Store from "../models/store.model.js";
 async function handelGetallProducts(req, res) {
   try {
     const products = await Product.find()
-      .populate("store").select("_id")
-      .populate("seller").select("_id");
+      .populate("store", "_id")
+      .populate("seller", "_id");
+
 
     return res.status(200).json(
       new ApiResponse(200, { products }, "Products sent successfully")
@@ -38,8 +39,8 @@ async function handelGetSearchProducts(req, res) {
         { searchKeyword: regex }
       ]
     })
-      .populate("store").select("_id")
-      .populate("seller").select("_id")
+      .populate("store", "_id")
+      .populate("seller", "_id")
       .lean();
 
     return res.status(200).json(
@@ -62,18 +63,22 @@ async function handelGetRecommendedProducts(req, res) {
       .findOne({ userId })
       .populate({
         path: "wishlistProducts",
+        select: "_id",
         populate: [
-          { path: "seller" },
-          { path: "store" }
+          { path: "seller", select: "_id" },
+          { path: "store", select: "_id" }
         ]
       })
       .populate({
         path: "viewedProducts",
+        select: "_id",
         populate: [
-          { path: "seller" },
-          { path: "store" }
+          { path: "seller", select: "_id" },
+          { path: "store", select: "_id" }
         ]
-      });
+      })
+      .lean();
+
 
     if (!recommendation) {
       return res.status(200).json({
@@ -152,8 +157,8 @@ async function handelGetSponseredStoreProducts(req, res) {
     const today = new Date();
 
     const sponsoredProducts = await SponserProduct.find({
-      store: storeId,              
-      endDate: { $lt: today }      
+      store: storeId,
+      endDate: { $lt: today }
     })
       .populate("product")
       .populate("store")
