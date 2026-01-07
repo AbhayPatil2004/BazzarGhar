@@ -10,6 +10,7 @@ import { connectRedis } from './redisConnect/redisConnect.js';
 import userRouter from './routes/user.route.js';
 import storeRouter from './routes/store.route.js'
 import adminRouter from './routes/admin.route.js'
+import productRouter from './routes/product.route.js'
 
 const app = express();
 
@@ -24,6 +25,7 @@ app.use(cookieParser());
 app.use("/user", userRouter);
 app.use("/store" , storeRouter )
 app.use("/admin",adminRouter) 
+app.use("/product" , productRouter )
 
 const PORT = process.env.PORT || 3000;
 
