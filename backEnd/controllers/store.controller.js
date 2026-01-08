@@ -25,12 +25,7 @@ async function handleCreateStore(req, res) {
         new ApiResponse(400, {}, "Store name is required")
       );
     }
-
-    if (!Array.isArray(storeProducts) || storeProducts.length === 0) {
-      return res.status(400).json(
-        new ApiResponse(400, {}, "At least one store product is required")
-      );
-    }
+    
 
     const existingStore = await Store.findOne({ storeName });
     if (existingStore) {
@@ -38,8 +33,7 @@ async function handleCreateStore(req, res) {
         new ApiResponse(409, {}, "Store name already exists")
       );
     }
-
-    // Optional: basic URL validation
+  
     const isValidUrl = (url) =>
       typeof url === "string" && url.startsWith("https://");
 
