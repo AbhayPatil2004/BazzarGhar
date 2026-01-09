@@ -1,6 +1,6 @@
 
-import Cart from "../models/cart.model";
-import ApiResponse from "../utils/ApiResponse";
+import Cart from "../models/cart.model.js";
+import ApiResponse from "../utils/ApiResponse.js";
 
 async function handelGetCartProduct(req, res) {
     try {

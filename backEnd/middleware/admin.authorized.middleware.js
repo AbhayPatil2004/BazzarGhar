@@ -10,7 +10,7 @@ async function handelUserAuthorization(req, res , next) {
                 new ApiResponse( 401 , {} ,"Access denied. Only admins can access this route.")
             )
         }
-
+        
         next()
     }
     catch (error) {

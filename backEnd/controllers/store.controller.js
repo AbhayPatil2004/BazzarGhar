@@ -1,9 +1,84 @@
 import Store from "../models/store.model.js";
 import User from "../models/user.model.js";
 import ApiResponse from "../utils/ApiResponse.js";
-import handleUploadOnCloudinary from "../utils/cloudinaryUpload.js";
 import sendMailToUser from "../utils/sendMail.js";
 import storeOpeningBody from "../emailBody/storeOpening.emailBody.js";
+
+async function handelGetAllStores(req, res) {
+
+  try {
+
+    const now = new Date();
+
+    const stores = await Store.find({
+      isActive: true,
+      $or: [
+        {
+          subscriptionPlan: "trial",
+          trialEndsAt: { $gt: now }
+        },
+
+        {
+          isSubscriptionActive: true,
+          subscriptionEndDate: { $gt: now }
+        }
+      ]
+    }).lean();
+
+    return res.status(200).json(
+      new ApiResponse(200, stores, "Stores are sent successfully")
+    );
+
+  }
+  catch (error) {
+    console.error("Get Store Error:", error);
+    return res.status(500).json(
+      new ApiResponse(500, {}, "Internal server error")
+    );
+  }
+}
+
+async function handelGetSearchedStore(req, res) {
+  try {
+    let { searchString } = req.body;
+    
+    if (!searchString || !searchString.trim()) {
+      return res.status(400).json(
+        new ApiResponse(400, {}, "Please enter a valid store name")
+      );
+    }
+
+    searchString = searchString.trim();
+    const now = new Date();
+    
+    const stores = await Store.find({
+      storeName: { $regex: searchString, $options: "i" }, // case-insensitive
+      isActive: true,
+      $or: [
+        {
+          subscriptionPlan: "trial",
+          trialEndsAt: { $gt: now }
+        },
+        {
+          isSubscriptionActive: true,
+          subscriptionEndDate: { $gt: now }
+        }
+      ]
+    })
+    .lean();
+
+    return res.status(200).json(
+      new ApiResponse(200, stores, "Stores are sent successfully")
+    );
+
+  } catch (error) {
+    console.error("Get Store Error:", error);
+    return res.status(500).json(
+      new ApiResponse(500, {}, "Internal server error")
+    );
+  }
+}
+
 
 async function handleCreateStore(req, res) {
 
@@ -25,7 +100,7 @@ async function handleCreateStore(req, res) {
         new ApiResponse(400, {}, "Store name is required")
       );
     }
-    
+
 
     const existingStore = await Store.findOne({ storeName });
     if (existingStore) {
@@ -33,7 +108,7 @@ async function handleCreateStore(req, res) {
         new ApiResponse(409, {}, "Store name already exists")
       );
     }
-  
+
     const isValidUrl = (url) =>
       typeof url === "string" && url.startsWith("https://");
 
@@ -90,6 +165,6 @@ async function handleCreateStore(req, res) {
 }
 
 
-export { handleCreateStore };
+export { handleCreateStore, handelGetAllStores , handelGetSearchedStore };
 
 

@@ -3,8 +3,9 @@ import Product from "../models/product.model.js";
 import ApiResponse from '../utils/ApiResponse.js'
 import User from "../models/user.model.js";
 import Cart from "../models/cart.model.js";
-
-export async function handelPlaceSingelItemOrder(req, res) {
+ 
+async function handelPlaceSingelItemOrder(req, res) {
+  
   try {
     const buyerId = req.user._id;
     const { productId } = req.params;
@@ -15,7 +16,6 @@ export async function handelPlaceSingelItemOrder(req, res) {
         new ApiResponse(400, {}, "Invalid quantity")
       );
     }
-
 
     const user = await User.findById(buyerId).select("address");
     if (!user || !user.address) {

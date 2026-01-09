@@ -1,18 +1,18 @@
 import express from 'express'
 import { handelUserAuthentication } from '../middleware/authenticate.middleware.js'
-import { handleCreateStore } from '../controllers/store.controller.js'
-import handelMulterUpload from '../middleware/multer.middleware.js'
+import { handleCreateStore , handelGetAllStores , handelGetSearchedStore} from '../controllers/store.controller.js'
 
 const router = express.Router()
 
 router.post(
   "/createstore",
   handelUserAuthentication,
-  handelMulterUpload.fields([
-    { name: "logo", maxCount: 1 },
-    { name: "banner", maxCount: 1 }
-  ]),
+  
   handleCreateStore
 );
 
+router.get("/getallstores" , handelGetAllStores)
+router.post("/searchstore" , handelGetSearchedStore )
+
 export default router
+ 

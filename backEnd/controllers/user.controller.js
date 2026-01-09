@@ -31,6 +31,15 @@ async function handleUserSignUp(req, res) {
         new ApiResponse(409, null, "User already exists")
       );
     }
+    
+    const strongPasswordRegex =
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/;
+
+    if (!strongPasswordRegex.test(password)) {
+      return res.status(400).json(
+        new ApiResponse( 400 , {} , "Password must be at least 6 characters and include uppercase, lowercase, number, and special character")
+      );
+    }
 
     const hashedPassword = await bcrypt.hash(password, 12);
 
@@ -53,11 +62,14 @@ async function handleUserSignUp(req, res) {
 
     await saveOtp(email, otp)
     const subject = "To verify Email Through Otp"
-    sendMailToUser( email , subject , otpBody( username , otp ) )
+    sendMailToUser(email, subject, otpBody(username, otp))
 
     return res.status(201).json(
       new ApiResponse(201, { user }, "User registered successfully")
     );
+    // return res.status(201).json(
+    //   new ApiResponse(201, {  }, "User registered successfully")
+    // );
 
   } catch (error) {
 
@@ -85,7 +97,7 @@ async function handelUserLogin(req, res) {
     if (!user) {
       console.log("Invalid Email")
       return res.status(400).json(
-          new ApiResponse(400, {}, "Invalid email address")
+        new ApiResponse(400, {}, "Invalid email address")
       );
     }
 
@@ -98,13 +110,12 @@ async function handelUserLogin(req, res) {
     }
 
     if (email === "patilabhay484@gmail.com") {
-  await User.findOneAndUpdate(
-    { email },
-    { role: "admin" },
-    { new: true }
-  );
-}
-
+      await User.findOneAndUpdate(
+        { email },
+        { role: "admin" },
+        { new: true }
+      );
+    }
 
     setJwtTokenCookie(res, user);
 
@@ -151,8 +162,8 @@ async function handelUserLogout(req, res) {
 async function verifyEmailOtp(req, res) {
 
   try {
-    const { otp } = req.body; 
-    const { email } = req.user; 
+    const { otp } = req.body;
+    const { email } = req.user;
 
     if (!otp) {
       return res.status(400).json(
@@ -199,5 +210,4 @@ async function verifyEmailOtp(req, res) {
   }
 }
 
-
-export { handleUserSignUp, verifyEmailOtp, handelUserLogin , handelUserLogout };
+export { handleUserSignUp, verifyEmailOtp, handelUserLogin, handelUserLogout };

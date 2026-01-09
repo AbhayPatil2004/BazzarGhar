@@ -5,7 +5,7 @@ import { handelUserAuthentication } from '../middleware/authenticate.middleware.
 const router = express.Router()
 
 router.post("/signup" , handleUserSignUp)
-router.post("/verifyEmail" , handelUserAuthentication , verifyEmailOtp )
+router.post("/verifyemail" , handelUserAuthentication , verifyEmailOtp )
 router.post("/login" , handelUserLogin ) 
 router.post("/logout" ,  handelUserLogout )
 

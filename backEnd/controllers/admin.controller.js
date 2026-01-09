@@ -47,7 +47,7 @@ async function handelStoreOpeningReq(req, res) {
 async function handelApproveStore(req, res) {
     try {
         // const { storeId } = req.params;
-        const storeId = "695a9d7d800fbcb71de03c57"
+        const storeId = "69611cad8c7df554b09ba502"
 
         const store = await Store.findById(storeId)
             .populate("owner", "username email");
@@ -61,7 +61,7 @@ async function handelApproveStore(req, res) {
         const trialEndsAt = new Date();
         trialEndsAt.setDate(trialEndsAt.getDate() + 7);
        
-        store.isApproved = true;
+        store.isApproved = "accepted";
         store.trialEndsAt = trialEndsAt;
         await store.save();
 
@@ -107,7 +107,7 @@ async function handelRejectStore(req, res) {
         
         if (store.isApproved === "rejected") {
             return res.status(400).json(
-                new ApiResponse(400, {}, "Store already approved")
+                new ApiResponse(400, {}, "Store already Rejected")
             );
         }
 
@@ -134,7 +134,6 @@ async function handelRejectStore(req, res) {
         );
     }
 }
-
 
 
 export { handelStoreOpeningReq, handelApproveStore , handelRejectStore }

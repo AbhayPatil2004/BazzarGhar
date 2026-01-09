@@ -56,7 +56,6 @@ async function handelAddProdcutReview(req, res) {
   }
 }
 
-import Review from "../models/review.model.js";
 
 async function handelGetProductReviews(req, res) {
   try {
@@ -65,7 +64,6 @@ async function handelGetProductReviews(req, res) {
     const page = Number(req.query.page) || 1;
     const limit = Number(req.query.limit) || 5;
     const skip = (page - 1) * limit;
-
     
     const reviews = await Review.find({ product: productId })
       .populate("user", "name avatar")
