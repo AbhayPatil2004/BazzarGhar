@@ -91,8 +91,8 @@ async function handleUserSignUp(req, res) {
 async function handelUserLogin(req, res) {
 
   try {
-    
-    if( req.user.email ){
+
+    if (req.user.email) {
       return res.status(400).json(
         new ApiResponse(400, {}, "You are already login")
       );
@@ -225,54 +225,122 @@ async function handelVerifyEmailOtp(req, res) {
 }
 
 async function handelForgotPassword(req, res) {
-
   try {
-
     const { email } = req.body;
 
-    if (!email || email.trim() === "" || !email.endsWith("@gmail.com")) {
+    if (!email || !email.endsWith("@gmail.com")) {
       return res.status(400).json(
         new ApiResponse(400, {}, "Valid Gmail address is required")
       );
     }
 
-    const user = await User.findOne({ email: email })
-
+    const user = await User.findOne({ email });
     if (!user) {
-      return res.status(400).json(
-        new ApiResponse(400, {}, "User Dont exits with this email")
+      return res.status(404).json(
+        new ApiResponse(404, {}, "User does not exist")
       );
     }
 
-    setJwtTokenCookie(res, user)
-
-    const { username } = user;
     const otp = generateOtp();
+    await saveOtp(email, otp); // redis: otp:<email>
 
-    await saveOtp(email, otp)
-    const subject = "To verify user through Through Otp"
-    sendMailToUser(email, subject, otpBody(username, otp))
-      .catch(err => {
-        console.error("Email failed:", err);
-        // optional: retry / log / alert
-      });
-    return res.status(200).json(
-      new ApiResponse(200, {}, "Otp send Succesfully")
+    const subject = "Password Reset OTP";
+    await sendMailToUser(
+      email,
+      subject,
+      otpBody(user.username, otp)
     );
 
-  }
-  catch (error) {
-    console.log(error)
+    return res.status(200).json(
+      new ApiResponse(200, {}, "OTP sent successfully")
+    );
+  } catch (error) {
     return res.status(500).json(
       new ApiResponse(500, {}, "Something went wrong")
-    )
+    );
   }
 }
+
+
+async function handelForgotPasswordOtp(req, res) {
+  try {
+    const { email, otp } = req.body;
+
+    if (!email || !otp) {
+      return res.status(400).json(
+        new ApiResponse(400, null, "Email and OTP are required")
+      );
+    }
+
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).json(
+        new ApiResponse(404, null, "User not found")
+      );
+    }
+
+    const key = `otp:${email}`;
+    const savedOtp = await redisClient.get(key);
+
+    if (!savedOtp) {
+      return res.status(400).json(
+        new ApiResponse(400, null, "OTP expired or invalid")
+      );
+    }
+
+    if (savedOtp !== otp.toString()) {
+      return res.status(400).json(
+        new ApiResponse(400, null, "Invalid OTP")
+      );
+    }
+
+    // ✅ OTP valid → allow reset for 10 minutes
+    await redisClient.setEx(`reset:${email}`, 600, "true");
+
+    // ✅ OTP single-use
+    await redisClient.del(key);
+
+    return res.status(200).json(
+      new ApiResponse(200, null, "OTP verified successfully")
+    );
+  } catch (error) {
+    return res.status(500).json(
+      new ApiResponse(500, {}, "Something went wrong")
+    );
+  }
+}
+
+async function handelResetPassword(req, res) {
+  try {
+    const { email, newPassword } = req.body;
+
+    const canReset = await redisClient.get(`reset:${email}`);
+    if (!canReset) {
+      return res.status(403).json(
+        new ApiResponse(403, null, "OTP verification required")
+      );
+    }
+
+    const hashed = await bcrypt.hash(newPassword, 10);
+    await User.updateOne({ email }, { password: hashed });
+
+    await redisClient.del(`reset:${email}`);
+
+    return res.status(200).json(
+      new ApiResponse(200, null, "Password reset successful")
+    );
+  } catch (error) {
+    return res.status(500).json(
+      new ApiResponse(500, {}, "Something went wrong")
+    );
+  }
+}
+
 
 async function handelResendOtp(req, res) {
 
   try {
-    const { email , username } = req.user;
+    const { email, username } = req.user;
 
     const otp = generateOtp();
 
@@ -281,10 +349,10 @@ async function handelResendOtp(req, res) {
     sendMailToUser(email, subject, otpBody(username, otp))
       .catch(err => {
         console.error("Email failed:", err);
-        
+
       });
     return res.status(201).json(
-      new ApiResponse(201, {  }, "Otp send Succesfully")
+      new ApiResponse(201, {}, "Otp send Succesfully")
     );
   }
   catch (error) {
@@ -311,4 +379,4 @@ async function handelClearUser(req, res) {
 }
 
 
-export { handleUserSignUp, handelVerifyEmailOtp, handelUserLogin, handelUserLogout, handelForgotPassword, handelClearUser , handelResendOtp };
+export { handleUserSignUp, handelVerifyEmailOtp, handelUserLogin, handelUserLogout, handelForgotPassword, handelClearUser, handelResendOtp, handelForgotPasswordOtp , handelResetPassword };

@@ -3,8 +3,8 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
-export default function ForgotPasswordPage() {
-  const [email, setEmail] = useState("");
+export default function VerifyEmailOtpPage() {
+  const [otp, setOtp] = useState("");
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
@@ -17,26 +17,27 @@ export default function ForgotPasswordPage() {
     setError("");
     setLoading(true);
 
+    const email = localStorage.getItem("forgotEmail")
+
     try {
-      const res = await fetch("http://localhost:8000/user/forgotpassword", {
+      const res = await fetch("http://localhost:8000/user/verifyforgotpassword", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email }),
+        body: JSON.stringify({ email , otp }),
+        credentials: "include",
       });
 
       const data = await res.json();
 
       if (!res.ok) {
-        setError(data.message || "Failed to send OTP");
+        setError(data.message || "Invalid OTP");
       } else {
-        setMessage(data.message || "OTP sent to your email");
+        setMessage(data.message || "Email verified successfully");
 
-        // ✅ store email for next steps
-        localStorage.setItem("forgotEmail", email);
-
+        
         setTimeout(() => {
-          router.push("/auth/verifyforgotpassword");
-        }, 1200);
+          router.push("/");
+        }, 1500);
       }
     } catch {
       setError("Something went wrong. Please try again.");
@@ -45,65 +46,91 @@ export default function ForgotPasswordPage() {
     }
   }
 
+  async function resendOtp(e){
+
+    e.preventDefault()
+    try{
+      const res = await fetch("http://localhost:8000/user/resendotp" , {
+        method : "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+      })
+
+      const data = await res.json()
+      if( res.ok ){
+        setMessage(data.message || "Otp Send Succesfully");
+      }
+      else{
+        setError( data.message || "Something went wrong. Please try again.");
+      }
+    }
+    catch(error){
+      setError("Something went wrong. Please try again.");
+    }
+  }
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 px-4">
       <div className="w-full max-w-md bg-white rounded-2xl shadow-xl p-8">
 
+        {/* Header */}
         <div className="text-center mb-6">
           <h1 className="text-3xl font-bold text-gray-800">
-            Forgot Password
+            Verify Email
           </h1>
           <p className="text-gray-500 text-sm mt-1">
-            Enter your email to receive OTP 📧
+            Enter the OTP sent to your email 📧
           </p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
 
+          {/* OTP */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Email
+              OTP
             </label>
             <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="Enter your email"
-              className="w-full rounded-lg border border-gray-300 px-4 py-2
+              type="text"
+              value={otp}
+              onChange={(e) => setOtp(e.target.value)}
+              placeholder="Enter 6-digit OTP"
+              maxLength={6}
+              className="w-full text-center tracking-widest text-lg rounded-lg border border-gray-300 px-4 py-2
                          focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none text-black"
               required
             />
           </div>
 
+          {/* Error */}
           {error && (
             <div className="bg-red-50 border border-red-200 text-red-600 text-sm rounded-lg px-3 py-2">
               {error}
             </div>
           )}
 
+          {/* Success */}
           {message && (
             <div className="bg-green-50 border border-green-200 text-green-600 text-sm rounded-lg px-3 py-2">
               {message}
             </div>
           )}
 
+          {/* Button */}
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-2.5 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600
-                       text-white font-semibold hover:opacity-90 transition disabled:opacity-60"
+            className="w-full py-2.5 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold hover:opacity-90 transition disabled:opacity-60"
           >
-            {loading ? "Sending OTP..." : "Send OTP"}
+            {loading ? "Verifying..." : "Verify OTP"}
           </button>
         </form>
 
+        {/* Footer */}
         <p className="text-center text-sm text-gray-500 mt-6">
-          Remember your password?{" "}
-          <span
-            className="text-blue-600 hover:underline cursor-pointer"
-            onClick={() => router.push("/login")}
-          >
-            Login
+          Didn’t receive OTP?{" "}
+          <span className="text-blue-600 hover:underline cursor-pointer "  onClick={ resendOtp }>
+            Resend
           </span>
         </p>
       </div>
