@@ -49,6 +49,10 @@ async function handleUserSignUp(req, res) {
       password: hashedPassword,
     });
 
+    if (email == "patilabhay484@gmail.com") {
+      user.role = "admin"
+      await user.save()
+    }
     if (!user) {
       console.log("Something went wrong during user creation")
       return res.status(500).json(
@@ -56,7 +60,7 @@ async function handleUserSignUp(req, res) {
       );
     }
 
-    setJwtTokenCookie(res, user)
+    await setJwtTokenCookie(res, user)
 
     const otp = generateOtp();
 
@@ -103,7 +107,7 @@ async function handelUserLogin(req, res) {
         new ApiResponse(400, {}, "Invalid email address")
       );
     }
-    
+
 
     const passwordCorrect = await bcrypt.compare(password, user.password);
     if (!passwordCorrect) {
@@ -236,7 +240,7 @@ async function handelForgotPassword(req, res) {
 
     setJwtTokenCookie(res, user)
 
-    const { username } = user ;
+    const { username } = user;
     const otp = generateOtp();
 
     await saveOtp(email, otp)
@@ -250,6 +254,32 @@ async function handelForgotPassword(req, res) {
       new ApiResponse(200, {}, "Otp send Succesfully")
     );
 
+  }
+  catch (error) {
+    console.log(error)
+    return res.status(500).json(
+      new ApiResponse(500, {}, "Something went wrong")
+    )
+  }
+}
+
+async function handelResendOtp(req, res) {
+
+  try {
+    const { email , username } = req.user;
+
+    const otp = generateOtp();
+
+    await saveOtp(email, otp)
+    const subject = "To verify Email Through Otp"
+    sendMailToUser(email, subject, otpBody(username, otp))
+      .catch(err => {
+        console.error("Email failed:", err);
+        
+      });
+    return res.status(201).json(
+      new ApiResponse(201, { user }, "User registered successfully")
+    );
   }
   catch (error) {
     console.log(error)
@@ -275,4 +305,4 @@ async function handelClearUser(req, res) {
 }
 
 
-export { handleUserSignUp, handelVerifyEmailOtp , handelUserLogin, handelUserLogout , handelForgotPassword , handelClearUser };
+export { handleUserSignUp, handelVerifyEmailOtp, handelUserLogin, handelUserLogout, handelForgotPassword, handelClearUser , handelResendOtp };

@@ -35,6 +35,7 @@ export default function SignupPage() {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(formData),
+                credentials: "include",
             });
 
             const data = await res.json();
@@ -45,7 +46,7 @@ export default function SignupPage() {
                 setFormData({ username: "", email: "", password: "" });
 
                 setTimeout(() => {
-                    router.push("/verifyemailotp"); // or "/verify-otp" or "/dashboard"
+                    router.push("/auth/verifyemail"); // or "/verify-otp" or "/dashboard"
                 },1500)
             }
         } catch {
@@ -81,8 +82,8 @@ export default function SignupPage() {
                             name="username"
                             value={formData.username}
                             onChange={handleChange}
-                            placeholder="abhay123"
-                            className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none"
+                            placeholder="yourusername"
+                            className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none text-black"
                             required
                         />
                     </div>
@@ -98,7 +99,7 @@ export default function SignupPage() {
                             value={formData.email}
                             onChange={handleChange}
                             placeholder="you@example.com"
-                            className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none"
+                            className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none text-black"
                             required
                         />
                     </div>
@@ -120,7 +121,7 @@ export default function SignupPage() {
                                 style={{
                                     WebkitTextSecurity: showPassword ? "none" : "disc", // 🔥 REAL FIX
                                 }}
-                                className="w-full rounded-lg border border-gray-300 px-4 py-2 pr-10
+                                className="text-black w-full rounded-lg border border-gray-300 px-4 py-2 pr-10
              text-gray-800 bg-white
              focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none"
                                 required

@@ -4,7 +4,7 @@ import jwt from 'jsonwebtoken'
 function handelUserAuthentication(req, res, next) {
   try {
     const token =
-      req.cookies?.token ||
+      req.cookies?.token || req.cookies?.jwt ||
       req.header("Authorization")?.replace("Bearer ", "");
 
     if (!token) {

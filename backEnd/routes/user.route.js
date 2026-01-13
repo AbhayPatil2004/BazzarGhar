@@ -1,5 +1,5 @@
 import express from 'express'
-import { handleUserSignUp , handelVerifyEmailOtp , handelUserLogin , handelUserLogout , handelForgotPassword , handelClearUser} from "../controllers/user.controller.js"
+import { handleUserSignUp , handelVerifyEmailOtp , handelUserLogin , handelUserLogout , handelForgotPassword , handelClearUser , handelResendOtp } from "../controllers/user.controller.js"
 import { handelUserAuthentication } from '../middleware/authenticate.middleware.js'
 
 const router = express.Router()
@@ -10,6 +10,7 @@ router.post("/login" , handelUserLogin )
 router.post("/logout" ,  handelUserLogout )
 router.post("/forgotpassword" ,  handelForgotPassword )
 
+router.post("/resendotp" , handelUserAuthentication , handelResendOtp )
 router.delete("/clear" , handelClearUser)
 
 export default router 
