@@ -91,6 +91,12 @@ async function handleUserSignUp(req, res) {
 async function handelUserLogin(req, res) {
 
   try {
+    
+    if( req.user.email ){
+      return res.status(400).json(
+        new ApiResponse(400, {}, "You are already login")
+      );
+    }
     const { email, password } = req.body || {};
 
     if (!email || !password) {

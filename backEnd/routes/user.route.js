@@ -6,7 +6,7 @@ const router = express.Router()
 
 router.post("/signup" , handleUserSignUp)
 router.post("/verifyemail" , handelUserAuthentication , handelVerifyEmailOtp )
-router.post("/login" , handelUserLogin ) 
+router.post("/login" , handelUserAuthentication , handelUserLogin ) 
 router.post("/logout" ,  handelUserLogout )
 router.post("/forgotpassword" ,  handelForgotPassword )
 
