@@ -1,10 +1,13 @@
 import express from 'express'
-import { handleGetUserDetails ,  handleUserSignUp , handelVerifyEmailOtp , handelUserLogin , handelUserLogout , handelForgotPassword , handelClearUser , handelResendOtp , handelForgotPasswordOtp , handelResetPassword } from "../controllers/user.controller.js"
+import { handleGetUserDetails , handelUpdateProfile , handleUserSignUp , handelVerifyEmailOtp , handelUserLogin , handelUserLogout , handelForgotPassword , handelClearUser , handelResendOtp , handelForgotPasswordOtp , handelResetPassword , handelUpdateUserAddress } from "../controllers/user.controller.js"
 import { handelUserAuthentication } from '../middleware/authenticate.middleware.js'
 
 const router = express.Router()
 
 router.get("/" , handelUserAuthentication , handleGetUserDetails )
+router.patch("/update" , handelUserAuthentication , handelUpdateProfile )
+router.put("/address" , handelUserAuthentication , handelUpdateUserAddress  )
+
 router.post("/signup" , handleUserSignUp)
 router.post("/login" , handelUserLogin ) 
 router.post("/logout" , handelUserLogout )

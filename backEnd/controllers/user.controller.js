@@ -36,6 +36,95 @@ async function handleGetUserDetails(req, res) {
   }
 }
 
+async function handelUpdateProfile(req, res) {
+  try {
+    const { _id } = req.user;
+    const { address, phone, avatar } = req.body;
+
+    const updateFields = {};
+
+    if (phone) updateFields.phone = phone;
+    if (avatar) updateFields.avatar = avatar;
+
+    if (address) {
+      updateFields.address = Array.isArray(address)
+        ? address
+        : [address];
+    }
+
+    if (Object.keys(updateFields).length === 0) {
+      return res.status(400).json(
+        new ApiResponse(400, null, "No fields provided to update")
+      );
+    }
+
+    await User.findByIdAndUpdate(
+      _id,
+      { $set: updateFields },
+      { new: true }
+    );
+
+    return res.status(200).json(
+      new ApiResponse(200, null, "Profile updated successfully")
+    );
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json(
+      new ApiResponse(500, null, "Internal server error")
+    );
+  }
+}
+
+ 
+const handelUpdateUserAddress = async (req, res) => {
+  try {
+    console.log("➡️ Update Address API HIT");
+
+    const { _id } = req.user;
+    console.log("🧑 User ID:", _id);
+
+    const address = req.body;
+    console.log("📦 Address Payload:", address);
+
+    if (!address || Object.keys(address).length === 0) {
+      console.log("❌ Address data missing");
+      return res.status(400).json(
+        new ApiResponse(400, null, "Address data is required")
+      );
+    }
+
+    // If new address is default → unset previous default
+    if (address.isDefault) {
+      console.log("⭐ Setting new default address, unsetting old ones");
+
+      await User.updateOne(
+        { _id },
+        { $set: { "address.$[].isDefault": false } }
+      );
+    }
+
+    console.log("🛠 Updating address in DB...");
+
+    const user = await User.findByIdAndUpdate(
+      _id,
+      { $set: { address: [address] } },
+      { new: true, runValidators: true }
+    );
+
+    console.log("✅ Updated Address:", user.address);
+
+    return res.status(200).json(
+      new ApiResponse(200, user.address, "Address updated successfully")
+    );
+
+  } catch (error) {
+    console.error("🔥 ADDRESS UPDATE ERROR:", error);
+    return res.status(500).json(
+      new ApiResponse(500, null, "Internal server error")
+    );
+  }
+};
+
 
 async function handleUserSignUp(req, res) {
 
@@ -118,7 +207,7 @@ async function handelUserLogin(req, res) {
 
   try {
 
-    
+
     const { email, password } = req.body || {};
 
     if (!email || !password) {
@@ -316,10 +405,8 @@ async function handelForgotPasswordOtp(req, res) {
       );
     }
 
-    // ✅ OTP valid → allow reset for 10 minutes
     await redisClient.setEx(`reset:${email}`, 600, "true");
 
-    // ✅ OTP single-use
     await redisClient.del(key);
 
     return res.status(200).json(
@@ -401,4 +488,4 @@ async function handelClearUser(req, res) {
 }
 
 
-export { handleGetUserDetails , handleUserSignUp, handelVerifyEmailOtp, handelUserLogin, handelUserLogout, handelForgotPassword, handelClearUser, handelResendOtp, handelForgotPasswordOtp , handelResetPassword };
+export { handleGetUserDetails , handelUpdateProfile , handelUpdateUserAddress , handleUserSignUp, handelVerifyEmailOtp, handelUserLogin, handelUserLogout, handelForgotPassword, handelClearUser, handelResendOtp, handelForgotPasswordOtp, handelResetPassword };

@@ -39,7 +39,6 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
       minlength: 6,
-      // select: false,
     },
 
     avatar: {
@@ -52,13 +51,6 @@ const userSchema = new mongoose.Schema(
       enum: ["buyer", "seller", "admin"],
       default: "buyer",
     },
-    
-    orders: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "order",
-      },
-    ],
 
     phone: {
       type: String,
@@ -70,7 +62,7 @@ const userSchema = new mongoose.Schema(
       default: false,
     },
 
-    addresses: [addressSchema],
+    address: [addressSchema],
 
     isEmailVerified: {
       type: Boolean,
