@@ -38,6 +38,50 @@ async function handelGetAllStores(req, res) {
   }
 }
 
+async function handelGetStoreByOwner(req, res) {
+  try {
+    const { ownerId } = req.params;
+
+    console.log("📥 Request received for ownerId:", ownerId);
+
+    const owner = await User.findById(ownerId);
+    console.log("👤 Owner fetched:", owner ? owner._id : "NOT FOUND");
+
+    if (!owner) {
+      console.log("❌ Owner not found");
+      return res.status(404).json(
+        new ApiResponse(404, null, "Owner not found with this id")
+      );
+    }
+
+    const stores = await Store.find({ owner: ownerId })
+      .select("storeName storeProducts logo banner");
+
+    console.log("🏬 Stores fetched count:", stores.length);
+    console.log("🏬 Stores data:", stores);
+
+    if (stores.length === 0) {
+      console.log("⚠️ No stores found for this owner");
+      return res.status(404).json(
+        new ApiResponse(404, [], "No stores found for this owner")
+      );
+    }
+
+    console.log("✅ Sending stores response");
+
+    return res.status(200).json(
+      new ApiResponse(200, stores, "Stores sent successfully")
+    );
+
+  } catch (error) {
+    console.error("🔥 Get Store Error:", error);
+    return res.status(500).json(
+      new ApiResponse(500, null, "Internal server error")
+    );
+  }
+}
+
+
 async function handelGetSearchedStore(req, res) {
   try {
     let { searchString } = req.body;
@@ -185,6 +229,6 @@ async function handelClearStore(req, res) {
   }
 }
 
-export { handleCreateStore, handelGetAllStores, handelGetSearchedStore , handelClearStore };
+export { handelGetStoreByOwner , handleCreateStore, handelGetAllStores, handelGetSearchedStore, handelClearStore };
 
 

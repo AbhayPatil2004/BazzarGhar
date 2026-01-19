@@ -101,7 +101,7 @@ export default function ForgotPasswordPage() {
           Remember your password?{" "}
           <span
             className="text-blue-600 hover:underline cursor-pointer"
-            onClick={() => router.push("/login")}
+            onClick={() => router.push("/auth/login")}
           >
             Login
           </span>

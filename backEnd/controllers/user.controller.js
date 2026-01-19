@@ -402,7 +402,7 @@ async function handelForgotPasswordOtp(req, res) {
 
     if (savedOtp !== otp.toString()) {
       return res.status(400).json(
-        new ApiResponse(400, null, "Invalid OTP")
+        new ApiResponse(400, user, "Invalid OTP")
       );
     }
 
@@ -411,7 +411,7 @@ async function handelForgotPasswordOtp(req, res) {
     await redisClient.del(key);
 
     return res.status(200).json(
-      new ApiResponse(200, null, "OTP verified successfully")
+      new ApiResponse(200, { user }, "OTP verified successfully")
     );
   } catch (error) {
     return res.status(500).json(

@@ -3,11 +3,14 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
+import OwnerStoresPage from "../../component/OwnerStores"
 import StoreOpeningRequests from "../../component/StoreOprningrequest";
 
 export default function ProfilePage() {
 
     const router = useRouter();
+
+    const [role, setRole] = useState(null);
 
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -16,6 +19,15 @@ export default function ProfilePage() {
     const [phone, setPhone] = useState("");
 
     const [uploading, setUploading] = useState(false);
+
+    useEffect(() => {
+  const storedUser = localStorage.getItem("user");
+  if (storedUser) {
+    const parsedUser = JSON.parse(storedUser);
+    setRole(parsedUser?.role || null);
+  }
+}, []);
+
 
     // 🔹 Fetch profile
     async function fetchProfile() {
@@ -237,9 +249,25 @@ export default function ProfilePage() {
             </div>
 
             {/*admin pannel  */}
-            <div>
-                <StoreOpeningRequests></StoreOpeningRequests>
+            {/* ROLE BASED DASHBOARD */}
+            <div className="mt-10">
+
+                {role === "admin" && (
+                    <StoreOpeningRequests />
+                )}
+
+                {role === "seller" && (
+                    <OwnerStoresPage />
+                )}
+
+                {role === "user" && (
+                    <div className="text-center text-gray-500">
+                        No dashboard available for this account
+                    </div>
+                )}
+
             </div>
+
 
         </div>
     );

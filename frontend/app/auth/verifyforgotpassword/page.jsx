@@ -33,6 +33,8 @@ export default function VerifyEmailOtpPage() {
         setError(data.message || "Invalid OTP");
       } else {
         setMessage(data.message || "Email verified successfully");
+        localStorage.setItem("user", JSON.stringify(data.data.user))
+        localStorage.setItem("hello", JSON.stringify("hello"))
 
         
         setTimeout(() => {
@@ -58,6 +60,7 @@ export default function VerifyEmailOtpPage() {
 
       const data = await res.json()
       if( res.ok ){
+        
         setMessage(data.message || "Otp Send Succesfully");
       }
       else{
