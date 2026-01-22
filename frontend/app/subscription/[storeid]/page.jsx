@@ -2,6 +2,7 @@
 
 import { useParams } from "next/navigation";
 import { useState } from "react";
+import {useRouter} from "next/navigation"
 
 const plans = [
     { amount: 100, label: "1 Month" },
@@ -11,6 +12,9 @@ const plans = [
 ];
 
 export default function SubscriptionPage() {
+
+    const router = useRouter()
+
     const { storeId } = useParams();
     const [loading, setLoading] = useState(false);
 
@@ -35,6 +39,7 @@ export default function SubscriptionPage() {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ amount }),
+                    credentials: "include"
                 }
             );
 
@@ -60,6 +65,8 @@ export default function SubscriptionPage() {
                                     ...response,
                                     amount,
                                 }),
+
+                                credentials: "include"
                             }
                         );
 

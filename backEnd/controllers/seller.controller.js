@@ -134,7 +134,7 @@ async function handelUpgradeStoreSubscription(req, res) {
         .json(new ApiResponse(404, null, "Store not found"));
     }
 
-    // 🔹 Subscription mapping
+
     const subscriptionMap = {
       100: { plan: "basic", months: 1 },
       250: { plan: "pro", months: 3 },
@@ -150,8 +150,23 @@ async function handelUpgradeStoreSubscription(req, res) {
         .json(new ApiResponse(400, null, "Invalid subscription amount"));
     }
 
-    const startDate = new Date();
-    const endDate = new Date(startDate);
+    let startDate;
+    let endDate;
+
+    if (
+      store.isSubscriptionActive &&
+      store.subscriptionEndDate &&
+      store.subscriptionEndDate > new Date()
+    ) {
+      // Extend existing subscription
+      startDate = store.subscriptionStartDate;
+      endDate = new Date(store.subscriptionEndDate);
+    } else {
+      // New subscription
+      startDate = new Date();
+      endDate = new Date(startDate);
+    }
+
     endDate.setMonth(endDate.getMonth() + selectedPlan.months);
 
     // 🔹 Update store subscription

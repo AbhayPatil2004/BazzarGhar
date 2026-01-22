@@ -72,6 +72,7 @@ export default function ProfilePage() {
             const uploadRes = await fetch("/api/upload", {
                 method: "POST",
                 body: formData,
+                
             });
 
             const uploadData = await uploadRes.json();

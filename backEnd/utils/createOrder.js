@@ -10,7 +10,8 @@ export default async function createOrder(amount) {
     const order = await razorpay.orders.create({
       amount: amount * 100, 
       currency: "INR",
-      receipt: `receipt_${crypto.randomUUID()}`,
+      receipt: `rcpt_${Date.now()}`
+
     });
 
     return order;
