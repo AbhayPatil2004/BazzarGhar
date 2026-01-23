@@ -1,121 +1,135 @@
 import mongoose from "mongoose";
 
 const productSchema = new mongoose.Schema(
-  {
-    // 🔗 Relations
-    store: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Store",
-      required: true,
-      index: true,
-    },
+    {
+        store: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Store",
+            required: true,
+            index: true,
+        },
 
-    seller: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-      required: true,
-      index: true,
-    },
+        seller: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "User",
+            required: true,
+            index: true,
+        },
 
-    // 🏷 Basic product info
-    title: {
-      type: String,
-      required: [true, "Product title is required"],
-      trim: true,
-      minlength: 3,
-      maxlength: 120,
-    },
+        title: {
+            type: String,
+            required: [true, "Product title is required"],
+            trim: true,
+            minlength: 3,
+            maxlength: 120,
+        },
 
-    description: {
-      type: String,
-      required: true,
-      maxlength: 2000,
-    },
+        description: {
+            type: String,
+            required: true,
+            maxlength: 2000,
+        },
 
-    category: {
-      type: String,
-      required: true,
-      index: true,
-    },
+        category: {
+            type: String,
+            required: true,
+            index: true,
+        },
 
-    brand: {
-      type: String,
-    },
+        price: {
+            type: Number,
+            required: true,
+            min: 0,
+        },
 
-    // 💰 Pricing
-    price: {
-      type: Number,
-      required: true,
-      min: 0,
-    },
+        discountPercentage: {
+            type: Number,
+            min: 0,
+            max: 90,
+            default: 0,
+        },
 
-    discountPercentage: {
-      type: Number,
-      min: 0,
-      max: 90,
-      default: 0,
-    },
+        gender: {
+            type: String,
+            enum: ["men", "women", "unisex", "kids"],
+            index: true,
+        },
 
-    finalPrice: {
-      type: Number,
-    },
+        isReturnable: {
+            type: Boolean,
+            default: true,
+        },
 
-    // 👕 Variants
-    sizes: {
-      type: [String], // ["S", "M", "L", "XL"]
-      default: [],
-    },
+        deliveryTime: {
+            type: String,
+        },
 
-    colors: {
-      type: [String], // ["Black", "White"]
-      default: [],
-    },
+        finalPrice: {
+            type: Number,
+        },
 
-    // 🖼 Images
-    images: {
-      type: [String], // Cloudinary URLs
-      validate: [arr => arr.length > 0, "At least one image required"],
-    },
+        sizes: {
+            type: [String],
+            default: [],
+        },
 
-    // 📦 Inventory
-    stock: {
-      type: Number,
-      required: true,
-      min: 0,
-    },
+        colors: {
+            type: [String],
+            default: [],
+        },
 
-    // ⭐ Ratings
-    rating: {
-      type: Number,
-      default: 0,
-      min: 0,
-      max: 5,
-    },
+        images: {
+            type: [String],
+            validate: [arr => arr.length > 0, "At least one image required"],
+        },
 
-    totalReviews: {
-      type: Number,
-      default: 0,
-    },
+        tags: {
+            type: [String],
+            index: true,
+            default: [],
+        },
+        searchKeyword: {
+            type: [String],
+            index: true,
+            default: [],
+        },
 
-    // 🚦 Visibility
-    isActive: {
-      type: Boolean,
-      default: true,
-    },
+        stock: {
+            type: Number,
+            required: true,
+            min: 0,
+        },
 
-    isDeleted: {
-      type: Boolean,
-      default: false, // soft delete
+        rating: {
+            type: Number,
+            default: 0,
+            min: 0,
+            max: 5,
+        },
+
+        totalReviews: {
+            type: Number,
+            default: 0,
+        },
+
+        isActive: {
+            type: Boolean,
+            default: true,
+        },
+
+        isDeleted: {
+            type: Boolean,
+            default: false,
+        },
     },
-  },
-  { timestamps: true }
+    { timestamps: true }
 );
 
-// 🔁 Auto-calculate final price
+
 productSchema.pre("save", function (next) {
-  this.finalPrice =
-    this.price - (this.price * this.discountPercentage) / 100;
-  next();
+    this.finalPrice =
+        this.price - (this.price * this.discountPercentage) / 100;
+    next();
 });
 
 const Product = mongoose.model("Product", productSchema);

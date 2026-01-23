@@ -6,6 +6,40 @@ import storeOpeningBody from "../emailBody/storeOpening.emailBody.js";
 import mongoose from "mongoose";
 import createOrder from "../utils/createOrder.js";
 
+async function handelAddProductToStore( req , res ){
+
+  try{
+
+    const { storeId } = req.params ;
+    const { title , description , category , price , discountPercentage , gender , isReturnable , sizes , colors , tags , searchKeyword } = req.body 
+    
+    const store = await Store.findById(storeId)
+
+    if( !store ){
+      return res.status(400).json(
+        new ApiResponse( 500 , {} , "Store not found with this id")
+      )
+    }
+
+    const { ownerId } = store.owner
+
+
+
+
+
+    
+
+
+  }
+  catch(error){
+    console.error(error);
+    return res.status(500).json(
+      new ApiResponse(500, {}, "Internal server error")
+    );
+  }
+}
+
+
 
 async function handelGetStoreByIdForSeller(req, res) {
   try {
@@ -19,6 +53,7 @@ async function handelGetStoreByIdForSeller(req, res) {
     }
 
     // 2️⃣ Fetch store
+
     const storeDetails = await Store.findById(storeId)
       .select(
         "storeName storeProducts description logo banner address rating reviews totalProducts totalOrders subscriptionPlan subscriptionStartDate subscriptionEndDate isSubscriptionActive trialEndsAt commissionRate productSales"
@@ -60,8 +95,12 @@ async function handelGetStoreByOwner(req, res) {
       );
     }
 
-    const stores = await Store.find({ owner: ownerId })
+    const stores = await Store.find({
+      owner: ownerId,
+      isApproved: "accepted",
+    })
       .select("storeName storeProducts logo banner");
+
 
     console.log("🏬 Stores fetched count:", stores.length);
     console.log("🏬 Stores data:", stores);
