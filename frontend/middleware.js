@@ -5,7 +5,7 @@ export function middleware(request) {
   const { pathname } = request.nextUrl;
 
   // Public routes
-  const publicPaths = ["/auth/login", "/auth/signup" ];
+  const publicPaths = ["/auth/login", "/auth/signup" , "/" , "/products" , "stores" , "sell on aurastore"];
 
   if (publicPaths.includes(pathname)) {
     return NextResponse.next();

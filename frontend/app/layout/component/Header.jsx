@@ -12,6 +12,7 @@ import {
   ShoppingBag,
   DollarSign,
 } from "lucide-react";
+import ProfileIcon from '../../profile/components/ProfileIcon.jsx'
 
 export default function Header() {
   const role = "user"; // "user" | "seller" | "admin"
@@ -60,7 +61,7 @@ export default function Header() {
             )}
 
             {/* Profile */}
-            <div className="relative">
+            {/* <div className="relative">
               <button
                 onClick={() => setOpen(!open)}
                 className="flex items-center gap-2"
@@ -95,7 +96,9 @@ export default function Header() {
                   </button>
                 </div>
               )}
-            </div>
+            </div> */}
+
+            <ProfileIcon/>
           </div>
         </div>
       </header>
@@ -125,9 +128,11 @@ export default function Header() {
                 )}
               </Link>
             )}
-            <Link href="/profile">
+            {/* <Link href="/profile">
               <User size={24} />
-            </Link>
+            </Link> */}
+
+            <ProfileIcon/>
           </div>
         </div>
       </header>
