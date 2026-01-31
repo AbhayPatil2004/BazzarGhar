@@ -1,8 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState , useEffect } from "react";
 import { useRouter } from "next/navigation";
-// import TrustBuildingSection from './components/Trust-Building.jsx'
 
 export default function CreateStorePage() {
   const router = useRouter();
@@ -16,14 +15,14 @@ export default function CreateStorePage() {
       city: "",
       state: "",
       postalCode: "",
-      country: "India"
-    }
+      country: "India",
+    },
   });
-
 
   const [logo, setLogo] = useState(null);
   const [banner, setBanner] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
 
   function handleChange(e) {
     const { name, value } = e.target;
@@ -32,21 +31,13 @@ export default function CreateStorePage() {
       const field = name.split(".")[1];
       setFormData((prev) => ({
         ...prev,
-        address: {
-          ...prev.address,
-          [field]: value
-        }
+        address: { ...prev.address, [field]: value },
       }));
     } else {
-      setFormData((prev) => ({
-        ...prev,
-        [name]: value
-      }));
+      setFormData((prev) => ({ ...prev, [name]: value }));
     }
   }
 
-
-  // 🔹 Upload image using YOUR backend Cloudinary API
   async function uploadImage(file) {
     const data = new FormData();
     data.append("file", file);
@@ -54,11 +45,10 @@ export default function CreateStorePage() {
     const res = await fetch("/api/upload", {
       method: "POST",
       credentials: "include",
-      body: data
+      body: data,
     });
 
     const result = await res.json();
-
     return result.url;
   }
 
@@ -79,20 +69,15 @@ export default function CreateStorePage() {
         storeProducts: formData.storeProducts.split(","),
         address: formData.address,
         logoUrl,
-        bannerUrl
+        bannerUrl,
       };
 
-      const res = await fetch(
-        "http://localhost:8000/store/create",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          credentials: "include",
-          body: JSON.stringify(payload)
-        }
-      );
+      const res = await fetch("http://localhost:8000/store/create", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify(payload),
+      });
 
       const data = await res.json();
 
@@ -104,168 +89,163 @@ export default function CreateStorePage() {
         throw new Error(data.message || "Store creation failed");
       }
 
-      router.push("/")
+      setSuccess(true); // 🎉 show popup
     } catch (error) {
-      console.error(error);
       alert(error.message);
     } finally {
       setLoading(false);
     }
   }
 
+  useEffect(() => {
+    if (success) {
+      const timer = setTimeout(() => {
+        setSuccess(false);
+      }, 1000); // 1000ms = 1 second
+
+      return () => clearTimeout(timer); // cleanup if component unmounts early
+    }
+  }, [success]);
+
   return (
-    <div>
-      
-      <div className=" text-black min-h-screen bg-gray-100 flex items-center justify-center px-4">
+    <div className="min-h-screen bg-gray-50 px-4 py-14" id="open-store-form" >
 
+      {/* FORM CONTAINER */}
+      <div className="mx-auto max-w-4xl bg-white rounded-3xl shadow-xl p-10">
 
-        <div className="w-full max-w-3xl bg-white rounded-2xl shadow-lg p-8">
+        <h1 className="text-3xl font-bold text-gray-900">
+          Open Your Store on <span className="text-purple-700">Aura Store</span>
+        </h1>
+        <p className="text-gray-600 mt-2 mb-8">
+          Create your store and start selling your products locally & online.
+        </p>
 
-          <h1 className="text-3xl font-semibold text-gray-900 mb-2">
-            Open Your Store On AURAWEAR
-          </h1>
-          <p className="text-black  mb-8">
-            Create your store and start selling your products
-          </p>
+        <form onSubmit={handleSubmit} className="space-y-6">
 
-          <form onSubmit={handleSubmit} className="space-y-6">
+          {/* Store Name */}
+          <input
+            name="storeName"
+            placeholder="Store Name"
+            onChange={handleChange}
+            required
+            className="w-full rounded-xl border px-4 py-3 focus:ring-2 focus:ring-purple-600"
+          />
 
-            {/* Store Name */}
+          {/* Description */}
+          <textarea
+            name="description"
+            placeholder="Describe your store"
+            rows={3}
+            onChange={handleChange}
+            className="w-full rounded-xl border px-4 py-3 focus:ring-2 focus:ring-purple-600"
+          />
+
+          {/* Products */}
+          <input
+            name="storeProducts"
+            placeholder="Products (Shoes, Shirts, Watches)"
+            onChange={handleChange}
+            className="w-full rounded-xl border px-4 py-3 focus:ring-2 focus:ring-purple-600"
+          />
+
+          {/* Address */}
+          <div className="space-y-4">
+            <h3 className="font-semibold text-gray-900">Store Address</h3>
+
+            <input
+              name="address.street"
+              placeholder="Street Address"
+              onChange={handleChange}
+              className="w-full rounded-xl border px-4 py-3"
+            />
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <input name="address.city" placeholder="City" onChange={handleChange} className="rounded-xl border px-4 py-3" />
+              <input name="address.state" placeholder="State" onChange={handleChange} className="rounded-xl border px-4 py-3" />
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <input name="address.postalCode" placeholder="Postal Code" onChange={handleChange} className="rounded-xl border px-4 py-3" />
+              <input value="India" disabled className="rounded-xl border bg-gray-100 px-4 py-3" />
+            </div>
+          </div>
+
+          {/* Uploads */}
+          {/* <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <input type="file" accept="image/*" onChange={(e) => setLogo(e.target.files[0])} />
+            <input type="file" accept="image/*" onChange={(e) => setBanner(e.target.files[0])} />
+          </div> */}
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+
+            {/* Store Logo */}
             <div>
-              <label className="block text-sm font-medium text-black  mb-1">
-                Store Name
+              <label className="block text-sm font-medium text-gray-900 mb-1">
+                Store Logo
               </label>
               <input
-                name="storeName"
-                placeholder="Enter store name"
-                onChange={handleChange}
-                className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-black"
-                required
+                type="file"
+                accept="image/*"
+                onChange={(e) => setLogo(e.target.files[0])}
+                className="w-full text-sm file:mr-4 file:py-2 file:px-4
+                 file:rounded-lg file:border-0
+                 file:bg-gray-100 file:text-gray-700
+                 hover:file:bg-gray-200"
               />
+              <p className="text-xs text-gray-500 mt-1">
+                Upload your store logo (square recommended)
+              </p>
             </div>
 
-            {/* Description */}
+            {/* Store Banner */}
             <div>
-              <label className="block text-sm font-medium text-black  mb-1">
-                Description
-              </label>
-              <textarea
-                name="description"
-                placeholder="Describe your store"
-                rows={3}
-                onChange={handleChange}
-                className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-black"
-              />
-            </div>
-
-            {/* Products */}
-            <div>
-              <label className="block text-sm font-medium text-black  mb-1">
-                Products
+              <label className="block text-sm font-medium text-gray-900 mb-1">
+                Store Banner
               </label>
               <input
-                name="storeProducts"
-                placeholder="Shoes, Shirts, Watches"
-                onChange={handleChange}
-                className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-black"
+                type="file"
+                accept="image/*"
+                onChange={(e) => setBanner(e.target.files[0])}
+                className="w-full text-sm file:mr-4 file:py-2 file:px-4
+                 file:rounded-lg file:border-0
+                 file:bg-gray-100 file:text-gray-700
+                 hover:file:bg-gray-200"
               />
+              <p className="text-xs text-gray-500 mt-1">
+                Upload a banner image for your store (landscape recommended)
+              </p>
             </div>
 
-            {/* Address */}
-            {/* Address Section */}
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-black">
-                Store Address
-              </h3>
+          </div>
 
-              <input
-                name="address.street"
-                placeholder="Street Address"
-                onChange={handleChange}
-                className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-black"
-              />
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <input
-                  name="address.city"
-                  placeholder="City"
-                  onChange={handleChange}
-                  className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-black"
-                />
+          {/* Submit */}
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full bg-purple-700 text-white py-3 rounded-xl font-semibold hover:bg-purple-800 transition"
+          >
+            {loading ? "Creating Store..." : "Create Store"}
+          </button>
 
-                <input
-                  name="address.state"
-                  placeholder="State"
-                  onChange={handleChange}
-                  className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-black"
-                />
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <input
-                  name="address.postalCode"
-                  placeholder="Postal Code"
-                  onChange={handleChange}
-                  className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-black"
-                />
-
-                <input
-                  name="address.country"
-                  value={formData.address.country}
-                  disabled
-                  className="w-full rounded-lg border border-gray-200 bg-gray-100 px-4 py-2 text-gray-600"
-                />
-              </div>
-            </div>
-
-            {/* Upload Section */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-              <div>
-                <label className="block text-sm font-medium text-black  mb-1">
-                  Store Logo
-                </label>
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={(e) => setLogo(e.target.files[0])}
-                  className="w-full text-sm file:mr-4 file:py-2 file:px-4
-              file:rounded-lg file:border-0
-              file:bg-gray-100 file:text-gray-700
-              hover:file:bg-gray-200"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-black  mb-1">
-                  Store Banner
-                </label>
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={(e) => setBanner(e.target.files[0])}
-                  className="w-full text-sm file:mr-4 file:py-2 file:px-4
-              file:rounded-lg file:border-0
-              file:bg-gray-100 file:text-gray-700
-              hover:file:bg-gray-200"
-                />
-              </div>
-            </div>
-
-            {/* Submit */}
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full bg-black text-white py-3 rounded-xl font-medium
-          hover:bg-gray-900 transition disabled:opacity-60"
-            >
-              {loading ? "Creating Store..." : "Create Store"}
-            </button>
-
-          </form>
-        </div>
+        </form>
       </div>
 
-    </div>
+      {/* SUCCESS POPUP */}
+      {success && (
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+          <div className="bg-white rounded-2xl p-8 max-w-md text-center shadow-2xl">
+            <h2 className="text-2xl font-bold text-green-600">
+              🎉 Store Request Sent!
+            </h2>
+            <p className="text-gray-600 mt-3">
+              Your store request has been successfully sent to the admin for verification.
+            </p>
+          </div>
+        </div>
+      )}
 
+
+    </div>
   );
 }

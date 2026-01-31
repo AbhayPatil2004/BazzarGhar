@@ -269,20 +269,50 @@
 
 //   );
 // }
+"use client"
 
 import CreateStorePage from './components/Open-Store.jsx'
 import TrustBuildingSection from './components/Trust-Building'
 import HowItWorks from './components/How-It-works.jsx'
 import OpenStoreHeading from './components/Heading.jsx'
+import WhyAuraStore from './components/Why-Aura-Store.jsx'
+import EarningsAndBenefits from './components/Earning-Benefits.jsx'
+import WhoCanSell from './components/Who-Can-Sell.jsx'
+import Faq from './components/Faq.jsx'
+import FinalCTA from './components/Final-CTA.jsx'
 
 export default function Page(){
 
   return(
-    <div>
-      <OpenStoreHeading></OpenStoreHeading>
-      <TrustBuildingSection></TrustBuildingSection>
-      <HowItWorks></HowItWorks>
-      <CreateStorePage></CreateStorePage>
+    <div className="relative">
+      <OpenStoreHeading />
+      <TrustBuildingSection />
+      <HowItWorks />
+      <CreateStorePage /> {/* Form has id="open-store-form" */}
+      <WhyAuraStore />
+      <EarningsAndBenefits />
+      <WhoCanSell />
+      <Faq />
+      {/* <FinalCTA /> */}
+
+      {/* Sticky Button */}
+     <button
+  onClick={() => {
+    const form = document.getElementById("open-store-form");
+    form?.scrollIntoView({ behavior: "smooth" });
+  }}
+  className="
+    fixed 
+    right-6 
+    bottom-16  /* mobile default thoda upar */
+    sm:bottom-6 /* desktop normal bottom */
+    bg-purple-700 text-white px-5 py-3 rounded-full shadow-lg 
+    hover:bg-purple-800 transition z-50
+  "
+>
+  Open Your Store
+</button>
+
     </div>
   )
 }
