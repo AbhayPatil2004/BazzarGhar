@@ -3,8 +3,8 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
-import OwnerStoresPage from "../seller/OwnerStores.jsx"
-import StoreOpeningRequests from "../admin/StoreOprningrequest.jsx";
+// import OwnerStoresPage from "../seller/OwnerStores.jsx"
+// import StoreOpeningRequests from "../admin/StoreOprningrequest.jsx";
 
 export default function ProfilePage() {
 
@@ -267,7 +267,7 @@ export default function ProfilePage() {
 
             {/*admin pannel  */}
             {/* ROLE BASED DASHBOARD */}
-            <div className="mt-10">
+            {/* <div className="mt-10">
 
                 {role === "admin" && (
                     <StoreOpeningRequests />
@@ -283,7 +283,7 @@ export default function ProfilePage() {
                     </div>
                 )}
 
-            </div>
+            </div> */}
 
 
         </div>
