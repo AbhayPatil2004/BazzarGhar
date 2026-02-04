@@ -59,7 +59,7 @@ export default function SellerStores() {
             className="rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
           />
           <button
-            onClick={() => router.push("/seller/store/create")}
+            onClick={() => router.push("/store/create")}
             className="rounded-lg bg-green-600 px-4 py-2 text-white font-medium hover:bg-green-700 transition"
           >
             ➕ Add New Store
