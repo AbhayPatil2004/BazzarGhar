@@ -119,7 +119,7 @@ export default function StoreDashboardPage() {
                     {/* SUBSCRIBE / UPGRADE BUTTON */}
                     <button
                         onClick={() =>
-                            router.push(`/subscription/${storeId}`)
+                            router.push(`/seller/store/${storeId}/subscription`)
 
                         }
                         className={`mt-4 px-6 py-2 rounded-lg text-white

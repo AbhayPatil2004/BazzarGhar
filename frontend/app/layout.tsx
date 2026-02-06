@@ -3,6 +3,8 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Header from './layout/component/Header.jsx'
 import Footer from './layout/component/Footer.jsx'
+import { Toaster } from "react-hot-toast";
+
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -30,12 +32,16 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <Header />
-        
+
         {/* Push content below sticky header */}
         <main >
-          {children}
+          {/* {children} */}
+          <>
+            <Toaster position="top-center" />
+            {children}
+          </>
         </main>
-        
+
         <Footer />
       </body>
     </html>
