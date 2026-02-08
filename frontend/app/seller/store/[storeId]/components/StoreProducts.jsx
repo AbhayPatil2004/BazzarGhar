@@ -41,6 +41,20 @@ export default function StoreProductsPage() {
             </h1>
 
             <div className="grid grid-cols-2 md:grid-cols-[repeat(auto-fit,minmax(220px,1fr))] gap-4 justify-items-center">
+
+                {products.length === 0 && (
+                    <div className="col-span-full flex justify-center">
+                        <div className="bg-white shadow-md rounded-xl p-6 text-center max-w-sm">
+                            <h2 className="text-lg font-semibold text-gray-700">
+                                No products yet
+                            </h2>
+                            <p className="text-gray-500 text-sm mt-2">
+                                Not a single product added to this store.
+                            </p>
+                        </div>
+                    </div>
+                )}
+
                 {products.map((product) => (
                     <div
                         key={product._id}
@@ -71,7 +85,7 @@ export default function StoreProductsPage() {
 
                             <button
                                 onClick={() =>
-                                    router.push(`/seller/store/${storeId}/${product._id}`)
+                                    router.push(`/seller/store/${storeId}/product/${product._id}`)
                                 }
                                 className="mt-auto w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg text-sm font-medium transition"
                             >

@@ -501,6 +501,41 @@ async function handelGetStoreProducts(req, res) {
   }
 }
 
+async function handelGetProductDetails(req, res) {
+  try {
+    const { productId } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(productId)) {
+      return res.status(400).json(
+        new ApiResponse(400, {}, "Invalid Product Id")
+      );
+    }
+
+    // FIX
+    const product = await Product.findById(productId)
+  .populate({
+    path: "store",
+    select: "storeName logo"
+  });
 
 
-export { handelGetStoreByIdForSeller, handelGetStoreByOwner, handelCreateStoreSubscriptionOrder, handelUpgradeStoreSubscription, handleAddProductToStore, handelSellerStats, handleUpdateStoreDetails, handelActiveOrInActiveStore , handelGetStoreProducts }
+    if (!product) {
+      return res.status(404).json(
+        new ApiResponse(404, {}, "Product not found")
+      );
+    }
+
+    return res.status(200).json(
+      new ApiResponse(200, product, "Product Details sent successfully")
+    );
+  } 
+  catch (error) {
+    console.log("Error in handelGetProductDetails:", error);
+    return res.status(500).json(
+      new ApiResponse(500, {}, "Internal Server Error")
+    );
+  }
+}
+
+
+export { handelGetStoreByIdForSeller, handelGetStoreByOwner, handelCreateStoreSubscriptionOrder, handelUpgradeStoreSubscription, handleAddProductToStore, handelSellerStats, handleUpdateStoreDetails, handelActiveOrInActiveStore, handelGetStoreProducts , handelGetProductDetails }

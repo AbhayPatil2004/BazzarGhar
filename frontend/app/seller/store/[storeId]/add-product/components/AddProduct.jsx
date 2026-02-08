@@ -580,12 +580,25 @@ export default function AddProductPage() {
                         <p className="text-sm text-gray-500 mb-3">
                             Upload at least one image
                         </p>
-                        <input
+                        {/* <input
                             type="file"
                             multiple
                             accept="image/*"
                             onChange={(e) => setImages([...e.target.files])}
-                        />
+                        /> */}
+
+                        <input
+    type="file"
+    multiple
+    accept="image/*"
+    onChange={(e) =>
+        setImages((prev) => [
+            ...prev,
+            ...Array.from(e.target.files)
+        ])
+    }
+/>
+
 
                         {images.length > 0 && (
                             <div className="flex gap-3 mt-3 flex-wrap">
