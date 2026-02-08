@@ -215,6 +215,7 @@
 import StoreWelcomeHeader from "./components/StoreHeader";
 // import StoreDetailsWithAddProduct from "./add-product/components/StoreProductsWithAddProduct";
 import StoreDashboardPage from "./components/StoreDetails";
+import StoreProductsPage from "./components/StoreProducts";
 
 export default function Page() {
     return (
@@ -222,6 +223,7 @@ export default function Page() {
             <StoreWelcomeHeader></StoreWelcomeHeader>
             {/* <StoreDetailsWithAddProduct></StoreDetailsWithAddProduct> */}
             <StoreDashboardPage></StoreDashboardPage>
+            <StoreProductsPage></StoreProductsPage>
         </div>
     )
 }

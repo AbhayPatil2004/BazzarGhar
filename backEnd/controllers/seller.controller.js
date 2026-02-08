@@ -454,5 +454,53 @@ async function handelActiveOrInActiveStore(req, res) {
   }
 }
 
+async function handelGetStoreProducts(req, res) {
+  try {
+    const { storeId } = req.params;
 
-export { handelGetStoreByIdForSeller, handelGetStoreByOwner, handelCreateStoreSubscriptionOrder, handelUpgradeStoreSubscription, handleAddProductToStore, handelSellerStats , handleUpdateStoreDetails , handelActiveOrInActiveStore }
+    console.log("handelGetStoreProducts called");
+    console.log("StoreId:", storeId);
+
+    if (!mongoose.Types.ObjectId.isValid(storeId)) {
+      console.log("Invalid StoreId");
+      return res.status(400).json(
+        new ApiResponse(400, {}, "Invalid Store Id")
+      );
+    }
+
+    const store = await Store.findById(storeId);
+    console.log("Store found:", store ? store._id : "NOT FOUND");
+
+    if (!store) {
+      return res.status(404).json(
+        new ApiResponse(404, {}, "Store not found")
+      );
+    }
+
+    const products = await Product.find({ store: storeId })
+      .select("title description category price images");
+
+    console.log("Products count:", products.length);
+    console.log("Products:", products);
+
+    if (products.length === 0) {
+      return res.status(404).json(
+        new ApiResponse(404, {}, "Store has no products")
+      );
+    }
+
+    return res.status(200).json(
+      new ApiResponse(200, products, "Store Products sent successfully")
+    );
+
+  } catch (error) {
+    console.log("Error in handelGetStoreProducts:", error);
+    return res.status(500).json(
+      new ApiResponse(500, {}, "Internal Server Error")
+    );
+  }
+}
+
+
+
+export { handelGetStoreByIdForSeller, handelGetStoreByOwner, handelCreateStoreSubscriptionOrder, handelUpgradeStoreSubscription, handleAddProductToStore, handelSellerStats, handleUpdateStoreDetails, handelActiveOrInActiveStore , handelGetStoreProducts }

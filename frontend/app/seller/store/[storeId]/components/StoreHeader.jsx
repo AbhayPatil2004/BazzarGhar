@@ -8,7 +8,7 @@ export default function StoreWelcomeHeader({ onAddProduct, onViewStats }) {
 
   const router = useRouter()
   return (
-    <section className="w-full flex justify-center px-4">
+    <section className="w-full flex justify-center px-4 mt-20 md:mt-5">
       <div className="w-full max-w-5xl bg-white border border-gray-100 rounded-3xl shadow-sm hover:shadow-md transition-all duration-300 p-6 sm:p-10 text-center">
 
         {/* Icon */}
