@@ -454,6 +454,44 @@ async function handelActiveOrInActiveStore(req, res) {
   }
 }
 
+async function handelActiveOrInActiveProduct(req, res) {
+  try {
+    const { productId } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(productId)) {
+      return res.status(400).json(
+        new ApiResponse(400, {}, "Invalid Product Id")
+      );
+    }
+
+    const product = await Product.findById(productId);
+    if (!product) {
+      return res.status(404).json(
+        new ApiResponse(404, {}, "Product not found")
+      );
+    }
+
+    // toggle
+    product.isActive = !product.isActive;
+
+    await product.save();
+
+    return res.status(200).json(
+      new ApiResponse(
+        200,
+        product,
+        `Product ${product.isActive ? "Activated" : "Deactivated"} Successfully`
+      )
+    );
+  } catch (error) {
+    return res.status(500).json(
+      new ApiResponse(500, {}, "Internal Server Error")
+    );
+  }
+}
+
+
+
 async function handelGetStoreProducts(req, res) {
   try {
     const { storeId } = req.params;
@@ -513,10 +551,10 @@ async function handelGetProductDetails(req, res) {
 
     // FIX
     const product = await Product.findById(productId)
-  .populate({
-    path: "store",
-    select: "storeName logo"
-  });
+      .populate({
+        path: "store",
+        select: "storeName logo"
+      });
 
 
     if (!product) {
@@ -528,7 +566,7 @@ async function handelGetProductDetails(req, res) {
     return res.status(200).json(
       new ApiResponse(200, product, "Product Details sent successfully")
     );
-  } 
+  }
   catch (error) {
     console.log("Error in handelGetProductDetails:", error);
     return res.status(500).json(
@@ -538,4 +576,4 @@ async function handelGetProductDetails(req, res) {
 }
 
 
-export { handelGetStoreByIdForSeller, handelGetStoreByOwner, handelCreateStoreSubscriptionOrder, handelUpgradeStoreSubscription, handleAddProductToStore, handelSellerStats, handleUpdateStoreDetails, handelActiveOrInActiveStore, handelGetStoreProducts , handelGetProductDetails }
+export { handelGetStoreByIdForSeller, handelGetStoreByOwner, handelCreateStoreSubscriptionOrder, handelUpgradeStoreSubscription, handleAddProductToStore, handelSellerStats, handleUpdateStoreDetails, handelActiveOrInActiveStore, handelGetStoreProducts, handelGetProductDetails , handelActiveOrInActiveProduct }
