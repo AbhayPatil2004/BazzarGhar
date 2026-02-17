@@ -115,7 +115,7 @@
 
 //   return (
 //     <div>
-      
+
 //       <div className=" text-black min-h-screen bg-gray-100 flex items-center justify-center px-4">
 
 
@@ -281,9 +281,9 @@ import WhoCanSell from './components/Who-Can-Sell.jsx'
 import Faq from './components/Faq.jsx'
 import FinalCTA from './components/Final-CTA.jsx'
 
-export default function Page(){
+export default function Page() {
 
-  return(
+  return (
     <div className="relative">
       <OpenStoreHeading />
       <TrustBuildingSection />
@@ -296,12 +296,12 @@ export default function Page(){
       {/* <FinalCTA /> */}
 
       {/* Sticky Button */}
-     <button
-  onClick={() => {
-    const form = document.getElementById("open-store-form");
-    form?.scrollIntoView({ behavior: "smooth" });
-  }}
-  className="
+      <button
+        onClick={() => {
+          const form = document.getElementById("open-store-form");
+          form?.scrollIntoView({ behavior: "smooth" });
+        }}
+        className="
     fixed 
     right-6 
     bottom-16  /* mobile default thoda upar */
@@ -309,9 +309,9 @@ export default function Page(){
     bg-purple-700 text-white px-5 py-3 rounded-full shadow-lg 
     hover:bg-purple-800 transition z-50
   "
->
-  Open Your Store
-</button>
+      >
+        Open Your Store
+      </button>
 
     </div>
   )

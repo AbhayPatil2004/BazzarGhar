@@ -30,20 +30,20 @@ export default function Header() {
             <div className="p-2 rounded-xl bg-indigo-600 text-white shadow">
               <Store size={22} />
             </div>
-            <span className="uppercase">Aurastore</span>
+            <span className="uppercase">BazzarGhar</span>
           </Link>
 
           {/* Nav */}
           <nav className="flex items-center gap-10 text-gray-700">
-            <Link className="hover:text-indigo-600 transition" href="/">Home</Link>
-            <Link className="hover:text-indigo-600 transition" href="/products">Products</Link>
-            <Link className="hover:text-indigo-600 transition" href="/stores">Stores</Link>
+            <Link className="hover:text-indigo-600 transition" href="/home">Home</Link>
+            <Link className="hover:text-indigo-600 transition" href="/product">Products</Link>
+            <Link className="hover:text-indigo-600 transition" href="/store">Stores</Link>
             {role !== "admin" && (
               <Link
-                href="/sell"
+                href="/store/create"
                 className="px-4 py-2 rounded-full bg-indigo-600 text-white hover:bg-indigo-500 transition"
               >
-                Sell on Aurastore
+                Sell on BazzarGhar
               </Link>
             )}
           </nav>
@@ -70,7 +70,7 @@ export default function Header() {
             <div className="p-1.5 rounded-lg bg-indigo-600 text-white">
               <Store size={18} />
             </div>
-            Aurastore
+            BazzarGhar
           </Link>
 
           <div className="flex items-center gap-4">

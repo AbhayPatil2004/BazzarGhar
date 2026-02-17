@@ -1,13 +1,13 @@
-function WhyAuraStore() {
+function WhyAura() {
     const reasons = [
         {
-            title: "Built for Local Stores",
-            desc: "Aura Store helps local shops go online and get discovered by nearby customers first.",
+            title: "Built for Local s",
+            desc: "BazzarGhar helps local shops go online and get discovered by nearby customers first.",
             icon: "🏪",
         },
         {
             title: "Admin Verified Sellers",
-            desc: "Every store is verified by our admin team, building trust with customers.",
+            desc: "Every  is verified by our admin team, building trust with customers.",
             icon: "✅",
         },
         {
@@ -16,8 +16,8 @@ function WhyAuraStore() {
             icon: "💸",
         },
         {
-            title: "Easy Store Setup",
-            desc: "Create your store, add products, and go live in just a few minutes.",
+            title: "Easy  Setup",
+            desc: "Create your , add products, and go live in just a few minutes.",
             icon: "⚡",
         },
         {
@@ -39,10 +39,10 @@ function WhyAuraStore() {
                 {/* Heading */}
                 <div className="max-w-2xl mb-10">
                     <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900">
-                        Why sell on <span className="text-purple-700">Aura Store?</span>
+                        Why sell on <span className="text-purple-700">BazzarGhar ?</span>
                     </h2>
                     <p className="mt-3 text-gray-600">
-                        Everything you need to run and grow your local store online — without complexity.
+                        Everything you need to run and grow your local  online — without complexity.
                     </p>
                 </div>
 
@@ -70,4 +70,4 @@ function WhyAuraStore() {
     );
 }
 
-export default WhyAuraStore;
+export default WhyAura;

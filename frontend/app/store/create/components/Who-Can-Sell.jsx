@@ -1,7 +1,7 @@
 function WhoCanSell() {
     const sellers = [
         {
-            title: "Kirana & Grocery Stores",
+            title: "Kirana & Grocery s",
             desc: "Sell daily essentials to nearby customers and receive local orders easily.",
             icon: "🛒",
         },
@@ -39,10 +39,10 @@ function WhoCanSell() {
                 {/* Heading */}
                 <div className="max-w-2xl mb-10">
                     <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900">
-                        Who can sell on <span className="text-purple-700">Aura Store?</span>
+                        Who can sell on <span className="text-purple-700">BazzarGhar?</span>
                     </h2>
                     <p className="mt-3 text-gray-600">
-                        If you run a local business or sell products, Aura Store is built for you.
+                        If you run a local business or sell products, BazzarGhar is built for you.
                     </p>
                 </div>
 
@@ -68,7 +68,7 @@ function WhoCanSell() {
                 {/* Note */}
                 <div className="mt-8 text-sm text-gray-500 max-w-3xl">
                     Don’t see your category listed? No worries — if you sell genuine products or services,
-                    you can still open a store on Aura Store.
+                    you can still open a  on Aura .
                 </div>
 
             </div>

@@ -5,7 +5,7 @@ function FinalCTA() {
 
                 <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900">
                     Bring your local store online with{" "}
-                    <span className="text-purple-700">Aura Store</span>
+                    <span className="text-purple-700">BazzarGhar </span>
                 </h2>
 
                 <p className="mt-4 text-gray-600 max-w-2xl mx-auto">
@@ -20,6 +20,7 @@ function FinalCTA() {
                         bg-purple-700 text-white
                         font-semibold
                         hover:bg-purple-800 transition
+                        cursor-pointer
                     ">
                         Open My Store
                     </button>
@@ -29,6 +30,7 @@ function FinalCTA() {
                         border border-gray-300
                         text-gray-800 font-semibold
                         hover:bg-gray-100 transition
+                        cursor-pointer
                     ">
                         Talk to Support
                     </button>

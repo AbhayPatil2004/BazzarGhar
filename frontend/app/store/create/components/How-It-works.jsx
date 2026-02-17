@@ -8,7 +8,7 @@ function HowItWorks() {
           How opening a store works
         </h2>
         <p className="mt-2 text-gray-600">
-          Launch your store on AURAStore in a few simple steps. We make sure every
+          Launch your store on  in a few simple steps. We make sure every
           store is safe and verified.
         </p>
       </div>
@@ -57,7 +57,7 @@ function HowItWorks() {
           </h3>
 
           <p className="mt-2 text-sm text-gray-600">
-            Once you submit the form, your store request is sent to the AURAStore
+            Once you submit the form, your store request is sent to the 
             admin team for review.
           </p>
 
@@ -84,7 +84,7 @@ function HowItWorks() {
 
           <p className="mt-2 text-sm text-gray-600">
             After successful verification, your store is approved and goes live
-            on AURAStore. You can start adding products and receiving orders.
+            on BazzarGhar. You can start adding products and receiving orders.
           </p>
 
           <ul className="mt-3 space-y-1 text-sm text-gray-500">

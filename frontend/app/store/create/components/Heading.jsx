@@ -20,12 +20,12 @@ function OpenStoreHeading() {
                     rounded-full bg-purple-100 
                     text-purple-700
                     px-4 py-1.5 text-sm font-semibold">
-                        🚀 New on AURAStore
+                        🚀 New on BazzarGhar
                     </span>
 
                     <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold leading-tight">
                         Launch your store on <br />
-                        <span className="text-purple-700">AURAStore</span>
+                        <span className="text-purple-700">BazzarGhar</span>
                     </h1>
 
                     <p className="text-gray-600 text-base max-w-lg">

@@ -33,7 +33,7 @@ function EarningsAndBenefits() {
                 {/* Heading */}
                 <div className="max-w-2xl mb-10">
                     <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900">
-                        Earnings & Benefits on <span className="text-purple-700">Aura Store</span>
+                        Earnings & Benefits on <span className="text-purple-700">BazzarGhar</span>
                     </h2>
                     <p className="mt-3 text-gray-600">
                         Simple, transparent, and designed to help local sellers grow steadily.

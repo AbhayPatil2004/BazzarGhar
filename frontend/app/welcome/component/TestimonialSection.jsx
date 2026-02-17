@@ -8,7 +8,7 @@ const TestimonialsSection = () => {
       role: "Seller",
       photo: "https://randomuser.me/api/portraits/men/32.jpg",
       message:
-        "Aurastore made it so easy for me to set up my online store. I started selling within hours and reached thousands of customers in just a week!",
+        "BazzarGhar made it so easy for me to set up my online store. I started selling within hours and reached thousands of customers in just a week!",
       rating: 5,
     },
     {
@@ -16,7 +16,7 @@ const TestimonialsSection = () => {
       role: "Buyer",
       photo: "https://randomuser.me/api/portraits/women/44.jpg",
       message:
-        "I love shopping on Aurastore! The platform is intuitive, products are easy to find, and checkout is smooth and secure.",
+        "I love shopping on BazzarGhar! The platform is intuitive, products are easy to find, and checkout is smooth and secure.",
       rating: 4.5,
     },
     {
@@ -24,7 +24,7 @@ const TestimonialsSection = () => {
       role: "Seller",
       photo: "https://randomuser.me/api/portraits/men/58.jpg",
       message:
-        "The analytics and sales tracking on Aurastore helped me understand my customers better. My sales have increased steadily!",
+        "The analytics and sales tracking on BazzarGhar helped me understand my customers better. My sales have increased steadily!",
       rating: 5,
     },
   ];

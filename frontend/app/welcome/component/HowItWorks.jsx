@@ -7,7 +7,7 @@ const HowItWorksSection = () => {
       icon: <UserPlus size={36} className="text-indigo-600" />,
       title: "1. Sign Up",
       description:
-        "Create your free Aurastore account as a seller or buyer using your email, Google, or social login. Getting started is fast and secure.",
+        "Create your free  account as a seller or buyer using your email, Google, or social login. Getting started is fast and secure.",
     },
     {
       icon: <Box size={36} className="text-indigo-600" />,
@@ -31,7 +31,7 @@ const HowItWorksSection = () => {
       icon: <TrendingUp size={36} className="text-indigo-600" />,
       title: "5. Grow & Analyze",
       description:
-        "Monitor store performance, track sales trends, and optimize your offerings. Aurastore provides insights to help your business grow.",
+        "Monitor store performance, track sales trends, and optimize your offerings.  provides insights to help your business grow.",
     },
     {
       icon: <Headphones size={36} className="text-indigo-600" />,
@@ -44,7 +44,7 @@ const HowItWorksSection = () => {
   return (
     <section className="max-w-7xl mx-auto px-6 py-20 bg-gray-50">
       <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
-        How Aurastore Works
+        How BazzarGhar Works
       </h2>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
         {steps.map((step, index) => (

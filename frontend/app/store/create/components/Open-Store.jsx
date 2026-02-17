@@ -1,10 +1,11 @@
 "use client";
 
 import { useState, useEffect } from "react";
-// import { useRouter } from "next/navigation";
-
-import { useRouter, useParams } from "next/navigation";
+import { useRouter } from "next/navigation";
+// import { toast } from "react-dom-toast";
+// import { toast } from "react-toastify";
 import toast from "react-hot-toast";
+
 
 
 export default function CreateStorePage() {
@@ -22,13 +23,11 @@ export default function CreateStorePage() {
       country: "India",
     },
   });
-  // const router = useRouter();
-  const { storeId } = useParams();
 
   const [logo, setLogo] = useState(null);
   const [banner, setBanner] = useState(null);
   const [loading, setLoading] = useState(false);
-
+  const [success, setSuccess] = useState(false);
 
   function handleChange(e) {
     const { name, value } = e.target;
@@ -59,47 +58,70 @@ export default function CreateStorePage() {
   }
 
   async function handleSubmit(e) {
-  e.preventDefault();
-  setLoading(true);
+    e.preventDefault();
+    setLoading(true);
 
-  try {
-    let logoUrl = "";
-    let bannerUrl = "";
+    try {
+      let logoUrl = "";
+      let bannerUrl = "";
 
-    // upload images first
-    if (logo) logoUrl = await uploadImage(logo);
-    if (banner) bannerUrl = await uploadImage(banner);
+      if (logo) logoUrl = await uploadImage(logo);
+      if (banner) bannerUrl = await uploadImage(banner);
 
-    const payload = {
-      storeName: formData.storeName,
-      description: formData.description,
-      storeProducts: formData.storeProducts.split(","),
-      address: formData.address,
-      logo: logoUrl,
-      banner: bannerUrl
-    };
+      const payload = {
+        storeName: formData.storeName,
+        description: formData.description,
+        storeProducts: formData.storeProducts.split(","),
+        address: formData.address,
+        logoUrl,
+        bannerUrl,
+      };
 
-    const res = await fetch(
-      `http://localhost:8000/seller/store/${storeId}`,
-      {
-        method: "PUT",
+      const res = await fetch("http://localhost:8000/store/create", {
+        method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
         body: JSON.stringify(payload),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        if (data.message === "Unauthorized: Please login first") {
+          toast.error("Please login first!");
+          router.push("/auth/signup");
+          return;
+        }
+
+        toast.error(data.message || "Store creation failed");
+        return;
       }
-    );
 
-    if (!res.ok) throw new Error("Update failed");
+      toast.success(data.message || "Store created successfully 🎉");
+      setFormData({
+        storeName: "",
+        description: "",
+        storeProducts: "",
+        address: {
+          street: "",
+          city: "",
+          state: "",
+          postalCode: "",
+          country: "India",
+        },
+      })
 
-    toast.success("Store updated successfully");
+      setLogo(null)
+      setBanner(null)
+      // router.refresh()
 
-    router.push(`/seller/dashboard/store/${storeId}`);
-  } catch (err) {
-    toast.error(err.message);
-  } finally {
-    setLoading(false);
+
+    } catch (error) {
+      toast.error(error.message || "Something went wrong");
+    } finally {
+      setLoading(false);
+    }
   }
-}
 
 
   useEffect(() => {
@@ -119,17 +141,25 @@ export default function CreateStorePage() {
       <div className="mx-auto max-w-4xl bg-white rounded-3xl shadow-xl p-10">
 
         <h1 className="text-3xl font-bold text-gray-900">
-          Open Your Store on <span className="text-purple-700">Aura Store</span>
+          Open Your Store on <span className="text-purple-700">BazzarGhar</span>
         </h1>
         <p className="text-gray-600 mt-2 mb-8">
           Create your store and start selling your products locally & online.
         </p>
+
+        {/* <form onSubmit={handleSubmit} className="space-y-6">
+
+          {/* Store Name */}
+        
+
+        {/* </form> } */}
 
         <form onSubmit={handleSubmit} className="space-y-6">
 
           {/* Store Name */}
           <input
             name="storeName"
+            value={formData.storeName}
             placeholder="Store Name"
             onChange={handleChange}
             required
@@ -139,6 +169,7 @@ export default function CreateStorePage() {
           {/* Description */}
           <textarea
             name="description"
+            value={formData.description}
             placeholder="Describe your store"
             rows={3}
             onChange={handleChange}
@@ -148,6 +179,7 @@ export default function CreateStorePage() {
           {/* Products */}
           <input
             name="storeProducts"
+            value={formData.storeProducts}
             placeholder="Products (Shoes, Shirts, Watches)"
             onChange={handleChange}
             className="w-full rounded-xl border px-4 py-3 focus:ring-2 focus:ring-purple-600"
@@ -159,31 +191,49 @@ export default function CreateStorePage() {
 
             <input
               name="address.street"
+              value={formData.address.street}
               placeholder="Street Address"
               onChange={handleChange}
               className="w-full rounded-xl border px-4 py-3"
             />
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <input name="address.city" placeholder="City" onChange={handleChange} className="rounded-xl border px-4 py-3" />
-              <input name="address.state" placeholder="State" onChange={handleChange} className="rounded-xl border px-4 py-3" />
+              <input
+                name="address.city"
+                value={formData.address.city}
+                placeholder="City"
+                onChange={handleChange}
+                className="rounded-xl border px-4 py-3"
+              />
+
+              <input
+                name="address.state"
+                value={formData.address.state}
+                placeholder="State"
+                onChange={handleChange}
+                className="rounded-xl border px-4 py-3"
+              />
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <input name="address.postalCode" placeholder="Postal Code" onChange={handleChange} className="rounded-xl border px-4 py-3" />
-              <input value="India" disabled className="rounded-xl border bg-gray-100 px-4 py-3" />
+              <input
+                name="address.postalCode"
+                value={formData.address.postalCode}
+                placeholder="Postal Code"
+                onChange={handleChange}
+                className="rounded-xl border px-4 py-3"
+              />
+
+              <input
+                value="India"
+                disabled
+                className="rounded-xl border bg-gray-100 px-4 py-3"
+              />
             </div>
           </div>
 
-          {/* Uploads */}
-          {/* <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-            <input type="file" accept="image/*" onChange={(e) => setLogo(e.target.files[0])} />
-            <input type="file" accept="image/*" onChange={(e) => setBanner(e.target.files[0])} />
-          </div> */}
-
+          {/* File Uploads (No value needed here) */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-
-            {/* Store Logo */}
             <div>
               <label className="block text-sm font-medium text-gray-900 mb-1">
                 Store Logo
@@ -193,16 +243,12 @@ export default function CreateStorePage() {
                 accept="image/*"
                 onChange={(e) => setLogo(e.target.files[0])}
                 className="w-full text-sm file:mr-4 file:py-2 file:px-4
-                 file:rounded-lg file:border-0
-                 file:bg-gray-100 file:text-gray-700
-                 hover:file:bg-gray-200"
+        file:rounded-lg file:border-0
+        file:bg-gray-100 file:text-gray-700
+        file:cursor-pointer hover:file:bg-gray-200"
               />
-              <p className="text-xs text-gray-500 mt-1">
-                Upload your store logo (square recommended)
-              </p>
             </div>
 
-            {/* Store Banner */}
             <div>
               <label className="block text-sm font-medium text-gray-900 mb-1">
                 Store Banner
@@ -212,32 +258,28 @@ export default function CreateStorePage() {
                 accept="image/*"
                 onChange={(e) => setBanner(e.target.files[0])}
                 className="w-full text-sm file:mr-4 file:py-2 file:px-4
-                 file:rounded-lg file:border-0
-                 file:bg-gray-100 file:text-gray-700
-                 hover:file:bg-gray-200"
+        file:rounded-lg file:border-0
+        file:bg-gray-100 file:text-gray-700
+        file:cursor-pointer hover:file:bg-gray-200"
               />
-              <p className="text-xs text-gray-500 mt-1">
-                Upload a banner image for your store (landscape recommended)
-              </p>
             </div>
-
           </div>
-
 
           {/* Submit */}
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-purple-700 text-white py-3 rounded-xl font-semibold hover:bg-purple-800 transition"
+            className="cursor-pointer w-full bg-purple-700 text-white py-3 rounded-xl font-semibold hover:bg-purple-800 transition"
           >
             {loading ? "Creating Store..." : "Create Store"}
           </button>
 
         </form>
+
       </div>
 
       {/* SUCCESS POPUP */}
-      {success && (
+      {/* {success && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
           <div className="bg-white rounded-2xl p-8 max-w-md text-center shadow-2xl">
             <h2 className="text-2xl font-bold text-green-600">
@@ -248,7 +290,7 @@ export default function CreateStorePage() {
             </p>
           </div>
         </div>
-      )}
+      )} */}
 
 
     </div>

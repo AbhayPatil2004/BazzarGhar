@@ -11,10 +11,10 @@ export default function Footer() {
                 {/* ---------- About ---------- */}
                 <div>
                     <h3 className="text-white font-semibold text-lg mb-3">
-                        AURAstore
+                        BazzarGhar
                     </h3>
                     <p className="text-sm text-gray-400 mb-4">
-                        AURAstore is a multi-vendor ecommerce platform where users can
+                        BazzarGhar is a multi-vendor ecommerce platform where users can
                         buy products and sellers can open their own online stores.
                     </p>
 
@@ -107,7 +107,7 @@ export default function Footer() {
             </div>
             {/* ---------- Bottom Bar ---------- */}
             <div className="border-t border-gray-800 py-4 text-center text-sm text-gray-500">
-                © {new Date().getFullYear()} AURAstore. All rights reserved.
+                © {new Date().getFullYear()} BazzarGhar. All rights reserved.
             </div>
         </footer>
     );

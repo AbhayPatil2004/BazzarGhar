@@ -5,9 +5,9 @@ import { useState } from "react";
 function Faq() {
     const faqs = [
         {
-            question: "Is it free to open a store on Aura Store?",
+            question: "Is it free to open a store on  BazzarGhar?",
             answer:
-                "Yes. Opening a store on Aura Store is completely free. There are no joining fees or hidden charges.",
+                "Yes. Opening a store on  Store is completely free. There are no joining fees or hidden charges.",
         },
         {
             question: "How long does store verification take?",
@@ -15,7 +15,7 @@ function Faq() {
                 "Our admin team usually verifies stores within 24–48 hours after you submit the required details.",
         },
         {
-            question: "Do I need GST to sell on Aura Store?",
+            question: "Do I need GST to sell on  Bazzarghar?",
             answer:
                 "GST is not mandatory for all sellers. It depends on the type of products you sell and applicable government regulations.",
         },
@@ -27,7 +27,7 @@ function Faq() {
         {
             question: "Can I sell only to nearby customers?",
             answer:
-                "Yes. Aura Store allows you to focus on local customers first, with the option to expand your reach later.",
+                "Yes.  Store allows you to focus on local customers first, with the option to expand your reach later.",
         },
         {
             question: "What products are not allowed to sell?",
@@ -48,7 +48,7 @@ function Faq() {
                         Frequently Asked Questions
                     </h2>
                     <p className="mt-3 text-gray-600">
-                        Everything you need to know before opening your store on Aura Store.
+                        Everything you need to know before opening your store on BazzarGhar .
                     </p>
                 </div>
 
