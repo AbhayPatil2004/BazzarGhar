@@ -384,7 +384,7 @@ export default function ProfileIcon() {
 
           {/* Role Based Links */}
           <div className="py-2">
-            {user.role === "user" && (
+            {user.role === "buyer" && (
               <>
                 <MenuItem label="My Orders" />
                 <MenuItem label="My Wishlist" />

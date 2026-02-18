@@ -1,11 +1,14 @@
 function OpenStoreHeading() {
     return (
-        <section className="
-        relative mb-16 rounded-3xl 
-        bg-white text-gray-900
-        px-6 sm:px-10 pt-12
-        shadow-sm border border-gray-100
-        ">
+        <section
+            className="
+                mt-8 sm:mt-0
+                relative mb-16 rounded-3xl 
+                bg-white text-gray-900
+                px-6 sm:px-10 pt-12
+                shadow-sm border border-gray-100
+            "
+        >
 
             <div className="
             max-w-7xl mx-auto 
@@ -19,7 +22,7 @@ function OpenStoreHeading() {
                     inline-flex items-center gap-2
                     rounded-full bg-purple-100 
                     text-purple-700
-                    px-4 py-1.5 text-sm font-semibold">
+                    px-4 py-1.5 text-sm font-semibold mt-8 sm:mt-0">
                         🚀 New on BazzarGhar
                     </span>
 

@@ -36,7 +36,7 @@ const StoreRequests = () => {
     if (!storeId) return alert("Store ID missing");
     try {
       setActionLoading(true);
-      const url =
+      const url =cursor-pointer 
         type === "approve"
           ? `http://localhost:8000/admin/accept/${storeId}`
           : `http://localhost:8000/admin/reject/${storeId}`;
@@ -71,20 +71,20 @@ const StoreRequests = () => {
   if (!stores.length)
     return (
       <div className="w-full flex justify-center py-16 px-6">
-  <div className="flex flex-col items-center text-center gap-4">
-    <div className="w-20 h-20 rounded-full bg-gray-200 flex items-center justify-center shadow-inner">
-      <span className="text-3xl">🏪</span>
-    </div>
+        <div className="flex flex-col items-center text-center gap-4">
+          <div className="w-20 h-20 rounded-full bg-gray-200 flex items-center justify-center shadow-inner">
+            <span className="text-3xl">🏪</span>
+          </div>
 
-    <h2 className="text-xl font-semibold text-gray-900">
-      No Store Requests
-    </h2>
+          <h2 className="text-xl font-semibold text-gray-900">
+            No Store Requests
+          </h2>
 
-    <p className="text-gray-500 max-w-sm text-sm">
-      There are currently no pending store opening requests. New requests will appear here once submitted.
-    </p>
-  </div>
-</div>
+          <p className="text-gray-500 max-w-sm text-sm">
+            There are currently no pending store opening requests. New requests will appear here once submitted.
+          </p>
+        </div>
+      </div>
 
     );
 
@@ -142,21 +142,21 @@ const StoreRequests = () => {
               <div className="p-5 pt-0 flex gap-2">
                 <button
                   onClick={() => storeId ? router.push(`/admin/store/${storeId}`) : alert("Store ID missing")}
-                  className="flex-1 py-2.5 rounded-xl text-sm font-semibold bg-indigo-600 text-white hover:bg-indigo-700 transition"
+                  className="cursor-pointer flex-1 py-2.5 rounded-xl text-sm font-semibold bg-indigo-600 text-white hover:bg-indigo-700 transition"
                 >
                   View Details
                 </button>
                 <button
                   onClick={() => handleAction(storeId, "approve")}
                   disabled={actionLoading}
-                  className="flex-1 py-2.5 rounded-xl bg-green-600 text-white font-medium hover:bg-green-700 transition"
+                  className="cursor-pointer flex-1 py-2.5 rounded-xl bg-green-600 text-white font-medium hover:bg-green-700 transition"
                 >
                   Approve
                 </button>
                 <button
                   onClick={() => handleAction(storeId, "reject")}
                   disabled={actionLoading}
-                  className="flex-1 py-2.5 rounded-xl bg-red-600 text-white font-medium hover:bg-red-700 transition"
+                  className="cursor-pointer flex-1 py-2.5 rounded-xl bg-red-600 text-white font-medium hover:bg-red-700 transition"
                 >
                   Reject
                 </button>
