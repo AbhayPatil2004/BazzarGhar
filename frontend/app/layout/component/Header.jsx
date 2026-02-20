@@ -19,7 +19,7 @@ export default function Header() {
   return (
     <>
       {/* ================= DESKTOP HEADER ================= */}
-      <header className="hidden md:block sticky top-0 z-50 bg-white/80 backdrop-blur border-b">
+      <header className=" hidden md:block sticky top-0 z-50 bg-white/80 backdrop-blur border-b">
         <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
 
           {/* Logo */}
@@ -90,15 +90,15 @@ export default function Header() {
       {/* ================= MOBILE BOTTOM NAV ================= */}
       <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-white border-t">
         <div className="flex justify-around items-center h-16 text-[11px] text-gray-600">
-          <Link href="/" className="flex flex-col items-center gap-1 hover:text-indigo-600">
+          <Link href="/home" className="flex flex-col items-center gap-1 hover:text-indigo-600">
             <Home size={20} />
             Home
           </Link>
-          <Link href="/products" className="flex flex-col items-center gap-1 hover:text-indigo-600">
+          <Link href="/product" className="flex flex-col items-center gap-1 hover:text-indigo-600">
             <Boxes size={20} />
             Products
           </Link>
-          <Link href="/stores" className="flex flex-col items-center gap-1 hover:text-indigo-600">
+          <Link href="/store" className="flex flex-col items-center gap-1 hover:text-indigo-600">
             <ShoppingBag size={20} />
             Stores
           </Link>

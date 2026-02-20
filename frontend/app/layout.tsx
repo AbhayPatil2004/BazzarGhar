@@ -36,7 +36,7 @@ export default function RootLayout({
           <Header />
 
           {/* Push content below sticky header */}
-          <main>
+          <main className="pt-14 pb-16 md:pt-0 md:pb-0">
             <>
               <Toaster position="top-center" />
               {children}
