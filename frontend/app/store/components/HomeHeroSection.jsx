@@ -124,13 +124,13 @@ export default function StoresHeroWithFilter() {
                     />
 
                     {/* Add Filters */}
-                    <button
+                    {/* <button
                         type="button"
                         onClick={() => setOpen(!open)}
                         className="cursor-pointer shrink-0 px-3 py-2 bg-blue-800 text-white text-xs sm:text-sm font-medium rounded-full hover:bg-blue-900 transition"
                     >
                         {open ? "Close" : "Filters"}
-                    </button>
+                    </button> */}
 
                     {/* Search */}
                     <button

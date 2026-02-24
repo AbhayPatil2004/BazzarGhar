@@ -6,6 +6,118 @@ import storeOpeningBody from "../emailBody/storeOpening.emailBody.js";
 
 import mongoose from "mongoose";
 
+// async function handelGetTopSeller(req, res) {
+//   try {
+//     const limit = 8;
+//     const now = new Date();
+
+//     let stores = await Store.find({
+//       isActive: true,
+//       isApproved: "accepted",
+//       $or: [
+//         {
+//           subscriptionPlan: "trial",
+//           trialEndsAt: { $exists: true, $gt: now }
+//         },
+//         {
+//           isSubscriptionActive: true,
+//           subscriptionEndDate: { $exists: true, $gt: now }
+//         }
+//       ]
+//     })
+//       .sort({
+//         totalOrders: -1,
+//         rating: -1,
+//         totalProducts: -1,
+//         createdAt: -1,
+//       })
+//       .limit(limit)
+//       .select(
+//         "storeName logo banner rating totalProducts totalOrders"
+//       )
+//       .lean();
+
+//     return res.status(200).json(
+//       new ApiResponse(200, stores, "Top sellers fetched successfully")
+//     );
+
+//   } catch (error) {
+//     console.error("TOP SELLER ERROR:", error);
+
+//     return res.status(500).json({
+//       success: false,
+//       message: error.message
+//     });
+//   }
+// }
+
+async function handelGetTopSeller(req, res) {
+  try {
+    const limit = 8;
+    const now = new Date();
+
+    // 1️⃣ First: Get subscription valid stores
+    let stores = await Store.find({
+      isActive: true,
+      isApproved: "accepted",
+      $or: [
+        {
+          subscriptionPlan: "trial",
+          trialEndsAt: { $exists: true, $gt: now }
+        },
+        {
+          isSubscriptionActive: true,
+          subscriptionEndDate: { $exists: true, $gt: now }
+        }
+      ]
+    })
+      .sort({
+        totalOrders: -1,
+        rating: -1,
+        totalProducts: -1,
+        createdAt: -1,
+      })
+      .limit(limit)
+      .select("storeName logo banner rating totalProducts totalOrders")
+      .lean();
+
+    // 2️⃣ If less than 8, fill remaining from other approved stores
+    if (stores.length < limit) {
+      const remaining = limit - stores.length;
+
+      const excludedIds = stores.map(store => store._id);
+
+      const fallbackStores = await Store.find({
+        isActive: true,
+        isApproved: "accepted",
+        _id: { $nin: excludedIds }
+      })
+        .sort({
+          totalOrders: -1,
+          rating: -1,
+          totalProducts: -1,
+          createdAt: -1,
+        })
+        .limit(remaining)
+        .select("storeName logo banner rating totalProducts totalOrders")
+        .lean();
+
+      stores = [...stores, ...fallbackStores];
+    }
+
+    return res.status(200).json(
+      new ApiResponse(200, stores, "Top sellers fetched successfully")
+    );
+
+  } catch (error) {
+    console.error("TOP SELLER ERROR:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: error.message
+    });
+  }
+}
 
 async function handelGetAllStores(req, res) {
 
@@ -188,6 +300,6 @@ async function handelClearStore(req, res) {
   }
 }
 
-export {  handleCreateStore, handelGetAllStores, handelGetSearchedStore, handelClearStore };
+export { handleCreateStore, handelGetAllStores, handelGetSearchedStore, handelClearStore , handelGetTopSeller };
 
 

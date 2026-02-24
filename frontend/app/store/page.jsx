@@ -2,6 +2,7 @@ import React from 'react'
 // import SearchBar from './components/HomeSearchBar'
 import HeroSection from './components/HomeHeroSection'
 import CategoriesSection from './components/HomeCategorySection'
+import TopSellersPage from './components/Top-Seller'
 
 function page() {
   return (
@@ -11,6 +12,7 @@ function page() {
       {/* <StoreFilters></StoreFilters> */}
       <HeroSection></HeroSection>
       <CategoriesSection></CategoriesSection>
+      <TopSellersPage></TopSellersPage>
     </div>
   )
 }
