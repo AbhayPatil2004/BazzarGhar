@@ -6,50 +6,6 @@ import storeOpeningBody from "../emailBody/storeOpening.emailBody.js";
 
 import mongoose from "mongoose";
 
-// async function handelGetTopSeller(req, res) {
-//   try {
-//     const limit = 8;
-//     const now = new Date();
-
-//     let stores = await Store.find({
-//       isActive: true,
-//       isApproved: "accepted",
-//       $or: [
-//         {
-//           subscriptionPlan: "trial",
-//           trialEndsAt: { $exists: true, $gt: now }
-//         },
-//         {
-//           isSubscriptionActive: true,
-//           subscriptionEndDate: { $exists: true, $gt: now }
-//         }
-//       ]
-//     })
-//       .sort({
-//         totalOrders: -1,
-//         rating: -1,
-//         totalProducts: -1,
-//         createdAt: -1,
-//       })
-//       .limit(limit)
-//       .select(
-//         "storeName logo banner rating totalProducts totalOrders"
-//       )
-//       .lean();
-
-//     return res.status(200).json(
-//       new ApiResponse(200, stores, "Top sellers fetched successfully")
-//     );
-
-//   } catch (error) {
-//     console.error("TOP SELLER ERROR:", error);
-
-//     return res.status(500).json({
-//       success: false,
-//       message: error.message
-//     });
-//   }
-// }
 
 async function handelGetTopSeller(req, res) {
   try {
@@ -78,7 +34,7 @@ async function handelGetTopSeller(req, res) {
         createdAt: -1,
       })
       .limit(limit)
-      .select("storeName logo banner rating totalProducts totalOrders")
+      .select("storeName logo banner rating totalProducts totalOrders category")
       .lean();
 
     // 2️⃣ If less than 8, fill remaining from other approved stores
@@ -99,7 +55,7 @@ async function handelGetTopSeller(req, res) {
           createdAt: -1,
         })
         .limit(remaining)
-        .select("storeName logo banner rating totalProducts totalOrders")
+        .select("storeName logo banner rating totalProducts totalOrders category")
         .lean();
 
       stores = [...stores, ...fallbackStores];
@@ -116,6 +72,31 @@ async function handelGetTopSeller(req, res) {
       success: false,
       message: error.message
     });
+  }
+}
+
+async function handelGetNewlyOpened(req, res) {
+  try {
+
+    const stores = await Store.find()
+      .sort({ createdAt: -1 }) // newest first
+      .select("storeName logo banner rating createdAt category")
+      .limit(8);
+
+    return res.status(200).json(
+      new ApiResponse(
+        200,
+        stores,
+        "Newly opened stores fetched successfully"
+      )
+    );
+
+  } catch (error) {
+    console.error("Error fetching newly opened stores:", error);
+
+    return res.status(500).json(
+      new ApiResponse(500, {}, "Internal Server Error")
+    );
   }
 }
 
@@ -300,6 +281,6 @@ async function handelClearStore(req, res) {
   }
 }
 
-export { handleCreateStore, handelGetAllStores, handelGetSearchedStore, handelClearStore , handelGetTopSeller };
+export { handleCreateStore, handelGetAllStores, handelGetSearchedStore, handelClearStore, handelGetTopSeller , handelGetNewlyOpened };
 
 

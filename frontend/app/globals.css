@@ -17,6 +17,21 @@
          transition;
 }
 
+/* Hide scrollbar but allow scroll */
+/* Remove page horizontal scroll */
+html, body {
+  overflow-x: hidden;
+}
+
+/* Hide scrollbar but allow scroll */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
 
 :root {
   --background: #ffffff;

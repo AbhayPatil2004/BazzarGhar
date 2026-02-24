@@ -1,6 +1,6 @@
 import express from 'express'
 import { handelUserAuthentication } from '../middleware/authenticate.middleware.js'
-import {  handleCreateStore , handelGetAllStores , handelGetSearchedStore , handelClearStore , handelGetTopSeller } from '../controllers/store.controller.js'
+import {  handleCreateStore , handelGetAllStores , handelGetSearchedStore , handelClearStore , handelGetTopSeller , handelGetNewlyOpened } from '../controllers/store.controller.js'
 import handelUserAuthorization from '../middleware/seller.authorized.middleware.js';
 
 const router = express.Router()
@@ -15,6 +15,7 @@ router.post(
 // router.get("/my/:storeId" , handelUserAuthentication , handelUserAuthorization , handelGetStoreByIdForSeller )
 
 router.get("/top-seller" , handelGetTopSeller )
+router.get("/newly-opened" , handelGetNewlyOpened )
 
 router.get("/" , handelGetAllStores)
 router.post("/search" , handelGetSearchedStore )

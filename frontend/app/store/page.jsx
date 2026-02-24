@@ -3,6 +3,7 @@ import React from 'react'
 import HeroSection from './components/HomeHeroSection'
 import CategoriesSection from './components/HomeCategorySection'
 import TopSellersPage from './components/Top-Seller'
+import NewlyOpenedStores from './components/Newly-Opned'
 
 function page() {
   return (
@@ -13,6 +14,7 @@ function page() {
       <HeroSection></HeroSection>
       <CategoriesSection></CategoriesSection>
       <TopSellersPage></TopSellersPage>
+      <NewlyOpenedStores></NewlyOpenedStores>
     </div>
   )
 }

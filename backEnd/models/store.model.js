@@ -25,6 +25,14 @@ const storeSchema = new mongoose.Schema(
         required: true
       }
     ],
+
+    category: {
+      type: String,
+      required: true,
+      index: true,
+      default: "General",
+    },
+
     description: {
       type: String,
       maxlength: 500,
@@ -60,7 +68,7 @@ const storeSchema = new mongoose.Schema(
 
     reviews: {
       type: mongoose.Schema.Types.ObjectId,
-      ref : "StoreReview"
+      ref: "StoreReview"
     },
 
     totalProducts: {

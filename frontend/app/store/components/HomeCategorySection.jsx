@@ -82,7 +82,7 @@ export default function CategoriesSection() {
                 >
                     <div>
                         <h1 className="text-lg sm:text-xl md:text-2xl font-semibold">
-                            Top Categories Stores On
+                            Diffrent Categories Stores On
                             <span className="text-blue-400"> BazzarGhar</span>
                         </h1>
                         <div className="w-12 h-1 bg-blue-500 mt-2 rounded-full"></div>
