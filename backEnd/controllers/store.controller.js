@@ -4,15 +4,86 @@ import ApiResponse from "../utils/ApiResponse.js";
 import sendMailToUser from "../utils/sendMail.js";
 import storeOpeningBody from "../emailBody/storeOpening.emailBody.js";
 
-import mongoose from "mongoose";
 
+async function handelGetStoresOfMycities(req, res) {
+  try {
+    console.log("---- API HIT: /store/my-city ----");
+
+    console.log("req.user:", req.user);
+
+    const user = await User.findById(req.user?._id);
+    console.log("Fetched user:", user);
+
+    if (!user) {
+      console.log("User not found in DB");
+      return res.status(404).json(
+        new ApiResponse(404, {}, "User not found")
+      );
+    }
+
+    console.log("User address:", user.address);
+
+    const now = new Date();
+
+    if (!user?.address?.[0]?.city) {
+  console.log("City not found in user document");
+  return res.status(400).json(
+    new ApiResponse(400, {}, "Please update City")
+  );
+}
+
+    console.log("User city:", user.address[0].city);
+
+    const stores = await Store.find({
+      isActive: true,
+      isApproved: "accepted",
+      "address.city": {
+        $regex: `^${user.address[0].city}$`,
+        $options: "i"
+      },
+      $or: [
+        {
+          subscriptionPlan: "trial",
+          trialEndsAt: { $exists: true, $gt: now }
+        },
+        {
+          isSubscriptionActive: true,
+          subscriptionEndDate: { $exists: true, $gt: now }
+        }
+      ]
+    })
+      .limit(10)
+      .select("storeName logo banner rating category");
+
+    console.log("Stores found:", stores.length);
+
+    return res.status(200).json(
+      new ApiResponse(
+        200,
+        stores,
+        stores.length === 0
+          ? "Store not found in your City"
+          : "Stores of user city fetched successfully"
+      )
+    );
+
+  } catch (error) {
+    console.error("🔥 ERROR in /store/my-city:", error);
+    console.error("Error message:", error.message);
+    console.error("Stack:", error.stack);
+
+    return res.status(500).json(
+      new ApiResponse(500, {}, "Internal Server Error")
+    );
+  }
+}
 
 async function handelGetTopSeller(req, res) {
   try {
     const limit = 8;
     const now = new Date();
 
-    // 1️⃣ First: Get subscription valid stores
+
     let stores = await Store.find({
       isActive: true,
       isApproved: "accepted",
@@ -37,7 +108,7 @@ async function handelGetTopSeller(req, res) {
       .select("storeName logo banner rating totalProducts totalOrders category")
       .lean();
 
-    // 2️⃣ If less than 8, fill remaining from other approved stores
+
     if (stores.length < limit) {
       const remaining = limit - stores.length;
 
@@ -78,8 +149,22 @@ async function handelGetTopSeller(req, res) {
 async function handelGetNewlyOpened(req, res) {
   try {
 
-    const stores = await Store.find()
-      .sort({ createdAt: -1 }) // newest first
+    const now = new Date();
+    const stores = await Store.find({
+      isActive: true,
+      isApproved: "accepted",
+      $or: [
+        {
+          subscriptionPlan: "trial",
+          trialEndsAt: { $exists: true, $gt: now }
+        },
+        {
+          isSubscriptionActive: true,
+          subscriptionEndDate: { $exists: true, $gt: now }
+        }
+      ]
+    })
+      .sort({ createdAt: -1 })
       .select("storeName logo banner rating createdAt category")
       .limit(8);
 
@@ -281,6 +366,6 @@ async function handelClearStore(req, res) {
   }
 }
 
-export { handleCreateStore, handelGetAllStores, handelGetSearchedStore, handelClearStore, handelGetTopSeller , handelGetNewlyOpened };
+export { handleCreateStore, handelGetAllStores, handelGetSearchedStore, handelClearStore, handelGetTopSeller, handelGetNewlyOpened , handelGetStoresOfMycities };
 
 

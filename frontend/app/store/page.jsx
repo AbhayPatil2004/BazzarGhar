@@ -4,6 +4,7 @@ import HeroSection from './components/HomeHeroSection'
 import CategoriesSection from './components/HomeCategorySection'
 import TopSellersPage from './components/Top-Seller'
 import NewlyOpenedStores from './components/Newly-Opned'
+import StoresOfMyCity from './components/My-City'
 
 function page() {
   return (
@@ -15,6 +16,8 @@ function page() {
       <CategoriesSection></CategoriesSection>
       <TopSellersPage></TopSellersPage>
       <NewlyOpenedStores></NewlyOpenedStores>
+      <StoresOfMyCity></StoresOfMyCity>
+
     </div>
   )
 }

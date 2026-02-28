@@ -151,7 +151,7 @@ export default function StoreDashboardPage() {
                     )}
 
                     <button
-                        onClick={() => router.push(`/subscription/${storeId}`)}
+                        onClick={() => router.push(`${storeId}/subscription`)}
                         className={`cursor-pointer px-6 py-2 rounded-lg text-white
         ${store.isSubscriptionActive
                                 ? "bg-blue-600 hover:bg-blue-700"

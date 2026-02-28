@@ -11,6 +11,39 @@ function generateOtp() {
   return Math.floor(100000 + Math.random() * 900000).toString();
 }
 
+async function handelGetUserCity(req, res) {
+  try {
+    const user = await User.findById(req.user._id);
+
+    if (!user) {
+      return res.status(404).json(
+        new ApiResponse(404, {}, "User not found")
+      );
+    }
+
+    const city = user?.address?.city;
+
+    if (!city) {
+      return res.status(400).json(
+        new ApiResponse(400, {}, "Please update address first")
+      );
+    }
+
+    return res.status(200).json(
+      new ApiResponse(
+        200,
+        { city },
+        "User city fetched successfully"
+      )
+    );
+
+  } catch (error) {
+    return res.status(500).json(
+      new ApiResponse(500, {}, "Internal Server Error")
+    );
+  }
+}
+
 async function handleGetUserDetails(req, res) {
   try {
     const { _id } = req.user;
@@ -248,7 +281,7 @@ async function handelUserLogin(req, res) {
       _id: user._id,
       username: user.username,
       email: user.email,
-      role : user.role 
+      role: user.role
     };
 
     console.log("Login in Succesfull")
@@ -489,4 +522,4 @@ async function handelClearUser(req, res) {
 }
 
 
-export { handleGetUserDetails, handelUpdateProfile, handelUpdateUserAddress, handleUserSignUp, handelVerifyEmailOtp, handelUserLogin, handelUserLogout, handelForgotPassword, handelClearUser, handelResendOtp, handelForgotPasswordOtp, handelResetPassword };
+export {  handleGetUserDetails, handelUpdateProfile, handelUpdateUserAddress, handleUserSignUp, handelVerifyEmailOtp, handelUserLogin, handelUserLogout, handelForgotPassword, handelClearUser, handelResendOtp, handelForgotPasswordOtp, handelResetPassword , handelGetUserCity };
