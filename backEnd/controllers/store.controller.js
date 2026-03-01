@@ -4,6 +4,30 @@ import ApiResponse from "../utils/ApiResponse.js";
 import sendMailToUser from "../utils/sendMail.js";
 import storeOpeningBody from "../emailBody/storeOpening.emailBody.js";
 
+async function handelGetFeaturedStores(req, res) {
+  try {
+    const now = new Date();
+
+    const stores = await Store.find({
+      isActive: true,
+      isApproved: "accepted",
+      subscriptionPlan: "premium",
+      isSubscriptionActive: true,
+      subscriptionEndDate: { $exists: true, $gt: now }
+    })
+      .select("storeName logo banner rating category storeProducts")
+      .sort({ subscriptionEndDate: -1 })
+      .limit(10);
+
+    return res.status(200).json(
+      new ApiResponse(200, stores, "Featured Stores Sent Successfully")
+    );
+  } catch (error) {
+    return res.status(500).json(
+      new ApiResponse(500, {}, "Internal Server Error")
+    );
+  }
+}
 
 async function handelGetStoresOfMycities(req, res) {
   try {
@@ -26,11 +50,11 @@ async function handelGetStoresOfMycities(req, res) {
     const now = new Date();
 
     if (!user?.address?.[0]?.city) {
-  console.log("City not found in user document");
-  return res.status(400).json(
-    new ApiResponse(400, {}, "Please update City")
-  );
-}
+      console.log("City not found in user document");
+      return res.status(400).json(
+        new ApiResponse(400, {}, "Please update City")
+      );
+    }
 
     console.log("User city:", user.address[0].city);
 
@@ -53,7 +77,7 @@ async function handelGetStoresOfMycities(req, res) {
       ]
     })
       .limit(10)
-      .select("storeName logo banner rating category");
+      .select("storeName logo banner rating category address storeProducts");
 
     console.log("Stores found:", stores.length);
 
@@ -105,7 +129,7 @@ async function handelGetTopSeller(req, res) {
         createdAt: -1,
       })
       .limit(limit)
-      .select("storeName logo banner rating totalProducts totalOrders category")
+      .select("storeName logo banner rating totalProducts totalOrders category storeProducts")
       .lean();
 
 
@@ -165,7 +189,7 @@ async function handelGetNewlyOpened(req, res) {
       ]
     })
       .sort({ createdAt: -1 })
-      .select("storeName logo banner rating createdAt category")
+      .select("storeName logo banner rating createdAt category storeProducts")
       .limit(8);
 
     return res.status(200).json(
@@ -366,6 +390,6 @@ async function handelClearStore(req, res) {
   }
 }
 
-export { handleCreateStore, handelGetAllStores, handelGetSearchedStore, handelClearStore, handelGetTopSeller, handelGetNewlyOpened , handelGetStoresOfMycities };
+export { handleCreateStore, handelGetAllStores, handelGetSearchedStore, handelClearStore, handelGetTopSeller, handelGetNewlyOpened, handelGetStoresOfMycities , handelGetFeaturedStores };
 
 

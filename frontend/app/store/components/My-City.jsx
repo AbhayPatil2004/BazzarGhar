@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useEffect, useRef, useState } from "react";
@@ -13,7 +14,7 @@ export default function StoresOfMyCity() {
 
   useEffect(() => {
     async function fetchStores() {
-      if (!user) return; // wait for auth
+      if (!user) return;
 
       try {
         const res = await fetch(
@@ -23,7 +24,6 @@ export default function StoresOfMyCity() {
 
         const data = await res.json();
 
-        // Backend sends 400 if user has no city in address
         if (res.status === 400 && data?.message === "Please update City") {
           setUpdateAddressRequired(true);
           return;
@@ -41,139 +41,142 @@ export default function StoresOfMyCity() {
   }, [user]);
 
   const scrollLeft = () =>
-    scrollRef.current?.scrollBy({ left: -400, behavior: "smooth" });
+    scrollRef.current?.scrollBy({ left: -320, behavior: "smooth" });
+
   const scrollRight = () =>
-    scrollRef.current?.scrollBy({ left: 400, behavior: "smooth" });
+    scrollRef.current?.scrollBy({ left: 320, behavior: "smooth" });
 
-  // --- UI States ---
-  if (!user)
-    return (
-      <div className="flex flex-col items-center justify-center py-24">
-        <h2 className="text-2xl font-bold mb-4">Welcome!</h2>
-        <p className="text-gray-600 mb-6">
-          Create an account to see stores near you.
-        </p>
-        <button
-          onClick={() => router.push("/auth/signup")}
-          className="px-6 py-3 bg-green-600 text-white rounded-full hover:bg-green-700 transition"
-        >
-          Create Account
-        </button>
-      </div>
-    );
-
-  if (updateAddressRequired)
-    return (
-      <div className="flex flex-col items-center justify-center py-24">
-        <h2 className="text-2xl font-bold mb-4">Almost There!</h2>
-        <p className="text-gray-600 mb-6">
-          Update your address to discover stores in your city.
-        </p>
-        <button
-          onClick={() => router.push("/profile")}
-          className="px-6 py-3 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition"
-        >
-          Update Address
-        </button>
-      </div>
-    );
-
-  if (!stores.length)
-    return (
-      <div className="flex flex-col items-center justify-center py-24">
-        <p className="text-gray-500">No stores found in your city yet.</p>
-      </div>
-    );
+  if (!user) return null;
+  if (updateAddressRequired) return null;
+  if (!stores.length) return null;
 
   return (
-    <section className="py-16 bg-gray-50">
-      <div className="mb-12 px-6 text-center sm:text-left">
-        <span className="inline-block text-xs tracking-widest uppercase bg-green-100 text-green-700 px-3 py-1 rounded-full mb-4">
-          Nearby
-        </span>
+    <section className="py-5 bg-gray-50">
 
-        <h2 className="text-4xl sm:text-5xl font-bold text-gray-900 leading-tight">
-          Stores <span className="text-green-600">Near You</span>
-        </h2>
+      {/* Header */}
+      <div className="mb-6 px-4 sm:px-6 flex items-center justify-between gap-3">
 
-        <p className="mt-4 text-gray-500 text-sm sm:text-base max-w-3xl leading-relaxed">
-          Explore active and verified stores available in your city.
-        </p>
+        <div className="flex-1">
+          <span className="text-[10px] sm:text-xs tracking-widest uppercase text-gray-500">
+            Nearby
+          </span>
+
+          <h2 className="mt-1 text-lg sm:text-2xl font-bold text-gray-900 leading-tight">
+            Stores <span className="text-blue-600">Near You</span>
+          </h2>
+
+          <p className="mt-1 text-gray-600 text-xs sm:text-sm">
+            Explore active and verified stores available in your city.
+          </p>
+        </div>
+
+        <button
+          onClick={() => router.push("/store/stores?city=true")}
+          className="
+    cursor-pointer
+    w-[120px] sm:w-[150px]
+    px-4 py-1.5 sm:py-2
+    bg-blue-600
+    text-white
+    rounded-full
+    shadow
+    hover:bg-blue-700
+    transition
+    text-xs sm:text-sm
+    whitespace-nowrap
+  "
+        >
+          Nearby Me →
+        </button>
+
       </div>
 
       <div className="relative">
+
+        {/* Arrows */}
         <button
           onClick={scrollLeft}
-          className="hidden lg:flex absolute left-2 top-1/2 -translate-y-1/2 z-20 items-center justify-center w-12 h-12 rounded-full bg-white/90 border shadow hover:scale-110 transition cursor-pointer"
+          className="cursor-pointer hidden lg:flex absolute left-2 top-1/2 -translate-y-1/2 z-20 items-center justify-center w-8 h-8 rounded-full bg-white border shadow hover:scale-110 transition"
         >
-          ←
+          ‹
         </button>
 
         <button
           onClick={scrollRight}
-          className="hidden lg:flex absolute right-2 top-1/2 -translate-y-1/2 z-20 items-center justify-center w-12 h-12 rounded-full bg-white/90 border shadow hover:scale-110 transition cursor-pointer"
+          className="cursor-pointer hidden lg:flex absolute right-2 top-1/2 -translate-y-1/2 z-20 items-center justify-center w-8 h-8 rounded-full bg-white border shadow hover:scale-110 transition"
         >
-          →
+          ›
         </button>
 
+        {/* Cards */}
         <div
           ref={scrollRef}
-          className="flex gap-6 overflow-x-auto scroll-smooth scrollbar-hide px-6"
+          className="flex gap-4 overflow-x-auto scroll-smooth scrollbar-hide px-6"
         >
           {stores.map((store) => (
             <div
               key={store._id}
               onClick={() => router.push(`/store/${store._id}`)}
-              className="min-w-[260px] lg:min-w-[280px] bg-white rounded-2xl border border-gray-100 shadow hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 cursor-pointer group relative"
+              className="w-[250px] h-[300px] flex-shrink-0 flex flex-col bg-white rounded-xl shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300 cursor-pointer relative border border-blue-100"
             >
+              {/* Banner */}
               {store.banner?.trim() ? (
                 <img
                   src={store.banner}
                   alt={store.storeName}
-                  className="w-full h-44 object-cover rounded-t-2xl"
+                  className="w-full h-28 object-cover rounded-t-xl"
                 />
               ) : (
-                <div className="w-full h-44 bg-gray-100 rounded-t-2xl" />
+                <div className="w-full h-28 bg-gray-200 rounded-t-xl" />
               )}
 
+              {/* Logo */}
               {store.logo && (
-                <div className="absolute top-32 left-5">
+                <div className="absolute top-16 left-4">
                   <img
                     src={store.logo}
                     alt="logo"
-                    className="w-14 h-14 rounded-xl border-4 border-white shadow-md object-cover bg-white"
+                    className="w-10 h-10 rounded-lg border-4 border-white shadow object-cover bg-white"
                   />
                 </div>
               )}
 
-              <div className="p-5 pt-10">
-                <span className="inline-block text-xs bg-gray-100 text-gray-700 px-3 py-1 rounded-full mb-3">
+              {/* Content */}
+              <div className="p-4 pt-8 flex flex-col flex-grow">
+
+                {/* Category */}
+                <span className="inline-block text-xs bg-blue-50 text-blue-700 px-2 py-1 rounded-full mb-2">
                   {store.category || "General"}
                 </span>
 
-                <h3 className="text-lg font-semibold text-gray-900 group-hover:text-green-600 transition">
+                {/* Store Name */}
+                <h3 className="text-sm font-semibold text-gray-900 hover:text-blue-600 transition">
                   {store.storeName}
                 </h3>
 
-                <p className="text-sm text-gray-500 mt-2">
-                  {store.rating && store.rating > 0
-                    ? `⭐ ${store.rating.toFixed(1)} Rating`
-                    : "New Store"}
-                </p>
+                {/* Address + Rating (Same Row) */}
+                <div className="flex items-center justify-between mt-2 text-xs text-gray-500">
+                  <span>
+                    📍 {store.address?.city}, {store.address?.state}
+                  </span>
+
+                  <span>
+                    ⭐ {store.rating?.toFixed(1) ?? "0.0"}
+                  </span>
+                </div>
+
+                {/* What Store Sells */}
+                {store.storeProducts?.length > 0 && (
+                  <p className="text-[11px] text-gray-600 mt-3 line-clamp-2">
+                    <span className="font-medium text-blue-400">Sells:</span>{" "}
+                    {store.storeProducts.slice(0, 4).join(", ")}
+                    {store.storeProducts.length > 4 && " ..."}
+                  </p>
+                )}
+
               </div>
             </div>
           ))}
-
-          <div
-            onClick={() => router.push("/store/stores?city=true")}
-            className="min-w-[260px] lg:min-w-[280px] flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-green-300 bg-green-50 hover:bg-green-100 transition-all duration-300 cursor-pointer group p-6"
-          >
-            <div className="text-4xl mb-3 animate-bounce">📍</div>
-            <h3 className="text-lg font-semibold text-green-700 group-hover:scale-105 transition">
-              Explore More
-            </h3>
-            <p className="text-sm text-green-500 mt-2">View all stores near you</p>
-          </div>
         </div>
       </div>
     </section>

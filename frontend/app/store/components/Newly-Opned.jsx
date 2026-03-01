@@ -23,123 +23,144 @@ export default function NewlyOpenedStores() {
       .catch((err) => console.error(err));
   }, []);
 
-  const scrollLeft = () => {
-    scrollRef.current?.scrollBy({ left: -400, behavior: "smooth" });
-  };
+  const scrollLeft = () =>
+    scrollRef.current?.scrollBy({ left: -320, behavior: "smooth" });
 
-  const scrollRight = () => {
-    scrollRef.current?.scrollBy({ left: 400, behavior: "smooth" });
-  };
+  const scrollRight = () =>
+    scrollRef.current?.scrollBy({ left: 320, behavior: "smooth" });
+
+  if (!stores.length) return null;
 
   return (
-    <section className="py-12 sm:py-16 bg-white">
+    <section className="py-5 bg-white">
+
       {/* Header */}
-      <div className="mb-12 px-4 sm:px-6">
-        <span className="inline-block text-xs tracking-widest uppercase bg-blue-50 text-blue-600 px-3 py-1 rounded-full mb-4">
-          Discover
-        </span>
+      <div className="mb-6 px-4 sm:px-6 flex items-center justify-between gap-3">
 
-        <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 leading-tight">
-          Newly Opened Stores on{" "}
-          <span className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
-            Bazzarghar
+        <div className="flex-1">
+          <span className="text-[10px] sm:text-xs tracking-widest uppercase text-gray-500">
+            Discover
           </span>
-        </h2>
 
-        <p className="mt-4 text-gray-500 text-sm sm:text-base max-w-2xl leading-relaxed">
-          Explore fresh and emerging stores that have recently joined
-          <span className="font-semibold text-gray-800"> Bazzarghar</span>.
-        </p>
+          <h2 className="mt-1 text-lg sm:text-2xl font-bold text-gray-900 leading-tight">
+            Newly Opened Stores on{" "}
+            <span className="text-blue-600">BazzarGhar</span>
+          </h2>
+
+          <p className="mt-1 text-gray-600 text-xs sm:text-sm">
+            Explore fresh stores that recently joined our platform.
+          </p>
+        </div>
+
+        <button
+          onClick={() => router.push("/store/stores?city=true")}
+          className="
+    cursor-pointer
+    w-[120px] sm:w-[150px]
+    px-4 py-1.5 sm:py-2
+    bg-blue-600
+    text-white
+    rounded-full
+    shadow
+    hover:bg-blue-700
+    transition
+    text-xs sm:text-sm
+    whitespace-nowrap
+  "
+        >
+          Newly Opened →
+        </button>
+
       </div>
 
       <div className="relative">
+
         {/* Arrows */}
         <button
           onClick={scrollLeft}
-          className="hidden lg:flex absolute left-4 top-1/2 -translate-y-1/2 z-20 items-center justify-center w-11 h-11 rounded-full bg-white/80 backdrop-blur border shadow-lg hover:scale-110 transition cursor-pointer"
+          className="cursor-pointer hidden lg:flex absolute left-2 top-1/2 -translate-y-1/2 z-20 items-center justify-center w-8 h-8 rounded-full bg-white border shadow hover:scale-110 transition"
         >
-          ←
+          ‹
         </button>
 
         <button
           onClick={scrollRight}
-          className="hidden lg:flex absolute right-4 top-1/2 -translate-y-1/2 z-20 items-center justify-center w-11 h-11 rounded-full bg-white/80 backdrop-blur border shadow-lg hover:scale-110 transition cursor-pointer"
+          className="cursor-pointer hidden lg:flex absolute right-2 top-1/2 -translate-y-1/2 z-20 items-center justify-center w-8 h-8 rounded-full bg-white border shadow hover:scale-110 transition"
         >
-          →
+          ›
         </button>
 
-        {/* Scroll Container */}
+        {/* Cards */}
         <div
           ref={scrollRef}
-          className="flex gap-6 overflow-x-auto scroll-smooth scrollbar-hide px-4 sm:px-6"
+          className="flex gap-4 overflow-x-auto scroll-smooth scrollbar-hide px-6"
         >
           {stores.map((store) => (
             <div
               key={store._id}
               onClick={() => router.push(`/store/${store._id}`)}
-              className="min-w-[240px] sm:min-w-[260px] lg:min-w-[280px] bg-white rounded-3xl border border-gray-100 shadow-sm hover:shadow-2xl hover:-translate-y-3 transition-all duration-300 cursor-pointer group relative"
+              className="w-[250px] h-[300px] flex-shrink-0 flex flex-col bg-white rounded-xl shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300 cursor-pointer relative border border-blue-100"
             >
               {/* Banner */}
               {store.banner?.trim() ? (
                 <img
                   src={store.banner}
                   alt={store.storeName}
-                  className="w-full h-44 object-cover rounded-t-3xl"
+                  className="w-full h-28 object-cover rounded-t-xl"
                 />
               ) : (
-                <div className="w-full h-44 bg-gray-100 rounded-t-3xl" />
+                <div className="w-full h-28 bg-gray-200 rounded-t-xl" />
               )}
 
-              {/* Logo Overlay */}
+              {/* Logo */}
               {store.logo && (
-                <div className="absolute top-32 left-5">
+                <div className="absolute top-16 left-4">
                   <img
                     src={store.logo}
                     alt="logo"
-                    className="w-14 h-14 rounded-xl border-4 border-white shadow-md object-cover bg-white"
+                    className="w-10 h-10 rounded-lg border-4 border-white shadow object-cover bg-white"
                   />
                 </div>
               )}
 
               {/* Content */}
-              <div className="p-5 pt-10">
-                <span className="inline-block text-xs bg-gray-100 text-gray-700 px-3 py-1 rounded-full mb-3">
+              <div className="p-4 pt-8 flex flex-col flex-grow">
+
+                {/* Category */}
+                <span className="inline-block text-xs bg-blue-50 text-blue-700 px-2 py-1 rounded-full mb-2">
                   {store.category || "General"}
                 </span>
 
-                <h3 className="text-lg font-semibold text-gray-900 group-hover:text-blue-600 transition">
+                {/* Store Name */}
+                <h3 className="text-sm font-semibold text-gray-900 hover:text-blue-600 transition">
                   {store.storeName}
                 </h3>
 
-                <p className="text-sm text-gray-500 mt-2">
-                  ⭐ {store.rating } Rating
-                </p>
+                {/* Rating + Joined (Same Row) */}
+                <div className="flex items-center justify-between mt-2 text-xs text-gray-500">
+                  <span>
+                    📅 {new Date(store.createdAt).toLocaleDateString()}
+                  </span>
 
-                <p className="text-xs text-gray-400 mt-2">
-                  Joined{" "}
-                  {new Date(store.createdAt).toLocaleDateString()}
-                </p>
+                  <span>
+                    ⭐ {store.rating?.toFixed(1) ?? "0.0"}
+                  </span>
+
+                  
+                </div>
+
+                {/* What Store Sells */}
+                {store.storeProducts?.length > 0 && (
+                  <p className="text-[11px] text-gray-600 mt-3 line-clamp-2">
+                    <span className="font-medium text-blue-400">Sells:</span>{" "}
+                    {store.storeProducts.slice(0, 4).join(", ")}
+                    {store.storeProducts.length > 4 && " ..."}
+                  </p>
+                )}
+
               </div>
             </div>
           ))}
-
-          {/* Explore More Card */}
-          <div
-            onClick={() =>
-              router.push("/store/stores?newlyopened=true")
-            }
-            className="min-w-[240px] sm:min-w-[260px] lg:min-w-[280px] flex items-center justify-center rounded-3xl border-2 border-dashed border-blue-300 bg-blue-50 hover:bg-blue-100 transition-all duration-300 cursor-pointer group"
-          >
-            <div className="text-center p-6">
-              <div className="text-3xl mb-3">✨</div>
-              <h3 className="text-lg font-semibold text-blue-700 group-hover:scale-105 transition">
-                Explore More
-              </h3>
-              <p className="text-sm text-blue-500 mt-2">
-                View all newly opened stores
-              </p>
-            </div>
-          </div>
         </div>
       </div>
     </section>
