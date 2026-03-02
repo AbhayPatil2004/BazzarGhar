@@ -228,7 +228,7 @@ async function handelGetAllStores(req, res) {
           subscriptionEndDate: { $gt: now }
         }
       ]
-    }).lean();
+    }).lean().select("storeName logo banner address rating category storeProducts ");
 
     return res.status(200).json(
       new ApiResponse(200, stores, "Stores are sent successfully")

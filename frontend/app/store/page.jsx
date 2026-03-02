@@ -6,6 +6,7 @@ import TopSellersPage from './components/Top-Seller'
 import NewlyOpenedStores from './components/Newly-Opned'
 import StoresOfMyCity from './components/My-City'
 import FeaturedStores from './components/featured'
+import StoresPage from './components/AllStores'
 
 function page() {
   return (
@@ -19,6 +20,7 @@ function page() {
       <FeaturedStores></FeaturedStores>
       <NewlyOpenedStores></NewlyOpenedStores>
       <StoresOfMyCity></StoresOfMyCity>
+      <StoresPage></StoresPage>
 
     </div>
   )

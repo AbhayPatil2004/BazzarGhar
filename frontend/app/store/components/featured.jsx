@@ -57,23 +57,24 @@ export default function FeaturedStores() {
                 </div>
 
                 <button
-                    onClick={() => router.push("/store/stores?featured=true")}
-                    className="
+  onClick={() => router.push("/store/stores?featured=true")}
+  className="
     cursor-pointer
-    w-[120px] sm:w-[150px]
-    px-4 py-1.5 sm:py-2
-    bg-blue-600
+    w-[40px] sm:w-[50px]
+    h-[30px] sm:h-[34px]
+    flex items-center justify-center
+    bg-blue-800
     text-white
     rounded-full
     shadow
-    hover:bg-blue-700
+    hover:bg-blue-900
     transition
-    text-xs sm:text-sm
-    whitespace-nowrap
   "
-                >
-                    Premium Stores →
-                </button>
+>
+  <span className="text-lg sm:text-xl leading-none">
+    →
+  </span>
+</button>
 
             </div>
 

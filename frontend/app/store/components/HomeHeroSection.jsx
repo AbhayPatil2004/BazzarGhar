@@ -259,23 +259,41 @@ export default function StoresHeroWithFilter() {
 
 
 
-                <div className="mt-8 text-center md:text-left space-y-4">
-                    <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-gray-900 leading-tight">
-                        Discover Amazing{" "}
-                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-blue-500 to-blue-700">
-                            Stores
-                        </span>{" "}
-                        &{" "}
-                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-blue-500 to-blue-700">
-                            Products
-                        </span>
-                    </h1>
-                    <p className="text-gray-500 text-sm md:text-base max-w-2xl">
-                        Explore trusted local stores and shop high-quality products — all in one place.
-                    </p>
-                </div>
+               
 
             </div>
         </section>
     );
 } 
+
+//  <div className="mt-10 sm:mt-12 px-4 sm:px-6 md:px-0 text-center md:text-left space-y-5 sm:space-y-6 relative">
+
+//                     {/* Mobile Heading */}
+//                     <h1 className="block sm:hidden text-xl font-extrabold text-gray-900 leading-snug tracking-tight max-w-[280px] mx-auto">
+//                         Discover Amazing <br />
+//                         <span className="text-blue-600">Stores & Products</span> on BazzarGhar
+//                     </h1>
+
+//                     {/* Desktop / Large Screen Heading */}
+//                     <h1 className="hidden sm:block text-3xl md:text-5xl lg:text-6xl font-extrabold text-gray-900 leading-snug sm:leading-tight tracking-tight max-w-full">
+//                         Discover Amazing{" "}
+//                         <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700">
+//                             Stores
+//                         </span>{" "}
+//                         &{" "}
+//                         <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700">
+//                             Products
+//                         </span>
+//                         <br className="hidden md:block" />
+//                         <span className="block md:inline text-gray-800 mt-1 md:mt-0">
+//                             on <span className="text-blue-600">BazzarGhar</span>
+//                         </span>
+//                     </h1>
+
+//                     {/* Subtitle */}
+//                     <p className="text-gray-500 text-xs sm:text-sm md:text-lg max-w-xs sm:max-w-xl md:max-w-2xl mx-auto md:mx-0 leading-relaxed">
+//                         Explore trusted local stores, discover unique products, and enjoy a seamless
+//                         multi-vendor shopping experience — all in one powerful platform.
+//                     </p>
+
+//                 </div>

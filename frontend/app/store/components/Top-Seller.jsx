@@ -68,21 +68,26 @@ export default function TopSellersPage() {
           </div>
 
           {/* Explore More Button */}
-          <div className=" sm:flex justify-center">
+          <div className="sm:flex justify-center relative z-10">
             <button
-              onClick={() => router.push("/store/stores?topseller=true")}
+              onClick={() => router.push("/store/stores?featured=true")}
               className="
-    cursor-pointer
-    bg-blue-600 hover:bg-blue-700
-    text-white text-xs sm:text-sm
-    px-3 sm:px-4 py-2
-    rounded-full
-    transition
-    relative z-20
-    w-[130px] sm:w-[150px]
-  "
+      cursor-pointer
+      w-[40px] sm:w-[50px]
+      h-[30px] sm:h-[34px]
+      flex items-center justify-center
+      bg-blue-800
+      text-white
+      rounded-full
+      shadow
+      hover:bg-blue-900
+      transition
+      relative z-20
+    "
             >
-              Top Seller →
+              <span className="text-lg sm:text-xl leading-none">
+                →
+              </span>
             </button>
           </div>
         </div>
