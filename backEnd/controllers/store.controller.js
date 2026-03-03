@@ -4,6 +4,104 @@ import ApiResponse from "../utils/ApiResponse.js";
 import sendMailToUser from "../utils/sendMail.js";
 import storeOpeningBody from "../emailBody/storeOpening.emailBody.js";
 
+async function handleGetFilteredStores(req, res) {
+  try {
+    const { categories, premium, sort } = req.query;
+
+    let query = {
+      isActive: true,
+      isApproved: "accepted"
+    };
+
+    const now = new Date();
+
+    // Category filter
+    if (categories) {
+      query.category = { $in: categories.split(",") };
+    }
+
+    // Premium filter
+    if (premium === "true") {
+      query.subscriptionPlan = "premium";
+      query.isSubscriptionActive = true;
+      query.subscriptionEndDate = { $gt: now };
+    }
+
+    // 🔥 Nearby Logic (Updated Properly)
+    if (sort === "nearby" && req.user?._id) {
+
+      const user = await User.findById(req.user._id).lean();
+
+      if (user?.address?.[0]?.city) {
+
+        query["address.city"] = {
+          $regex: `^${user.address[0].city}$`,
+          $options: "i"
+        };
+
+        // Optional: Only active subscription stores (like your my-city API)
+        query.$or = [
+          {
+            subscriptionPlan: "trial",
+            trialEndsAt: { $exists: true, $gt: now }
+          },
+          {
+            isSubscriptionActive: true,
+            subscriptionEndDate: { $exists: true, $gt: now }
+          }
+        ];
+      }
+    }
+
+    let storeQuery = Store.find(query)
+      .select("storeName logo banner rating category totalOrders totalProducts createdAt address storeProducts")
+      .lean();
+
+    // Sorting
+    switch (sort) {
+      case "rating":
+        storeQuery = storeQuery.sort({ rating: -1 });
+        break;
+
+      case "products":
+        storeQuery = storeQuery.sort({ totalProducts: -1 });
+        break;
+
+      case "mostOrders":
+        storeQuery = storeQuery.sort({ totalOrders: -1 });
+        break;
+
+      case "new":
+        storeQuery = storeQuery.sort({ createdAt: -1 });
+        break;
+
+      case "nearby":
+        storeQuery = storeQuery.sort({ rating: -1 });
+        break;
+
+      default:
+        storeQuery = storeQuery.sort({ createdAt: -1 });
+    }
+
+    const stores = await storeQuery;
+
+    return res.status(200).json(
+      new ApiResponse(
+        200,
+        stores,
+        "Filtered Active Stores Sent Successfully"
+      )
+    );
+
+  } catch (error) {
+    console.error("Filter Error:", error);
+
+    return res.status(500).json(
+      new ApiResponse(500, {}, "Internal Server Error")
+    );
+  }
+}
+
 async function handelGetFeaturedStores(req, res) {
   try {
     const now = new Date();
@@ -390,6 +488,6 @@ async function handelClearStore(req, res) {
   }
 }
 
-export { handleCreateStore, handelGetAllStores, handelGetSearchedStore, handelClearStore, handelGetTopSeller, handelGetNewlyOpened, handelGetStoresOfMycities , handelGetFeaturedStores };
+export { handleCreateStore, handelGetAllStores, handelGetSearchedStore, handelClearStore, handelGetTopSeller, handelGetNewlyOpened, handelGetStoresOfMycities , handelGetFeaturedStores , handleGetFilteredStores };
 
 

@@ -1,6 +1,6 @@
 import express from 'express'
-import { handelUserAuthentication } from '../middleware/authenticate.middleware.js'
-import {  handleCreateStore , handelGetAllStores , handelGetSearchedStore , handelClearStore , handelGetTopSeller , handelGetNewlyOpened , handelGetStoresOfMycities , handelGetFeaturedStores } from '../controllers/store.controller.js'
+import { handelUserAuthentication , handelUserLogin } from '../middleware/authenticate.middleware.js'
+import {  handleCreateStore , handelGetAllStores , handelGetSearchedStore , handelClearStore , handelGetTopSeller , handelGetNewlyOpened , handelGetStoresOfMycities , handelGetFeaturedStores , handleGetFilteredStores } from '../controllers/store.controller.js'
 import handelUserAuthorization from '../middleware/seller.authorized.middleware.js';
 
 const router = express.Router()
@@ -18,6 +18,8 @@ router.get("/top-seller" , handelGetTopSeller )
 router.get("/newly-opened" , handelGetNewlyOpened )
 router.get("/my-city" , handelUserAuthentication , handelGetStoresOfMycities )
 router.get("/featured" , handelGetFeaturedStores )
+
+router.get("/filter", handelUserLogin , handleGetFilteredStores);
 
 router.get("/" , handelGetAllStores)
 router.post("/search" , handelGetSearchedStore )

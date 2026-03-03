@@ -7,7 +7,7 @@ function handelUserAuthentication(req, res, next) {
 
   try {
     const token =
-      req.cookies?.token  ||
+      req.cookies?.token ||
       req.header("Authorization")?.replace("Bearer ", "");
 
     if (!token) {
@@ -17,12 +17,12 @@ function handelUserAuthentication(req, res, next) {
     }
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    
+
     req.user = {
       _id: decoded.userId,
       email: decoded.email,
       username: decoded.username,
-      role : decoded.role
+      role: decoded.role
     };
 
     next();
@@ -33,4 +33,33 @@ function handelUserAuthentication(req, res, next) {
   }
 }
 
-export { handelUserAuthentication };
+function handelUserLogin(req, res, next) {
+
+  console.log("request come for user authenication")
+
+  try {
+    const token =
+      req.cookies?.token ||
+      req.header("Authorization")?.replace("Bearer ", "");
+
+    if (token) {
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+      req.user = {
+        _id: decoded.userId,
+        email: decoded.email,
+        username: decoded.username,
+        role: decoded.role
+      };
+    }
+
+    next();
+
+  } catch (error) {
+    return res.status(401).json(
+      new ApiResponse(401, {}, "Invalid or expired token")
+    );
+  }
+}
+
+export { handelUserAuthentication , handelUserLogin };
