@@ -4,6 +4,48 @@ import ApiResponse from "../utils/ApiResponse.js";
 import sendMailToUser from "../utils/sendMail.js";
 import storeOpeningBody from "../emailBody/storeOpening.emailBody.js";
 
+
+
+async function handleGetStoreDetails(req, res) {
+  try {
+    const { storeId } = req.params;
+
+    // 1️⃣ Store find karo
+    const store = await Store.findById(storeId)
+      .select("-__v")
+      .lean();
+
+    if (!store) {
+      return res.status(404).json(
+        new ApiResponse(404, {}, "Store not found")
+      );
+    }
+
+    // 2️⃣ Owner find karo (Address exclude)
+    const owner = await User.findById(store.owner)
+      .select("username email avatar role phone createdAt") // 👈 address excluded
+      .lean();
+
+    return res.status(200).json(
+      new ApiResponse(
+        200,
+        {
+          store,
+          owner
+        },
+        "Store details fetched successfully"
+      )
+    );
+
+  } catch (error) {
+    console.error("Store Details Error:", error);
+
+    return res.status(500).json(
+      new ApiResponse(500, {}, "Internal Server Error")
+    );
+  }
+}
+
 async function handleGetFilteredStores(req, res) {
   try {
     const { categories, premium, sort } = req.query;
@@ -382,7 +424,6 @@ async function handelGetSearchedStore(req, res) {
   }
 }
 
-
 async function handleCreateStore(req, res) {
 
   try {
@@ -488,6 +529,6 @@ async function handelClearStore(req, res) {
   }
 }
 
-export { handleCreateStore, handelGetAllStores, handelGetSearchedStore, handelClearStore, handelGetTopSeller, handelGetNewlyOpened, handelGetStoresOfMycities , handelGetFeaturedStores , handleGetFilteredStores };
+export { handleCreateStore, handelGetAllStores, handelGetSearchedStore, handelClearStore, handelGetTopSeller, handelGetNewlyOpened, handelGetStoresOfMycities , handelGetFeaturedStores , handleGetFilteredStores , handleGetStoreDetails };
 
 
