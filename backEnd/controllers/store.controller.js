@@ -5,6 +5,57 @@ import sendMailToUser from "../utils/sendMail.js";
 import storeOpeningBody from "../emailBody/storeOpening.emailBody.js";
 
 
+
+async function handleGetStoresByCategory(req, res) {
+  try {
+    const { category } = req.body;
+
+    if (!category) {
+      return res.status(400).json(
+        new ApiResponse(400, {}, "Category is required")
+      );
+    }
+
+    const now = new Date();
+
+    
+    let filter = {
+      isActive: true,
+      $or: [
+        {
+          subscriptionPlan: "trial",
+          trialEndsAt: { $gt: now }
+        },
+        {
+          isSubscriptionActive: true,
+          subscriptionEndDate: { $gt: now }
+        }
+      ]
+    };
+
+    
+    if (category.toLowerCase() !== "general") {
+      filter.category = category;
+    }
+
+    const stores = await Store.find(filter)
+      .lean()
+      .select(
+        "storeName logo banner address rating category storeProducts subscriptionPlan"
+      );
+
+    return res.status(200).json(
+      new ApiResponse(200, stores, "Stores fetched successfully")
+    );
+
+  } catch (error) {
+    console.error("Get Stores by Category Error:", error);
+    return res.status(500).json(
+      new ApiResponse(500, {}, "Internal server error")
+    );
+  }
+}
+
 async function handelGetStoresByOwner(req, res) {
   try {
     const { ownerId } = req.params;
@@ -569,6 +620,6 @@ async function handelClearStore(req, res) {
   }
 }
 
-export { handleCreateStore, handelGetAllStores, handelGetSearchedStore, handelClearStore, handelGetTopSeller, handelGetNewlyOpened, handelGetStoresOfMycities , handelGetFeaturedStores , handleGetFilteredStores , handleGetStoreDetails , handelGetStoresByOwner };
+export { handleCreateStore, handelGetAllStores, handelGetSearchedStore, handelClearStore, handelGetTopSeller, handelGetNewlyOpened, handelGetStoresOfMycities , handelGetFeaturedStores , handleGetFilteredStores , handleGetStoreDetails , handelGetStoresByOwner , handleGetStoresByCategory };
 
 

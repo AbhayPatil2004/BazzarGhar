@@ -6,46 +6,10 @@ import { FaPhoneAlt, FaEnvelope, FaMapMarkerAlt, FaStore } from "react-icons/fa"
 import { MdCategory } from "react-icons/md";
 import { useOwner } from "../../../context/OwnerContext";
 
-export default function StoreDetailsPage({ id }) {
+export default function StoreDetailsPage({ store, owner }) {
   const { setOwnerId } = useOwner();
   const router = useRouter();
-
-  const [store, setStore] = useState(null);
-  const [owner, setOwner] = useState(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchStore = async () => {
-      try {
-        const res = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/store/${id}`
-        );
-
-        if (!res.ok) return router.push("/404");
-
-        const result = await res.json();
-        if (!result.success) return router.push("/404");
-
-        const { store, owner } = result.data;
-
-        setStore(store);
-        setOwner(owner);
-
-        if (owner?._id) {
-          setOwnerId(owner._id);
-        }
-
-      } catch (err) {
-        console.error(err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    if (id) fetchStore();
-  }, [id]);
-
-  if (loading) return <div className="p-10 text-center">Loading...</div>;
+  
   if (!store) return null;
 
   const renderStars = (rating = 0) =>

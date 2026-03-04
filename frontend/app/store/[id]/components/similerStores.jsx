@@ -3,24 +3,31 @@
 import { useEffect, useState } from "react";
 import StoreCard from "../../components/StoreCard";
 
-export default function OwnerStores({ ownerId, ownerName, storeId }) {
+export default function SimilarStores({ category, storeId, storeName }) {
 
     const [stores, setStores] = useState([]);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        if (!ownerId) return;
+        if (!category) return;
 
         const fetchStores = async () => {
             try {
                 const res = await fetch(
-                    `${process.env.NEXT_PUBLIC_API_URL}/store/owner/${ownerId}`
+                    `${process.env.NEXT_PUBLIC_API_URL}/store/category`,
+                    {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({ category }),
+                    }
                 );
 
                 const result = await res.json();
 
                 if (result.success) {
-
-                    // ✅ Current store remove karo
+                    // ❌ current store remove karo
                     const filteredStores = result.data.filter(
                         (store) => store._id !== storeId
                     );
@@ -29,44 +36,47 @@ export default function OwnerStores({ ownerId, ownerName, storeId }) {
                 }
 
             } catch (err) {
-                console.log("Store fetch error:", err);
+                console.log("Similar store fetch error:", err);
+            } finally {
+                setLoading(false);
             }
         };
 
         fetchStores();
-    }, [ownerId, storeId]);
+    }, [category, storeId]);
 
-    if (!ownerId) return null;
+    if (!category) return null;
 
     return (
         <section className="mt-16 px-4 sm:px-6 lg:px-10 xl:px-20">
 
             {/* Heading */}
-            {ownerName && stores.length > 0 && (
-                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8">
 
-                    <div>
-                        <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">
-                            More from{" "}
-                            <span className="text-blue-600">{ownerName}</span>
-                        </h2>
+                <div>
+                    <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">
+                        Similar to{" "}
+                        <span className="text-blue-600">{storeName}</span>
+                    </h2>
 
-                        <p className="text-sm text-gray-500 mt-1">
-                            Explore other stores by this seller
-                        </p>
-                    </div>
+                    <p className="text-sm text-gray-500 mt-1">
+                        Explore more stores in {category}
+                    </p>
+                </div>
 
+                {!loading && (
                     <div className="hidden sm:block text-sm text-gray-400 mt-2 sm:mt-0">
                         {stores.length} Stores
                     </div>
+                )}
+            </div>
 
-                </div>
-            )}
-
-            {/* Stores Grid */}
-            {stores.length === 0 ? (
+            {/* Loading */}
+            {loading ? (
+                <p className="text-gray-500 text-sm">Loading stores...</p>
+            ) : stores.length === 0 ? (
                 <p className="text-gray-500 text-sm sm:text-base">
-                    No other stores available.
+                    No similar stores found.
                 </p>
             ) : (
                 <div
