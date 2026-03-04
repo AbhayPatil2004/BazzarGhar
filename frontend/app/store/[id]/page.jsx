@@ -1,5 +1,6 @@
 import React from 'react'
 import StoreDetailsPage from './components/StoreDetail'
+import OwnerStores from './components/OwnerStores';
 
 async function page({ params }) {
     const resolvedParams = await params;
@@ -7,7 +8,13 @@ async function page({ params }) {
 
     return (
 
-    <StoreDetailsPage id = { id } />
+    <div>
+      <StoreDetailsPage id = { id } />
+      <OwnerStores></OwnerStores>
+      <div>
+        Hello World
+      </div>
+    </div>
   )
 }
 

@@ -9,6 +9,35 @@ import Product from "../models/product.model.js";
 // import Store from '../models/store.model.js'
 
 
+async function handleGetSellerNameById(req, res) {
+  try {
+    const { id } = req.params;
+
+    const seller = await User.findById(id).select("username");
+
+    if (!seller) {
+      return res.status(404).json(
+        new ApiResponse(404, {}, "Seller not found")
+      );
+    }
+
+    return res.status(200).json(
+      new ApiResponse(
+        200,
+        { sellerName: seller.username || seller.name },
+        "Seller name fetched successfully"
+      )
+    );
+
+  } catch (error) {
+    console.error("Get Seller Name By Id Error:", error);
+
+    return res.status(500).json(
+      new ApiResponse(500, {}, "Internal Server Error")
+    );
+  }
+}
+
 async function handelSellerStats(req, res) {
   try {
 
@@ -800,4 +829,4 @@ const handelUpdateProductDetails = async (req, res) => {
 
 
 
-export { handelGetStoreByIdForSeller, handelGetStoreByOwner, handelCreateStoreSubscriptionOrder, handelUpgradeStoreSubscription, handleAddProductToStore, handelSellerStats, handleUpdateStoreDetails, handelActiveOrInActiveStore, handelGetStoreProducts, handelGetProductDetails, handelActiveOrInActiveProduct, handelUpdateProductDetails }
+export { handelGetStoreByIdForSeller, handelGetStoreByOwner, handelCreateStoreSubscriptionOrder, handelUpgradeStoreSubscription, handleAddProductToStore, handelSellerStats, handleUpdateStoreDetails, handelActiveOrInActiveStore, handelGetStoreProducts, handelGetProductDetails, handelActiveOrInActiveProduct, handelUpdateProductDetails , handleGetSellerNameById }

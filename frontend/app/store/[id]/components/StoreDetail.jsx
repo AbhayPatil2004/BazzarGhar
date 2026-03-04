@@ -1,106 +1,133 @@
-import { notFound } from "next/navigation";
+"use client";
 
-export default async function StoreDetailsPage({ id }) {
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/store/${id}`,
-    { cache: "no-store" }
-  );
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { FaPhoneAlt, FaEnvelope, FaMapMarkerAlt, FaStore } from "react-icons/fa";
+import { MdCategory } from "react-icons/md";
+import { useOwner } from "../../../context/OwnerContext";
 
-  if (!res.ok) return notFound();
+export default function StoreDetailsPage({ id }) {
+  const { setOwnerId } = useOwner();
+  const router = useRouter();
 
-  const result = await res.json();
-  if (!result.success) return notFound();
+  const [store, setStore] = useState(null);
+  const [owner, setOwner] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  const { store, owner } = result.data;
+  useEffect(() => {
+    const fetchStore = async () => {
+      try {
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/store/${id}`
+        );
 
-  const renderStars = (rating) => {
-    return [...Array(5)].map((_, i) => (
-      <span key={i}>
-        {i < Math.round(rating) ? "⭐" : "☆"}
+        if (!res.ok) return router.push("/404");
+
+        const result = await res.json();
+        if (!result.success) return router.push("/404");
+
+        const { store, owner } = result.data;
+
+        setStore(store);
+        setOwner(owner);
+
+        if (owner?._id) {
+          setOwnerId(owner._id);
+        }
+
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (id) fetchStore();
+  }, [id]);
+
+  if (loading) return <div className="p-10 text-center">Loading...</div>;
+  if (!store) return null;
+
+  const renderStars = (rating = 0) =>
+    [...Array(5)].map((_, i) => (
+      <span key={i} className="text-yellow-400 text-base sm:text-lg">
+        {i < Math.round(rating) ? "★" : "☆"}
       </span>
     ));
-  };
 
   return (
-    <div className="min-h-screen bg-gray-100 pb-20">
+    <div className="min-h-screen bg-gradient-to-br from-gray-100 to-gray-200 pb-14">
 
-      {/* HERO BANNER */}
-      <div className="relative h-64 md:h-80 w-full">
+      {/* HERO */}
+      <div className="relative h-44 sm:h-60 md:h-80 w-full">
         <img
-          src={store?.banner || "/default-banner.jpg"}
+          src={store.banner || "/default-banner.jpg"}
           alt="Store Banner"
           className="w-full h-full object-cover"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+        <div className="absolute inset-0 bg-black/50"></div>
       </div>
 
-      <div className="max-w-6xl mx-auto px-4">
+      <div className="max-w-6xl mx-auto px-3 sm:px-5">
 
-        {/* STORE HEADER CARD */}
-        <div className="bg-white rounded-2xl shadow-xl p-6 md:p-8 -mt-20 relative z-10">
+        {/* HEADER CARD */}
+        <div className="bg-white rounded-3xl shadow-xl p-4 sm:p-6 -mt-16 sm:-mt-20 relative z-10 border border-gray-100">
+          <div className="flex flex-col sm:flex-row items-center gap-6">
 
-          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-8">
-
-            <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6">
-
-              {/* LOGO */}
-              <div className="w-28 h-28 rounded-full overflow-hidden border-4 border-white shadow-lg">
-                <img
-                  src={store?.logo || "/default-logo.png"}
-                  alt="Store Logo"
-                  className="w-full h-full object-cover"
-                />
-              </div>
-
-              {/* BASIC INFO */}
-              <div className="text-center sm:text-left">
-                <h1 className="text-2xl md:text-3xl font-bold">
-                  {store.storeName}
-                </h1>
-
-                <p className="text-gray-500 mt-1">
-                  {store.category}
-                </p>
-
-                <div className="flex justify-center sm:justify-start items-center gap-2 mt-2 text-sm">
-                  {renderStars(store.rating)}
-                  <span className="text-gray-500">
-                    ({store.rating.toFixed(1)})
-                  </span>
-                </div>
-
-                <div className="flex flex-wrap justify-center sm:justify-start gap-4 mt-3 text-sm text-gray-600">
-                  <span>{store.totalProducts} Products</span>
-                  <span>{store.totalOrders} Orders</span>
-                </div>
-              </div>
+            {/* LOGO */}
+            <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-full overflow-hidden border-4 border-white shadow-md">
+              <img
+                src={store.logo || "/default-logo.png"}
+                alt="Store Logo"
+                className="w-full h-full object-cover"
+              />
             </div>
 
-            {/* SUBSCRIPTION BADGE */}
-            <div className="text-center">
-              <span className="px-5 py-2 rounded-full text-sm font-semibold bg-gradient-to-r from-purple-500 to-indigo-600 text-white shadow-md">
-                {store.subscriptionPlan.toUpperCase()}
-              </span>
+            {/* INFO */}
+            <div className="text-center sm:text-left flex-1">
+
+              <h1 className="text-2xl md:text-3xl font-bold flex items-center gap-2 justify-center sm:justify-start">
+                <FaStore className="text-indigo-600" />
+                {store.storeName}
+              </h1>
+
+              <p className="text-gray-500 text-sm mt-1 flex items-center gap-2 justify-center sm:justify-start">
+                <MdCategory />
+                {store.category}
+              </p>
+
+              <div className="flex items-center gap-1 mt-2 justify-center sm:justify-start">
+                {renderStars(store.rating)}
+                <span className="text-gray-500 text-sm ml-1">
+                  ({store.rating?.toFixed(1)})
+                </span>
+              </div>
+
+              <div className="flex gap-5 mt-3 text-sm text-gray-600 justify-center sm:justify-start">
+                <span>🛒 {store.totalProducts}</span>
+                <span>📦 {store.totalOrders}</span>
+              </div>
             </div>
           </div>
         </div>
 
-        {/* ABOUT SECTION */}
-        <div className="mt-10 bg-white p-6 rounded-2xl shadow">
-          <h2 className="text-xl font-semibold mb-4">About Store</h2>
+        {/* ABOUT */}
+        <div className="mt-8 bg-white p-6 rounded-2xl shadow border">
+          <h2 className="text-xl font-semibold mb-3">About Store</h2>
           <p className="text-gray-600 leading-relaxed">
             {store.description || "No description available."}
           </p>
         </div>
 
-        {/* STORE PRODUCTS TAGS */}
-        <div className="mt-8 bg-white p-6 rounded-2xl shadow">
-          <h2 className="text-xl font-semibold mb-4">Products</h2>
+        {/* PRODUCTS */}
+        <div className="mt-6 bg-white p-6 rounded-2xl shadow border">
+          <h2 className="text-xl font-semibold mb-4">Products We Sell</h2>
+
           <div className="flex flex-wrap gap-3">
-            {store.storeProducts.map((product, index) => (
+            {store.storeProducts?.map((product, index) => (
               <span
                 key={index}
-                className="px-4 py-2 bg-gray-100 rounded-full text-sm hover:bg-indigo-100 transition"
+                className="px-4 py-2 bg-indigo-50 text-indigo-700 rounded-full text-sm font-medium"
               >
                 {product.replace(/"/g, "").trim()}
               </span>
@@ -108,67 +135,60 @@ export default async function StoreDetailsPage({ id }) {
           </div>
         </div>
 
-        {/* ADDRESS + OWNER GRID */}
-        <div className="mt-8 grid md:grid-cols-2 gap-6">
-
-          {/* ADDRESS */}
-          <div className="bg-white p-6 rounded-2xl shadow">
-            <h2 className="text-xl font-semibold mb-4">Store Address</h2>
-            <p className="text-gray-600 leading-relaxed">
-              {store.address?.street}, <br />
-              {store.address?.city}, {store.address?.state} <br />
-              {store.address?.postalCode}, {store.address?.country}
-            </p>
-          </div>
+        {/* OWNER + ADDRESS */}
+        <div className="mt-6 grid md:grid-cols-2 gap-6">
 
           {/* OWNER */}
-          <div className="bg-white p-6 rounded-2xl shadow">
+          <div className="bg-white p-6 rounded-2xl shadow border">
             <h2 className="text-xl font-semibold mb-4">Store Owner</h2>
 
             <div className="flex items-center gap-4">
               <div className="w-16 h-16 rounded-full overflow-hidden shadow">
                 <img
-                  src={owner.avatar || "/default-avatar.png"}
+                  src={owner?.avatar || "/default-avatar.png"}
                   alt="Owner Avatar"
                   className="w-full h-full object-cover"
                 />
               </div>
 
-              <div>
-                <h3 className="font-semibold">{owner.username}</h3>
-                <p className="text-gray-500 text-sm">{owner.email}</p>
-                {owner.phone && (
-                  <p className="text-gray-500 text-sm">{owner.phone}</p>
+              <div className="space-y-1 text-sm">
+                <h3 className="font-semibold">{owner?.username}</h3>
+
+                <p className="text-gray-500 flex items-center gap-2">
+                  <FaEnvelope className="text-indigo-500 text-xs" />
+                  {owner?.email}
+                </p>
+
+                {owner?.phone && (
+                  <p className="text-gray-500 flex items-center gap-2">
+                    <FaPhoneAlt className="text-green-500 text-xs" />
+                    {owner.phone}
+                  </p>
                 )}
               </div>
             </div>
           </div>
-        </div>
 
-        {/* STATS GRID */}
-        <div className="mt-10 grid grid-cols-2 md:grid-cols-4 gap-6">
-          <StatCard title="Commission" value={`${store.commissionRate}%`} />
-          <StatCard title="Active" value={store.isActive ? "Yes" : "No"} />
-          <StatCard title="Approved" value={store.isApproved} />
-          <StatCard
-            title="Subscription"
-            value={store.isSubscriptionActive ? "Active" : "Inactive"}
-          />
-        </div>
+          {/* ADDRESS */}
+          <div className="bg-white p-6 rounded-2xl shadow border">
+            <h2 className="text-xl font-semibold mb-3 flex items-center gap-2">
+              <FaMapMarkerAlt className="text-red-500" />
+              Store Address
+            </h2>
 
-        {/* SUBSCRIPTION INFO */}
-        <div className="mt-10 bg-white p-6 rounded-2xl shadow">
-          <h2 className="text-xl font-semibold mb-4">Subscription Details</h2>
-          <div className="text-gray-600 space-y-2 text-sm">
-            <p>
-              Start Date:{" "}
-              {new Date(store.subscriptionStartDate).toLocaleDateString()}
-            </p>
-            <p>
-              End Date:{" "}
-              {new Date(store.subscriptionEndDate).toLocaleDateString()}
+            <p className="text-gray-600 leading-relaxed text-sm">
+              {store.address?.street}, <br />
+              {store.address?.city}, {store.address?.state} <br />
+              {store.address?.postalCode}, {store.address?.country}
             </p>
           </div>
+        </div>
+
+        {/* STATS */}
+        <div className="mt-8 grid grid-cols-3 gap-4">
+          <StatCard title="Commission" value={`${store.commissionRate}%`} />
+          <StatCard title="Active" value={store.isActive ? "Yes" : "No"} />
+          <StatCard title="Approved" value={store.isApproved ? "Yes" : "No"} />
         </div>
 
       </div>
@@ -178,7 +198,7 @@ export default async function StoreDetailsPage({ id }) {
 
 function StatCard({ title, value }) {
   return (
-    <div className="bg-white p-5 rounded-2xl shadow text-center hover:shadow-lg transition">
+    <div className="bg-white p-5 rounded-2xl shadow text-center border">
       <p className="text-gray-500 text-xs uppercase">{title}</p>
       <p className="font-bold text-lg mt-1 capitalize">{value}</p>
     </div>

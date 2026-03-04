@@ -6,6 +6,7 @@ import Footer from './layout/component/Footer.jsx'
 import { Toaster } from "react-hot-toast";
 
 import { AuthProvider } from './context/Authcontext'
+import { OwnerProvider } from "./context/OwnerContext";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -33,7 +34,8 @@ export default function RootLayout({
         
         {/* ✅ Wrap entire app with AuthProvider */}
         <AuthProvider>
-          <Header />
+          <OwnerProvider>
+            <Header />
 
           {/* Push content below sticky header */}
           <main className="pt-14 pb-16 md:pt-0 md:pb-0">
@@ -44,6 +46,7 @@ export default function RootLayout({
           </main>
 
           <Footer />
+          </OwnerProvider>
         </AuthProvider>
 
       </body>
