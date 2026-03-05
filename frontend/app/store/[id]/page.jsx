@@ -2,6 +2,7 @@
 import StoreDetailsPage from "./components/StoreDetail";
 import OwnerStores from "./components/OwnerStores";
 import SimilarStores from "./components/similerStores";
+import StoreReviews from "./components/StoreReviews";
 
 export default async function Page({ params }) {
   const { id } = await params;
@@ -30,6 +31,7 @@ export default async function Page({ params }) {
   return (
     <div>
       <StoreDetailsPage store={store} owner={owner} />
+      <StoreReviews storeId = {store._id} storeName = {store.storeName}></StoreReviews>
       <OwnerStores
         ownerId={owner._id}
         ownerName={owner.username}

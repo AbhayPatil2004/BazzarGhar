@@ -15,6 +15,7 @@ import cartRouter from './routes/cart.route.js'
 import reviewRouter from './routes/review.route.js'
 import orderRouter from './routes/order.route.js'
 import sellerRouter from './routes/seller.route.js'
+import storeReviewRouter from './routes/storeReview.route.js'
 
 const app = express();
 
@@ -36,6 +37,7 @@ app.use("/product" , productRouter )
 app.use("/cart" , cartRouter )
 app.use("/review" , reviewRouter )
 app.use("/order" , orderRouter)
+app.use("/storereview" , storeReviewRouter )
 
 
 const PORT = process.env.PORT || 3000;
