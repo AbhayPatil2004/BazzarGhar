@@ -120,40 +120,39 @@ const storeSchema = new mongoose.Schema(
       default: 0,
     },
 
-    productSales: [
-      {
-        productId: {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: "Product",
-          required: true,
-        },
+    // productSales: [
+    //   {
+    //     productId: {
+    //       type: mongoose.Schema.Types.ObjectId,
+    //       ref: "Product",
+    //       required: true,
+    //     },
 
-        productName: {
-          type: String,
-          required: true,
-        },
+    //     productName: {
+    //       type: String,
+    //       required: true,
+    //     },
 
-        totalQuantitySold: {
-          type: Number,
-          default: 0,
-        },
+    //     totalQuantitySold: {
+    //       type: Number,
+    //       default: 0,
+    //     },
 
-        totalRevenue: {
-          type: Number,
-          default: 0,
-        },
+    //     totalRevenue: {
+    //       type: Number,
+    //       default: 0,
+    //     },
 
-        totalProfit: {
-          type: Number,
-          default: 0,
-        },
+    //     totalProfit: {
+    //       type: Number,
+    //       default: 0,
+    //     },
 
-        lastSoldAt: {
-          type: Date,
-        },
-      }
-    ],
-
+    //     lastSoldAt: {
+    //       type: Date,
+    //     },
+    //   }
+    // ],
 
   },
   {
