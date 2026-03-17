@@ -1,6 +1,6 @@
 import express from 'express'
 import { handelUserAuthentication , handelUserLogin } from '../middleware/authenticate.middleware.js'
-import {  handleCreateStore , handelGetAllStores , handelGetSearchedStore , handelClearStore , handelGetTopSeller , handelGetNewlyOpened , handelGetStoresOfMycities , handelGetFeaturedStores , handleGetFilteredStores , handleGetStoreDetails , handelGetStoresByOwner , handleGetStoresByCategory } from '../controllers/store.controller.js'
+import {  handleCreateStore , handelGetAllStores , handelGetSearchedStore , handelClearStore , handelGetTopSeller , handelGetNewlyOpened , handelGetStoresOfMycities , handelGetFeaturedStores , handleGetFilteredStores , handleGetStoreDetails , handelGetStoresByOwner , handleGetStoresByCategory , handleCheckStoreSubscription , handleToggleStoreSubscription , handleCheckStoreRating , handleRateStore } from '../controllers/store.controller.js'
 import handelUserAuthorization from '../middleware/seller.authorized.middleware.js';
 
 const router = express.Router()
@@ -19,7 +19,20 @@ router.get("/top-seller" , handelGetTopSeller )
 router.get("/newly-opened" , handelGetNewlyOpened )
 router.get("/my-city" , handelUserAuthentication , handelGetStoresOfMycities )
 router.get("/featured" , handelGetFeaturedStores )
+router.get("/subscription/:storeId", handelUserAuthentication , handleCheckStoreSubscription);
+router.post("/subscribe/:storeId", handelUserAuthentication, handleToggleStoreSubscription);
 
+router.get(
+  "/rating/:storeId",
+  handelUserAuthentication,
+  handleCheckStoreRating
+);
+
+router.post(
+  "/rate/:storeId",
+  handelUserAuthentication,
+  handleRateStore
+);
 
 router.get("/filter", handelUserLogin , handleGetFilteredStores);
 

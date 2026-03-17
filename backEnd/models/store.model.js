@@ -1,8 +1,9 @@
+
+
 import mongoose from "mongoose";
 
 const storeSchema = new mongoose.Schema(
   {
-
     owner: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
@@ -22,8 +23,8 @@ const storeSchema = new mongoose.Schema(
     storeProducts: [
       {
         type: String,
-        required: true
-      }
+        required: true,
+      },
     ],
 
     category: {
@@ -59,17 +60,34 @@ const storeSchema = new mongoose.Schema(
       },
     },
 
-    rating: {
-      type: Number,
-      default: 0,
-      min: 0,
-      max: 5,
+    // 🔥 FIXED
+    subscriber: {
+      type: [mongoose.Schema.Types.ObjectId],
+      ref: "User",
+      default: [],
     },
 
-    reviews: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "StoreReview"
-    },
+    ratings: [
+      {
+        user: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "User",
+        },
+        value: {
+          type: Number,
+          min: 1,
+          max: 5,
+        },
+      },
+    ],
+
+    // 🔥 FIXED (should be array)
+    reviews: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "StoreReview",
+      },
+    ],
 
     totalProducts: {
       type: Number,
@@ -98,62 +116,20 @@ const storeSchema = new mongoose.Schema(
       default: "trial",
     },
 
-    subscriptionStartDate: {
-      type: Date,
-    },
-
-    subscriptionEndDate: {
-      type: Date,
-    },
+    subscriptionStartDate: Date,
+    subscriptionEndDate: Date,
 
     isSubscriptionActive: {
       type: Boolean,
       default: false,
     },
 
-    trialEndsAt: {
-      type: Date,
-    },
+    trialEndsAt: Date,
 
     commissionRate: {
       type: Number,
       default: 0,
     },
-
-    // productSales: [
-    //   {
-    //     productId: {
-    //       type: mongoose.Schema.Types.ObjectId,
-    //       ref: "Product",
-    //       required: true,
-    //     },
-
-    //     productName: {
-    //       type: String,
-    //       required: true,
-    //     },
-
-    //     totalQuantitySold: {
-    //       type: Number,
-    //       default: 0,
-    //     },
-
-    //     totalRevenue: {
-    //       type: Number,
-    //       default: 0,
-    //     },
-
-    //     totalProfit: {
-    //       type: Number,
-    //       default: 0,
-    //     },
-
-    //     lastSoldAt: {
-    //       type: Date,
-    //     },
-    //   }
-    // ],
-
   },
   {
     timestamps: true,

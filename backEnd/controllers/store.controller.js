@@ -3,7 +3,257 @@ import User from "../models/user.model.js";
 import ApiResponse from "../utils/ApiResponse.js";
 import sendMailToUser from "../utils/sendMail.js";
 import storeOpeningBody from "../emailBody/storeOpening.emailBody.js";
+import mongoose from 'mongoose'
 
+
+async function handleCheckStoreRating(req, res) {
+  try {
+    const { storeId } = req.params;
+    const userId = req.user?._id;
+
+    if (!userId) {
+      return res
+        .status(401)
+        .json(new ApiResponse(401, {}, "Unauthorized"));
+    }
+
+    if (!mongoose.Types.ObjectId.isValid(storeId)) {
+      return res
+        .status(400)
+        .json(new ApiResponse(400, {}, "Invalid store ID"));
+    }
+
+    const store = await Store.findById(storeId).select("ratings");
+
+    if (!store) {
+      return res
+        .status(404)
+        .json(new ApiResponse(404, {}, "Store not found"));
+    }
+
+    // 🔥 find user's rating
+    const userRatingObj = store.ratings.find(
+      (r) => r.user.toString() === userId.toString()
+    );
+
+    const userRating = userRatingObj ? userRatingObj.value : 0;
+
+    // 🔥 calculate average
+    const totalRatings = store.ratings.length;
+
+    const avgRating =
+      totalRatings === 0
+        ? 0
+        : store.ratings.reduce((acc, r) => acc + r.value, 0) /
+          totalRatings;
+
+    return res.status(200).json(
+      new ApiResponse(
+        200,
+        {
+          userRating,
+          avgRating: Number(avgRating.toFixed(1)),
+          totalRatings,
+        },
+        "Rating fetched successfully"
+      )
+    );
+  } catch (error) {
+    console.error("Check Rating Error:", error);
+    return res
+      .status(500)
+      .json(new ApiResponse(500, {}, "Internal server error"));
+  }
+}
+
+async function handleRateStore(req, res) {
+  try {
+    const { storeId } = req.params;
+    const { rating } = req.body;
+    const userId = req.user?._id;
+
+    if (!userId) {
+      return res
+        .status(401)
+        .json(new ApiResponse(401, {}, "Unauthorized"));
+    }
+
+    if (!mongoose.Types.ObjectId.isValid(storeId)) {
+      return res
+        .status(400)
+        .json(new ApiResponse(400, {}, "Invalid store ID"));
+    }
+
+    if (!rating || rating < 1 || rating > 5) {
+      return res
+        .status(400)
+        .json(new ApiResponse(400, {}, "Invalid rating"));
+    }
+
+    const store = await Store.findById(storeId);
+
+    if (!store) {
+      return res
+        .status(404)
+        .json(new ApiResponse(404, {}, "Store not found"));
+    }
+
+    if (!store.ratings) store.ratings = [];
+
+    const existingRating = store.ratings.find(
+      (r) => r.user.toString() === userId.toString()
+    );
+
+    if (existingRating) {
+      existingRating.value = rating; // update
+    } else {
+      store.ratings.push({ user: userId, value: rating }); // add
+    }
+
+    await store.save();
+
+    // 🔥 recalc avg
+    const totalRatings = store.ratings.length;
+
+    const avgRating =
+      totalRatings === 0
+        ? 0
+        : store.ratings.reduce((acc, r) => acc + r.value, 0) /
+          totalRatings;
+
+    return res.status(200).json(
+      new ApiResponse(
+        200,
+        {
+          userRating: rating,
+          avgRating: Number(avgRating.toFixed(1)),
+          totalRatings,
+        },
+        "Rating submitted successfully"
+      )
+    );
+  } catch (error) {
+    console.error("Rate Store Error:", error);
+    return res
+      .status(500)
+      .json(new ApiResponse(500, {}, "Internal server error"));
+  }
+}
+
+async function handleCheckStoreSubscription(req, res) {
+  try {
+    const { storeId } = req.params;
+    const userId = req.user?._id;
+
+    if (!userId) {
+      return res
+        .status(401)
+        .json(new ApiResponse(401, {}, "Unauthorized"));
+    }
+
+    
+    if (!mongoose.Types.ObjectId.isValid(storeId)) {
+      return res
+        .status(400)
+        .json(new ApiResponse(400, {}, "Invalid store ID"));
+    }
+
+    
+    const store = await Store.findOne({
+      _id: storeId,
+      subscriber: userId,
+    }).select("_id subscriber");
+
+    const isSubscribed = !!store;
+
+    return res.status(200).json(
+      new ApiResponse(
+        200,
+        {
+          isSubscribed,
+        },
+        "Subscription status fetched successfully"
+      )
+    );
+  } catch (error) {
+    console.error("Check Subscription Error:", error);
+    return res
+      .status(500)
+      .json(new ApiResponse(500, {}, "Internal server error"));
+  }
+}
+
+async function handleToggleStoreSubscription(req, res) {
+  try {
+    const { storeId } = req.params;
+    const userId = req.user?._id;
+
+    
+    if (!userId) {
+      return res
+        .status(401)
+        .json(new ApiResponse(401, {}, "Unauthorized"));
+    }
+
+    
+    if (!mongoose.Types.ObjectId.isValid(storeId)) {
+      return res
+        .status(400)
+        .json(new ApiResponse(400, {}, "Invalid store ID"));
+    }
+
+    
+    const store = await Store.findById(storeId);
+
+    if (!store) {
+      return res
+        .status(404)
+        .json(new ApiResponse(404, {}, "Store not found"));
+    }
+
+    
+    const isAlreadySubscribed = store.subscriber.some(
+      (id) => id.toString() === userId.toString()
+    );
+
+    let message = "";
+    let isSubscribed;
+
+    if (isAlreadySubscribed) {
+     
+      store.subscriber = store.subscriber.filter(
+        (id) => id.toString() !== userId.toString()
+      );
+
+      message = "Unsubscribed successfully";
+      isSubscribed = false;
+    } else {
+      
+      store.subscriber.push(userId);
+
+      message = "Subscribed successfully";
+      isSubscribed = true;
+    }
+
+    await store.save();
+
+    return res.status(200).json(
+      new ApiResponse(
+        200,
+        {
+          isSubscribed,
+          subscriberCount: store.subscriber.length,
+        },
+        message
+      )
+    );
+  } catch (error) {
+    console.error("Toggle Subscription Error:", error);
+    return res
+      .status(500)
+      .json(new ApiResponse(500, {}, "Internal server error"));
+  }
+}
 
 
 async function handleGetStoresByCategory(req, res) {
@@ -96,12 +346,51 @@ async function handelGetStoresByOwner(req, res) {
   }
 }
 
-async function handleGetStoreDetails(req, res) {
+// async function handleGetStoreDetails(req, res) {
   
+//   try {
+//     const { storeId } = req.params;
+
+//     // 1️⃣ Store find karo
+//     const store = await Store.findById(storeId)
+//       .select("-__v")
+//       .lean();
+
+//     if (!store) {
+//       return res.status(404).json(
+//         new ApiResponse(404, {}, "Store not found")
+//       );
+//     }
+
+//     // 2️⃣ Owner find karo (Address exclude)
+//     const owner = await User.findById(store.owner)
+//       .select("username email avatar role phone createdAt") // 👈 address excluded
+//       .lean();
+
+//     return res.status(200).json(
+//       new ApiResponse(
+//         200,
+//         {
+//           store,
+//           owner
+//         },
+//         "Store details fetched successfully"
+//       )
+//     );
+
+//   } catch (error) {
+//     console.error("Store Details Error:", error);
+
+//     return res.status(500).json(
+//       new ApiResponse(500, {}, "Internal Server Error")
+//     );
+//   }
+// }
+
+async function handleGetStoreDetails(req, res) {
   try {
     const { storeId } = req.params;
 
-    // 1️⃣ Store find karo
     const store = await Store.findById(storeId)
       .select("-__v")
       .lean();
@@ -112,17 +401,31 @@ async function handleGetStoreDetails(req, res) {
       );
     }
 
-    // 2️⃣ Owner find karo (Address exclude)
+    // Owner fetch
     const owner = await User.findById(store.owner)
-      .select("username email avatar role phone createdAt") // 👈 address excluded
+      .select("username email avatar role phone createdAt")
       .lean();
+
+    // Subscriber count
+    const subscriberCount = store.subscriber?.length || 0;
+
+    let subscribed = false;
+
+    // Check if user logged in
+    if (req.user && req.user._id) {
+      subscribed = store.subscriber.some(
+        (id) => id.toString() === req.user._id.toString()
+      );
+    }
 
     return res.status(200).json(
       new ApiResponse(
         200,
         {
           store,
-          owner
+          owner,
+          subscribed,
+          subscriberCount
         },
         "Store details fetched successfully"
       )
@@ -620,6 +923,6 @@ async function handelClearStore(req, res) {
   }
 }
 
-export { handleCreateStore, handelGetAllStores, handelGetSearchedStore, handelClearStore, handelGetTopSeller, handelGetNewlyOpened, handelGetStoresOfMycities , handelGetFeaturedStores , handleGetFilteredStores , handleGetStoreDetails , handelGetStoresByOwner , handleGetStoresByCategory };
+export { handleCreateStore, handelGetAllStores, handelGetSearchedStore, handelClearStore, handelGetTopSeller, handelGetNewlyOpened, handelGetStoresOfMycities , handelGetFeaturedStores , handleGetFilteredStores , handleGetStoreDetails , handelGetStoresByOwner , handleGetStoresByCategory , handleCheckStoreSubscription , handleToggleStoreSubscription , handleRateStore , handleCheckStoreRating };
 
 
