@@ -3,8 +3,82 @@ import User from "../models/user.model.js";
 import ApiResponse from "../utils/ApiResponse.js";
 import sendMailToUser from "../utils/sendMail.js";
 import storeOpeningBody from "../emailBody/storeOpening.emailBody.js";
+import SearchHistory from "../models/search.model.js";
 import mongoose from 'mongoose'
 
+
+async function handelSaveStoreSearch(req, res) {
+  try {
+    const userId = req.user._id;
+    const { query } = req.body;
+
+    if (!query || !query.trim()) {
+      return res
+        .status(400)
+        .json(new ApiResponse(400, {}, "Query is required"));
+    }
+
+    // Find or create user search history
+    let userHistory = await SearchHistory.findOne({ user: userId });
+    if (!userHistory) {
+      userHistory = new SearchHistory({
+        user: userId,
+        storeSearches: [],
+        productSearches: [],
+      });
+    }
+
+    // Remove duplicate
+    userHistory.storeSearches = userHistory.storeSearches.filter(
+      (item) => item !== query
+    );
+
+    // Add latest search to front
+    userHistory.storeSearches.unshift(query);
+
+    // Keep only last 10 searches
+    if (userHistory.storeSearches.length > 10) {
+      userHistory.storeSearches.pop();
+    }
+
+    await userHistory.save();
+
+    return res
+      .status(200)
+      .json(
+        new ApiResponse(
+          200,
+          { storeSearches: userHistory.storeSearches },
+          "Store search saved successfully"
+        )
+      );
+  } catch (error) {
+    console.error("Error saving store search:", error);
+    return res
+      .status(500)
+      .json(new ApiResponse(500, {}, "Internal server error"));
+  }
+}
+
+
+async function handelGetSearchHistory(req, res) {
+  try {
+    const userId = req.user._id;
+    
+    const userHistory = await SearchHistory.findOne({ user: userId });
+    
+    const storeSearches = userHistory?.storeSearches || [];
+
+    return res
+      .status(200)
+      .json(new ApiResponse(200, { storeSearches }, "Store searches fetched successfully"));
+  } catch (error) {
+    console.error("Error fetching store search history:", error);
+    return res
+      .status(500)
+      .json(new ApiResponse(500, {}, "Internal server error"));
+  }
+}
 
 async function handleCheckStoreRating(req, res) {
   try {
@@ -923,6 +997,6 @@ async function handelClearStore(req, res) {
   }
 }
 
-export { handleCreateStore, handelGetAllStores, handelGetSearchedStore, handelClearStore, handelGetTopSeller, handelGetNewlyOpened, handelGetStoresOfMycities , handelGetFeaturedStores , handleGetFilteredStores , handleGetStoreDetails , handelGetStoresByOwner , handleGetStoresByCategory , handleCheckStoreSubscription , handleToggleStoreSubscription , handleRateStore , handleCheckStoreRating };
+export { handleCreateStore, handelGetAllStores, handelGetSearchedStore, handelClearStore, handelGetTopSeller, handelGetNewlyOpened, handelGetStoresOfMycities , handelGetFeaturedStores , handleGetFilteredStores , handleGetStoreDetails , handelGetStoresByOwner , handleGetStoresByCategory , handleCheckStoreSubscription , handleToggleStoreSubscription , handleRateStore , handleCheckStoreRating , handelGetSearchHistory , handelSaveStoreSearch };
 
 
