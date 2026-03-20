@@ -70,7 +70,7 @@ export default function TopSellersPage() {
           {/* Explore More Button */}
           <div className="sm:flex justify-center relative z-10">
             <button
-              onClick={() => router.push("/store/stores?featured=true")}
+              onClick={() => router.push("/store/stores?trending=true")}
               className="
       cursor-pointer
       w-[40px] sm:w-[50px]

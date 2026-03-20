@@ -53,8 +53,8 @@ export default function NewlyOpenedStores() {
         </div>
 
         <button
-  onClick={() => router.push("/store/stores?featured=true")}
-  className="
+          onClick={() => router.push("/store/stores?newly=true")}
+          className="
     cursor-pointer
     w-[40px] sm:w-[50px]
     h-[30px] sm:h-[34px]
@@ -66,11 +66,11 @@ export default function NewlyOpenedStores() {
     hover:bg-blue-900
     transition
   "
->
-  <span className="text-lg sm:text-xl leading-none">
-    →
-  </span>
-</button>
+        >
+          <span className="text-lg sm:text-xl leading-none">
+            →
+          </span>
+        </button>
 
       </div>
 
@@ -147,7 +147,7 @@ export default function NewlyOpenedStores() {
                     ⭐ {store.rating?.toFixed(1) ?? "0.0"}
                   </span>
 
-                  
+
                 </div>
 
                 {/* What Store Sells */}

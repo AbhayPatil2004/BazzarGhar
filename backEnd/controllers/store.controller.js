@@ -6,6 +6,93 @@ import storeOpeningBody from "../emailBody/storeOpening.emailBody.js";
 import SearchHistory from "../models/search.model.js";
 import mongoose from 'mongoose'
 
+async function handelGetStores(req, res) {
+  try {
+    const { search, featured, trending, newly, nearby } = req.query;
+
+    const now = new Date();
+
+    // 🔹 Base filter (common)
+    let filter = {
+      isActive: true,
+      isApproved: "accepted",
+      $or: [
+        {
+          subscriptionPlan: "trial",
+          trialEndsAt: { $exists: true, $gt: now }
+        },
+        {
+          isSubscriptionActive: true,
+          subscriptionEndDate: { $exists: true, $gt: now }
+        }
+      ]
+    };
+
+    let sortOption = {};
+    let limit = 10;
+
+    // 🔍 Search
+    if (search && search.trim()) {
+      filter.storeName = {
+        $regex: search.trim(),
+        $options: "i"
+      };
+    }
+
+    // ⭐ Featured
+    if (featured === "true") {
+      filter.subscriptionPlan = "premium";
+      filter.isSubscriptionActive = true;
+      sortOption = { subscriptionEndDate: -1 };
+      limit = 10;
+    }
+
+    // 🔥 Trending (Top Sellers)
+    if (trending === "true") {
+      sortOption = {
+        totalOrders: -1,
+        rating: -1,
+        totalProducts: -1,
+        createdAt: -1
+      };
+      limit = 8;
+    }
+
+    // 🆕 Newly Opened
+    if (newly === "true") {
+      sortOption = { createdAt: -1 };
+      limit = 8;
+    }
+
+    // 📍 Nearby (user city)
+    if (nearby === "true") {
+      const user = await User.findById(req.user?._id);
+
+      if (user?.address?.[0]?.city) {
+        filter["address.city"] = {
+          $regex: `^${user.address[0].city}$`,
+          $options: "i"
+        };
+      }
+    }
+
+    const stores = await Store.find(filter)
+      .sort(sortOption)
+      .limit(limit)
+      .select("storeName logo banner rating category storeProducts address totalOrders createdAt")
+      .lean();
+
+    return res.status(200).json(
+      new ApiResponse(200, stores, "Stores fetched successfully")
+    );
+
+  } catch (error) {
+    console.error("GET STORES ERROR:", error);
+    return res.status(500).json(
+      new ApiResponse(500, {}, "Internal server error")
+    );
+  }
+}
 
 async function handelSaveStoreSearch(req, res) {
   try {
@@ -18,7 +105,7 @@ async function handelSaveStoreSearch(req, res) {
         .json(new ApiResponse(400, {}, "Query is required"));
     }
 
-    // Find or create user search history
+    
     let userHistory = await SearchHistory.findOne({ user: userId });
     if (!userHistory) {
       userHistory = new SearchHistory({
@@ -28,15 +115,14 @@ async function handelSaveStoreSearch(req, res) {
       });
     }
 
-    // Remove duplicate
+    
     userHistory.storeSearches = userHistory.storeSearches.filter(
       (item) => item !== query
     );
 
-    // Add latest search to front
     userHistory.storeSearches.unshift(query);
 
-    // Keep only last 10 searches
+    
     if (userHistory.storeSearches.length > 10) {
       userHistory.storeSearches.pop();
     }
@@ -997,6 +1083,6 @@ async function handelClearStore(req, res) {
   }
 }
 
-export { handleCreateStore, handelGetAllStores, handelGetSearchedStore, handelClearStore, handelGetTopSeller, handelGetNewlyOpened, handelGetStoresOfMycities , handelGetFeaturedStores , handleGetFilteredStores , handleGetStoreDetails , handelGetStoresByOwner , handleGetStoresByCategory , handleCheckStoreSubscription , handleToggleStoreSubscription , handleRateStore , handleCheckStoreRating , handelGetSearchHistory , handelSaveStoreSearch };
+export { handleCreateStore, handelGetAllStores, handelGetSearchedStore, handelClearStore, handelGetTopSeller, handelGetNewlyOpened, handelGetStoresOfMycities , handelGetFeaturedStores , handleGetFilteredStores , handleGetStoreDetails , handelGetStoresByOwner , handleGetStoresByCategory , handleCheckStoreSubscription , handleToggleStoreSubscription , handleRateStore , handleCheckStoreRating , handelGetSearchHistory , handelSaveStoreSearch , handelGetStores };
 
 

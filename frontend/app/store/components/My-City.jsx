@@ -71,8 +71,8 @@ export default function StoresOfMyCity() {
         </div>
 
         <button
-  onClick={() => router.push("/store/stores?featured=true")}
-  className="
+          onClick={() => router.push("/store/stores?nearby=true")}
+          className="
     cursor-pointer
     w-[40px] sm:w-[50px]
     h-[30px] sm:h-[34px]
@@ -84,11 +84,11 @@ export default function StoresOfMyCity() {
     hover:bg-blue-900
     transition
   "
->
-  <span className="text-lg sm:text-xl leading-none">
-    →
-  </span>
-</button>
+        >
+          <span className="text-lg sm:text-xl leading-none">
+            →
+          </span>
+        </button>
       </div>
 
       <div className="relative">
