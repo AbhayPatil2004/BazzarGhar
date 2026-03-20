@@ -4,9 +4,12 @@ import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import StoreCard from "../components/StoreCard";
 import { Search } from "lucide-react";
+import SearchWithHistory from "../components/Search";
+import { useAuth } from "../../context/Authcontext";
 
 export default function StoresPage() {
   const searchParams = useSearchParams();
+  const { user, token } = useAuth();
 
   const search = searchParams.get("search");
   const trending = searchParams.get("trending");
@@ -35,7 +38,10 @@ export default function StoresPage() {
     const fetchStores = async () => {
       setLoading(true);
       try {
-        const res = await fetch(`${API_BASE}/store?${buildQuery()}`);
+        const res = await fetch(`${API_BASE}/store/stores/?${buildQuery()}` , 
+      {
+        credentials : "include"
+      });
         const data = await res.json();
         setStores(data.data || []);
       } catch (err) {
@@ -48,7 +54,6 @@ export default function StoresPage() {
     fetchStores();
   }, [search, trending, featured, newly, nearby]);
 
-  // 🔥 Detailed Heading Content
   const getHeadingData = () => {
     if (search) {
       return {
@@ -102,32 +107,51 @@ export default function StoresPage() {
   return (
     <div className="min-h-screen bg-white w-full">
 
-      {/*  Heading Section */}
-      <div className="px-2 sm:px-4 md:px-6 py-6 w-full">
+      {/* 🔍 ONLY ADDED SEARCH BAR (no logic touched) */}
+      <section className="w-full bg-gradient-to-br from-blue-50 to-white py-6">
+        <div className="max-w-7xl mx-auto px-4 md:px-8">
 
-        <span className="text-[10px] sm:text-xs tracking-widest uppercase text-gray-500">
-          {heading.tag}
-        </span>
+          <SearchWithHistory
+            user={user}
+            token={token}
+            apiBase={API_BASE}
+            placeholder="Search stores..."
+            redirectPath="/store/stores"
+            fetchEndpoint="/store/searchhistory"
+            saveEndpoint="/store/savesearchhistory"
+            queryParam="search"
+          />
 
-        <h2 className="mt-1 text-lg sm:text-2xl md:text-3xl font-bold text-gray-900 leading-tight">
-          {heading.title}
-        </h2>
+        </div>
 
-        <p className="mt-2 text-gray-600 text-xs sm:text-sm md:text-base max-w-2xl">
-          {heading.desc}
-        </p>
+        <div className="px-2 sm:px-4 md:px-6 py-6 w-full">
 
-        {!loading && (
-          <p className="mt-2 text-xs sm:text-sm text-gray-500">
-            {stores.length} stores found
+          <span className="text-[10px] sm:text-xs tracking-widest uppercase text-gray-500">
+            {heading.tag}
+          </span>
+
+          <h2 className="mt-1 text-lg sm:text-2xl md:text-3xl font-bold text-gray-900 leading-tight">
+            {heading.title}
+          </h2>
+
+          <p className="mt-2 text-gray-600 text-xs sm:text-sm md:text-base max-w-2xl">
+            {heading.desc}
           </p>
-        )}
-      </div>
+
+          {!loading && (
+            <p className="mt-2 text-xs sm:text-sm text-gray-500">
+              {stores.length} stores found
+            </p>
+          )}
+        </div>
+
+      </section>
+
+      {/* Heading Section */}
 
       {/* Content */}
       <div className="w-full px-2 sm:px-4 md:px-6 pb-10 w-full">
 
-        {/* Loading */}
         {loading && (
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 sm:gap-6">
             {Array.from({ length: 10 }).map((_, i) => (
@@ -140,7 +164,6 @@ export default function StoresPage() {
           </div>
         )}
 
-        {/* Empty */}
         {!loading && stores.length === 0 && (
           <div className="flex flex-col items-center justify-center py-20 text-center">
             <Search size={50} className="text-gray-300 mb-4" />
@@ -149,7 +172,6 @@ export default function StoresPage() {
           </div>
         )}
 
-        {/* Grid */}
         {!loading && stores.length > 0 && (
           <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-6">
             {stores.map((store) => (

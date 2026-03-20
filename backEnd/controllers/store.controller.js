@@ -8,11 +8,14 @@ import mongoose from 'mongoose'
 
 async function handelGetStores(req, res) {
   try {
+    console.log("---- API CALLED ----");
+    console.log("QUERY:", req.query);
+    console.log("USER FROM MIDDLEWARE:", req.user);
+
     const { search, featured, trending, newly, nearby } = req.query;
 
     const now = new Date();
 
-    // 🔹 Base filter (common)
     let filter = {
       isActive: true,
       isApproved: "accepted",
@@ -33,6 +36,8 @@ async function handelGetStores(req, res) {
 
     // 🔍 Search
     if (search && search.trim()) {
+      console.log("SEARCH PARAM:", search);
+
       filter.storeName = {
         $regex: search.trim(),
         $options: "i"
@@ -41,14 +46,18 @@ async function handelGetStores(req, res) {
 
     // ⭐ Featured
     if (featured === "true") {
+      console.log("FEATURED FILTER APPLIED");
+
       filter.subscriptionPlan = "premium";
       filter.isSubscriptionActive = true;
       sortOption = { subscriptionEndDate: -1 };
       limit = 10;
     }
 
-    // 🔥 Trending (Top Sellers)
+    // 🔥 Trending
     if (trending === "true") {
+      console.log("TRENDING FILTER APPLIED");
+
       sortOption = {
         totalOrders: -1,
         rating: -1,
@@ -58,29 +67,57 @@ async function handelGetStores(req, res) {
       limit = 8;
     }
 
-    // 🆕 Newly Opened
+    // 🆕 Newly
     if (newly === "true") {
+      console.log("NEWLY FILTER APPLIED");
+
       sortOption = { createdAt: -1 };
       limit = 8;
     }
 
-    // 📍 Nearby (user city)
+    // 📍 Nearby
     if (nearby === "true") {
-      const user = await User.findById(req.user?._id);
+      console.log("NEARBY FILTER TRIGGERED");
 
-      if (user?.address?.[0]?.city) {
+      if (!req.user?._id) {
+        console.log("❌ USER NOT FOUND");
+        return res.status(401).json({
+          message: "Login required for nearby stores"
+        });
+      }
+
+      const user = await User.findById(req.user._id).lean();
+
+      console.log("USER FROM DB:", user);
+
+      const userCity = user?.address?.[0]?.city?.trim();
+
+      console.log("USER CITY:", userCity);
+
+      if (userCity) {
         filter["address.city"] = {
-          $regex: `^${user.address[0].city}$`,
-          $options: "i"
-        };
+  $regex: `^${userCity}$`,
+  $options: "i"
+};
+
+        console.log("NEARBY FILTER APPLIED:", filter.address);
+      } else {
+        console.log("❌ USER CITY NOT FOUND");
       }
     }
+
+    console.log("FINAL FILTER:", JSON.stringify(filter, null, 2));
+    console.log("SORT:", sortOption);
+    console.log("LIMIT:", limit);
 
     const stores = await Store.find(filter)
       .sort(sortOption)
       .limit(limit)
       .select("storeName logo banner rating category storeProducts address totalOrders createdAt")
       .lean();
+
+    console.log("RESULT COUNT:", stores.length);
+    console.log("SAMPLE STORE:", stores[0]);
 
     return res.status(200).json(
       new ApiResponse(200, stores, "Stores fetched successfully")
@@ -105,7 +142,7 @@ async function handelSaveStoreSearch(req, res) {
         .json(new ApiResponse(400, {}, "Query is required"));
     }
 
-    
+
     let userHistory = await SearchHistory.findOne({ user: userId });
     if (!userHistory) {
       userHistory = new SearchHistory({
@@ -115,14 +152,14 @@ async function handelSaveStoreSearch(req, res) {
       });
     }
 
-    
+
     userHistory.storeSearches = userHistory.storeSearches.filter(
       (item) => item !== query
     );
 
     userHistory.storeSearches.unshift(query);
 
-    
+
     if (userHistory.storeSearches.length > 10) {
       userHistory.storeSearches.pop();
     }
@@ -150,9 +187,9 @@ async function handelSaveStoreSearch(req, res) {
 async function handelGetSearchHistory(req, res) {
   try {
     const userId = req.user._id;
-    
+
     const userHistory = await SearchHistory.findOne({ user: userId });
-    
+
     const storeSearches = userHistory?.storeSearches || [];
 
     return res
@@ -205,7 +242,7 @@ async function handleCheckStoreRating(req, res) {
       totalRatings === 0
         ? 0
         : store.ratings.reduce((acc, r) => acc + r.value, 0) /
-          totalRatings;
+        totalRatings;
 
     return res.status(200).json(
       new ApiResponse(
@@ -279,7 +316,7 @@ async function handleRateStore(req, res) {
       totalRatings === 0
         ? 0
         : store.ratings.reduce((acc, r) => acc + r.value, 0) /
-          totalRatings;
+        totalRatings;
 
     return res.status(200).json(
       new ApiResponse(
@@ -311,14 +348,14 @@ async function handleCheckStoreSubscription(req, res) {
         .json(new ApiResponse(401, {}, "Unauthorized"));
     }
 
-    
+
     if (!mongoose.Types.ObjectId.isValid(storeId)) {
       return res
         .status(400)
         .json(new ApiResponse(400, {}, "Invalid store ID"));
     }
 
-    
+
     const store = await Store.findOne({
       _id: storeId,
       subscriber: userId,
@@ -348,21 +385,21 @@ async function handleToggleStoreSubscription(req, res) {
     const { storeId } = req.params;
     const userId = req.user?._id;
 
-    
+
     if (!userId) {
       return res
         .status(401)
         .json(new ApiResponse(401, {}, "Unauthorized"));
     }
 
-    
+
     if (!mongoose.Types.ObjectId.isValid(storeId)) {
       return res
         .status(400)
         .json(new ApiResponse(400, {}, "Invalid store ID"));
     }
 
-    
+
     const store = await Store.findById(storeId);
 
     if (!store) {
@@ -371,7 +408,7 @@ async function handleToggleStoreSubscription(req, res) {
         .json(new ApiResponse(404, {}, "Store not found"));
     }
 
-    
+
     const isAlreadySubscribed = store.subscriber.some(
       (id) => id.toString() === userId.toString()
     );
@@ -380,7 +417,7 @@ async function handleToggleStoreSubscription(req, res) {
     let isSubscribed;
 
     if (isAlreadySubscribed) {
-     
+
       store.subscriber = store.subscriber.filter(
         (id) => id.toString() !== userId.toString()
       );
@@ -388,7 +425,7 @@ async function handleToggleStoreSubscription(req, res) {
       message = "Unsubscribed successfully";
       isSubscribed = false;
     } else {
-      
+
       store.subscriber.push(userId);
 
       message = "Subscribed successfully";
@@ -428,7 +465,7 @@ async function handleGetStoresByCategory(req, res) {
 
     const now = new Date();
 
-    
+
     let filter = {
       isActive: true,
       $or: [
@@ -443,7 +480,7 @@ async function handleGetStoresByCategory(req, res) {
       ]
     };
 
-    
+
     if (category.toLowerCase() !== "general") {
       filter.category = category;
     }
@@ -507,7 +544,7 @@ async function handelGetStoresByOwner(req, res) {
 }
 
 // async function handleGetStoreDetails(req, res) {
-  
+
 //   try {
 //     const { storeId } = req.params;
 
@@ -1083,6 +1120,6 @@ async function handelClearStore(req, res) {
   }
 }
 
-export { handleCreateStore, handelGetAllStores, handelGetSearchedStore, handelClearStore, handelGetTopSeller, handelGetNewlyOpened, handelGetStoresOfMycities , handelGetFeaturedStores , handleGetFilteredStores , handleGetStoreDetails , handelGetStoresByOwner , handleGetStoresByCategory , handleCheckStoreSubscription , handleToggleStoreSubscription , handleRateStore , handleCheckStoreRating , handelGetSearchHistory , handelSaveStoreSearch , handelGetStores };
+export { handleCreateStore, handelGetAllStores, handelGetSearchedStore, handelClearStore, handelGetTopSeller, handelGetNewlyOpened, handelGetStoresOfMycities, handelGetFeaturedStores, handleGetFilteredStores, handleGetStoreDetails, handelGetStoresByOwner, handleGetStoresByCategory, handleCheckStoreSubscription, handleToggleStoreSubscription, handleRateStore, handleCheckStoreRating, handelGetSearchHistory, handelSaveStoreSearch, handelGetStores };
 
 

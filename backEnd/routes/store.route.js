@@ -15,7 +15,7 @@ router.post(
 // router.get("/my/:storeId" , handelUserAuthentication , handelUserAuthorization , handelGetStoreByIdForSeller )
 router.post("/category", handleGetStoresByCategory);
 
-router.get("/stores" , handelGetStores );
+router.get("/stores" , handelUserLogin , handelGetStores );
 
 router.get("/searchhistory" , handelUserAuthentication , handelGetSearchHistory );
 router.post("/savesearchhistory" , handelUserAuthentication , handelSaveStoreSearch );
