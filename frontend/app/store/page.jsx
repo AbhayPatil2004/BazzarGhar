@@ -15,7 +15,7 @@ function page() {
       {/* <SearchBar></SearchBar> */}
       {/* <StoreFilters></StoreFilters> */}
       <HeroSection></HeroSection>
-      <CategoriesSection></CategoriesSection>
+      {/* <CategoriesSection></CategoriesSection> */}
       <TopSellersPage></TopSellersPage>
       <FeaturedStores></FeaturedStores>
       <NewlyOpenedStores></NewlyOpenedStores>

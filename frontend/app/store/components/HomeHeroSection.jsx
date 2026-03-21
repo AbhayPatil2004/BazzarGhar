@@ -1,29 +1,27 @@
 "use client";
 
-import { useAuth } from "../../context/Authcontext";
 import SearchWithHistory from "./Search";
+import { useAuth } from "../../context/Authcontext";
+// import { useAuth } from "@/context/Authcontext";
 
-export default function StoresHeroWithSearchOnly() {
+const API_BASE = process.env.NEXT_PUBLIC_API_URL;
+
+export default function StoreSearch() {
   const { user, token } = useAuth();
 
-  const API_BASE = process.env.NEXT_PUBLIC_API_URL;
-
   return (
-    <section className="w-full bg-gradient-to-br from-blue-50 to-white py-6">
-      <div className="max-w-7xl mx-auto px-4 md:px-8">
-
-        <SearchWithHistory
-          user={user}
-          token={token}
-          apiBase={API_BASE}
-          placeholder="Search stores..."
-          redirectPath="/store/stores"
-          fetchEndpoint="/store/searchhistory"
-          saveEndpoint="/store/savesearchhistory"
-          queryParam="search"
-        />
-
-      </div>
-    </section>
+    // StoreSearch.jsx
+    // StoreSearch.jsx
+<SearchWithHistory
+  user={user}
+  token={token}
+  apiBase={API_BASE}
+  placeholder="Search local stores..."
+  redirectPath="/store/stores"
+  fetchEndpoint="/store/searchhistory"
+  saveEndpoint="/store/savesearchhistory"
+  queryParam="search"
+  historyKey="storeSearches"
+/>
   );
 }

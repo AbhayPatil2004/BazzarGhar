@@ -1,8 +1,13 @@
 import React from 'react'
+import ProductHeroWithSearchOnly from './components/Header'
+import CategorySection from './components/category'
 
 function page() {
   return (
-    <div>page</div>
+    <div>
+      <ProductHeroWithSearchOnly></ProductHeroWithSearchOnly>
+      <CategorySection></CategorySection>
+    </div>
   )
 }
 

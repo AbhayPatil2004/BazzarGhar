@@ -3,6 +3,101 @@ import ApiResponse from "../utils/ApiResponse.js";;
 import ReccomendProduct from "../models/recommend.model.js";
 import SponserProduct from "../models/sponser.model.js";
 import Store from "../models/store.model.js";
+import SearchHistory from "../models/search.model.js";
+
+async function handelAddToCart( req , res ){
+
+  try{
+
+  }
+  catch(error){
+    return res
+      .status(500)
+      .json(new ApiResponse(500, {}, "Internal server error"));
+  }
+}
+
+async function handelAddToWishList( req , res ){
+
+  try{
+
+  }
+  catch(error){
+    return res
+      .status(500)
+      .json(new ApiResponse(500, {}, "Internal server error"));
+  }
+}
+
+
+
+async function handelSaveProductSearch(req, res) {
+  try {
+    const userId = req.user._id;
+    const { query } = req.body;
+
+    if (!query || !query.trim()) {
+      return res
+        .status(400)
+        .json(new ApiResponse(400, {}, "Query is required"));
+    }
+
+    let userHistory = await SearchHistory.findOne({ user: userId });
+    if (!userHistory) {
+      userHistory = new SearchHistory({
+        user: userId,
+        storeSearches: [],
+        productSearches: [],
+      });
+    }
+
+    userHistory.productSearches = userHistory.productSearches.filter(
+      (item) => item !== query
+    );
+
+    userHistory.productSearches.unshift(query);
+
+    if (userHistory.productSearches.length > 10) {
+      userHistory.productSearches.pop();
+    }
+
+    await userHistory.save();
+
+    return res
+      .status(200)
+      .json(
+        new ApiResponse(
+          200,
+          { productSearches: userHistory.productSearches },
+          "Product search saved successfully"
+        )
+      );
+  } catch (error) {
+    console.error("Error saving product search:", error);
+    return res
+      .status(500)
+      .json(new ApiResponse(500, {}, "Internal server error"));
+  }
+}
+
+async function handelGetProductSearchHistory(req, res) {
+  try {
+    const userId = req.user._id;
+
+    const userHistory = await SearchHistory.findOne({ user: userId });
+
+    const productSearches = userHistory?.productSearches || [];
+
+    return res
+      .status(200)
+      .json(new ApiResponse(200, { productSearches }, "Product searches fetched successfully"));
+  } catch (error) {
+    console.error("Error fetching product search history:", error);
+    return res
+      .status(500)
+      .json(new ApiResponse(500, {}, "Internal server error"));
+  }
+}
 
 async function handelGetallProducts(req, res) {
   try {
@@ -280,4 +375,4 @@ async function handelClearProduct(req, res) {
   }
 }
 
-export { handelAddProduct, handelGetallProducts, handelGetRecommendedProducts, handelGetSearchProducts, handelGetSponseredProducts, handelGetSponseredStoreProducts , handelClearProduct }
+export { handelAddProduct, handelGetallProducts, handelGetRecommendedProducts, handelGetSearchProducts, handelGetSponseredProducts, handelGetSponseredStoreProducts , handelClearProduct , handelSaveProductSearch , handelGetProductSearchHistory }
