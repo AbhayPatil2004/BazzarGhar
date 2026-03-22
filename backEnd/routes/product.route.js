@@ -1,11 +1,11 @@
 import express from 'express'
 import handelUserAuthorization from '../middleware/seller.authorized.middleware.js'
 import { handelUserAuthentication } from '../middleware/authenticate.middleware.js'
-import { handelAddProduct , handelGetallProducts , handelGetSearchProducts , handelGetRecommendedProducts , handelGetSponseredProducts ,handelGetSponseredStoreProducts , handelClearProduct , handelGetProductSearchHistory , handelSaveProductSearch } from "../controllers/product.controller.js"
+import { handelAddProduct , handelGetAllProducts , handelGetSearchProducts , handelGetRecommendedProducts , handelGetSponseredProducts ,handelGetSponseredStoreProducts , handelClearProduct , handelGetProductSearchHistory , handelSaveProductSearch } from "../controllers/product.controller.js"
 
 const router = express.Router()
 
-router.get("/" , handelGetallProducts )
+router.get("/products", handelGetAllProducts);
 router.post("/add" , handelUserAuthentication , handelUserAuthorization , handelAddProduct )
 router.get("/search" , handelGetSearchProducts )
 router.get("/recommend" , handelGetRecommendedProducts )

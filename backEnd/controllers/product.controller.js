@@ -5,6 +5,111 @@ import SponserProduct from "../models/sponser.model.js";
 import Store from "../models/store.model.js";
 import SearchHistory from "../models/search.model.js";
 
+async function handelGetAllProducts(req, res) {
+  try {
+    const {
+      page = 1,
+      limit = 20,
+      sort,
+      category,
+      gender,
+      minPrice,
+      maxPrice,
+      rating,
+      search,
+      tags,
+      inStock,
+      isReturnable,
+    } = req.query;
+
+    const filter = {
+      isDeleted: false,
+      isActive: true,
+    };
+
+    // category
+    if (category) filter.category = category;
+
+    // gender
+    if (gender) filter.gender = gender;
+
+    // price range
+    if (minPrice || maxPrice) {
+      filter.finalPrice = {};
+      if (minPrice) filter.finalPrice.$gte = Number(minPrice);
+      if (maxPrice) filter.finalPrice.$lte = Number(maxPrice);
+    }
+
+    // minimum rating
+    if (rating) filter.rating = { $gte: Number(rating) };
+
+    // in stock only
+    if (inStock === "true") filter.stock = { $gt: 0 };
+
+    // returnable only
+    if (isReturnable === "true") filter.isReturnable = true;
+
+    // search — matches title, tags, searchKeyword
+    if (search) {
+      const regex = new RegExp(search.trim(), "i");
+      filter.$or = [
+        { title:         regex },
+        { tags:          regex },
+        { searchKeyword: regex },
+        { category:      regex },
+      ];
+    }
+
+    // tags filter
+    if (tags) {
+      const tagsArray = tags.split(",").map((t) => t.trim());
+      filter.tags = { $in: tagsArray };
+    }
+
+    // sort
+    let sortOption = { createdAt: -1 }; // default: newest
+    if (sort === "trending")        sortOption = { totalReviews: -1, rating: -1 };
+    if (sort === "rating")          sortOption = { rating: -1 };
+    if (sort === "price_asc")       sortOption = { finalPrice: 1 };
+    if (sort === "price_desc")      sortOption = { finalPrice: -1 };
+    if (sort === "newest")          sortOption = { createdAt: -1 };
+    if (sort === "most_reviewed")   sortOption = { totalReviews: -1 };
+
+    const pageNum  = Math.max(1, parseInt(page));
+    const limitNum = Math.min(50, Math.max(1, parseInt(limit)));
+    const skip     = (pageNum - 1) * limitNum;
+
+    const [products, total] = await Promise.all([
+      Product.find(filter)
+        .populate("store", "name")
+        .populate("seller", "username avatar")
+        .sort(sortOption)
+        .skip(skip)
+        .limit(limitNum)
+        .lean(),
+      Product.countDocuments(filter),
+    ]);
+
+    return res.status(200).json(
+      new ApiResponse(200, {
+        products,
+        total,
+        page:       pageNum,
+        limit:      limitNum,
+        totalPages: Math.ceil(total / limitNum),
+        hasNextPage: pageNum < Math.ceil(total / limitNum),
+        hasPrevPage: pageNum > 1,
+      }, "Products fetched successfully")
+    );
+
+  } catch (error) {
+    console.error("Error fetching products:", error);
+    return res.status(500).json(new ApiResponse(500, {}, "Internal Server Error"));
+  }
+}
+
+
+
 async function handelAddToCart( req , res ){
 
   try{
@@ -375,4 +480,4 @@ async function handelClearProduct(req, res) {
   }
 }
 
-export { handelAddProduct, handelGetallProducts, handelGetRecommendedProducts, handelGetSearchProducts, handelGetSponseredProducts, handelGetSponseredStoreProducts , handelClearProduct , handelSaveProductSearch , handelGetProductSearchHistory }
+export { handelAddProduct, handelGetAllProducts , handelGetRecommendedProducts, handelGetSearchProducts, handelGetSponseredProducts, handelGetSponseredStoreProducts , handelClearProduct , handelSaveProductSearch , handelGetProductSearchHistory }
