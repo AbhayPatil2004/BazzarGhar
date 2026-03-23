@@ -53,10 +53,10 @@ async function handelGetAllProducts(req, res) {
     if (search) {
       const regex = new RegExp(search.trim(), "i");
       filter.$or = [
-        { title:         regex },
-        { tags:          regex },
+        { title: regex },
+        { tags: regex },
         { searchKeyword: regex },
-        { category:      regex },
+        { category: regex },
       ];
     }
 
@@ -68,20 +68,20 @@ async function handelGetAllProducts(req, res) {
 
     // sort
     let sortOption = { createdAt: -1 }; // default: newest
-    if (sort === "trending")        sortOption = { totalReviews: -1, rating: -1 };
-    if (sort === "rating")          sortOption = { rating: -1 };
-    if (sort === "price_asc")       sortOption = { finalPrice: 1 };
-    if (sort === "price_desc")      sortOption = { finalPrice: -1 };
-    if (sort === "newest")          sortOption = { createdAt: -1 };
-    if (sort === "most_reviewed")   sortOption = { totalReviews: -1 };
+    if (sort === "trending") sortOption = { totalReviews: -1, rating: -1 };
+    if (sort === "rating") sortOption = { rating: -1 };
+    if (sort === "price_asc") sortOption = { finalPrice: 1 };
+    if (sort === "price_desc") sortOption = { finalPrice: -1 };
+    if (sort === "newest") sortOption = { createdAt: -1 };
+    if (sort === "most_reviewed") sortOption = { totalReviews: -1 };
 
-    const pageNum  = Math.max(1, parseInt(page));
+    const pageNum = Math.max(1, parseInt(page));
     const limitNum = Math.min(50, Math.max(1, parseInt(limit)));
-    const skip     = (pageNum - 1) * limitNum;
+    const skip = (pageNum - 1) * limitNum;
 
     const [products, total] = await Promise.all([
       Product.find(filter)
-        .populate("store", "name")
+        .populate("store", "storeName")
         .populate("seller", "username avatar")
         .sort(sortOption)
         .skip(skip)
@@ -94,8 +94,8 @@ async function handelGetAllProducts(req, res) {
       new ApiResponse(200, {
         products,
         total,
-        page:       pageNum,
-        limit:      limitNum,
+        page: pageNum,
+        limit: limitNum,
         totalPages: Math.ceil(total / limitNum),
         hasNextPage: pageNum < Math.ceil(total / limitNum),
         hasPrevPage: pageNum > 1,
@@ -110,24 +110,24 @@ async function handelGetAllProducts(req, res) {
 
 
 
-async function handelAddToCart( req , res ){
+async function handelAddToCart(req, res) {
 
-  try{
+  try {
 
   }
-  catch(error){
+  catch (error) {
     return res
       .status(500)
       .json(new ApiResponse(500, {}, "Internal server error"));
   }
 }
 
-async function handelAddToWishList( req , res ){
+async function handelAddToWishList(req, res) {
 
-  try{
+  try {
 
   }
-  catch(error){
+  catch (error) {
     return res
       .status(500)
       .json(new ApiResponse(500, {}, "Internal server error"));
@@ -392,7 +392,7 @@ async function handelAddProduct(req, res) {
   try {
     const sellerId = req.user._id;
 
-    
+
     const {
       title,
       description,
@@ -480,4 +480,4 @@ async function handelClearProduct(req, res) {
   }
 }
 
-export { handelAddProduct, handelGetAllProducts , handelGetRecommendedProducts, handelGetSearchProducts, handelGetSponseredProducts, handelGetSponseredStoreProducts , handelClearProduct , handelSaveProductSearch , handelGetProductSearchHistory }
+export { handelAddProduct, handelGetAllProducts, handelGetRecommendedProducts, handelGetSearchProducts, handelGetSponseredProducts, handelGetSponseredStoreProducts, handelClearProduct, handelSaveProductSearch, handelGetProductSearchHistory }

@@ -187,7 +187,7 @@ export default function ProductCard({ product, user, apiBase, initialWishlisted 
             }}
             className="text-[10px] sm:text-xs text-blue-500 font-semibold truncate hover:text-blue-700 hover:underline cursor-pointer w-fit"
           >
-            {store?.name || "Local Store"}
+            {store?.storeName || "Local Store"}
           </p>
 
           {/* title */}
