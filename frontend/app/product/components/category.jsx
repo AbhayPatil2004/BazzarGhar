@@ -138,10 +138,10 @@ export default function CategoriesSection() {
   const category = featured[index];
 
   return (
-    <section className="w-full bg-gray-50 py-6 sm:py-8 space-y-8 sm:space-y-10">
+    <section className="w-full py-8 sm:py-12 space-y-10 sm:space-y-14">
 
       {/* ── Featured Slider ── */}
-      <div className="w-[95%] mx-auto">
+      <div className="w-full px-4 sm:px-6">
 
         {/* header */}
         <div className="flex items-end justify-between mb-3 sm:mb-4 px-1">
@@ -157,7 +157,7 @@ export default function CategoriesSection() {
             </h2>
           </div>
           {/* dot indicators */}
-          <div className="flex items-center gap-1.5">
+          <div className="flex items-center gap-2">
             {featured.map((_, i) => (
               <button
                 key={i}
@@ -166,10 +166,10 @@ export default function CategoriesSection() {
                   changeSlide(i);
                   setTimeout(() => { isFeaturedPaused.current = false; }, 3000);
                 }}
-                className={`cursor-pointer rounded-full transition-all duration-300 ${
+                className={`cursor-pointer rounded-full transition-all duration-500 ${
                   i === index
-                    ? "w-5 h-2 bg-blue-600"
-                    : "w-2 h-2 bg-gray-300 hover:bg-gray-400"
+                    ? "w-8 h-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 shadow-md"
+                    : "w-2.5 h-2.5 bg-gray-300 hover:bg-blue-400"
                 }`}
               />
             ))}
@@ -178,7 +178,7 @@ export default function CategoriesSection() {
 
         {/* slide */}
         <div
-          className="relative w-full h-[220px] sm:h-[320px] md:h-[400px] lg:h-[440px] rounded-2xl overflow-hidden shadow-xl cursor-pointer select-none"
+          className="relative w-full h-[240px] sm:h-[340px] md:h-[420px] lg:h-[480px] rounded-[2rem] overflow-hidden shadow-[0_20px_50px_-12px_rgba(0,0,0,0.15)] cursor-pointer select-none group"
           onClick={handleFeaturedClick}
           onMouseEnter={() => { isFeaturedPaused.current = true;  }}
           onMouseLeave={() => { isFeaturedPaused.current = false; }}
@@ -213,35 +213,34 @@ export default function CategoriesSection() {
             />
           )}
           {/* overlay */}
-          <div className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/50 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/40 to-transparent pointer-events-none z-0" />
 
           {/* text */}
-          <div className="absolute inset-0 flex flex-col justify-between p-4 sm:p-7 md:p-10 text-white pointer-events-none">
+          <div className="absolute inset-0 flex flex-col justify-between p-5 sm:p-8 md:p-12 text-white pointer-events-none z-10">
             <div>
-              <p className="text-xs sm:text-sm font-medium text-blue-300 uppercase tracking-widest">
+              <p className="inline-block text-xs sm:text-sm font-bold text-blue-300 uppercase tracking-widest bg-white/10 backdrop-blur-md px-3 py-1 rounded-full border border-white/10 mb-2">
                 BazzarGhar
               </p>
-              <div className="w-8 h-0.5 bg-blue-500 mt-1.5 rounded-full" />
             </div>
-            <div>
+            <div className="max-w-xl group-hover:translate-x-2 transition-transform duration-500 ease-out">
               <h2
-                className="font-bold leading-tight mb-1.5 sm:mb-2"
-                style={{ fontSize: "clamp(1.5rem, 5vw, 3.2rem)" }}
+                className="font-extrabold leading-tight mb-2 sm:mb-3 drop-shadow-md"
+                style={{ fontSize: "clamp(1.8rem, 5vw, 3.5rem)" }}
               >
                 {category.name}
               </h2>
               <p
-                className="text-white/80 max-w-sm line-clamp-2 mb-3 sm:mb-5"
-                style={{ fontSize: "clamp(0.75rem, 1.8vw, 1rem)" }}
+                className="text-white/90 max-w-sm line-clamp-3 mb-4 sm:mb-6 leading-relaxed"
+                style={{ fontSize: "clamp(0.85rem, 1.8vw, 1.1rem)" }}
               >
                 {category.description}
               </p>
               <button
                 onClick={(e) => { e.stopPropagation(); handleFeaturedClick(); }}
-                className="pointer-events-auto cursor-pointer inline-flex items-center gap-2 px-4 sm:px-5 py-2 sm:py-2.5 bg-blue-600 hover:bg-blue-700 active:scale-95 transition-all duration-150 rounded-full font-semibold shadow-lg"
-                style={{ fontSize: "clamp(0.72rem, 1.5vw, 0.875rem)" }}
+                className="pointer-events-auto cursor-pointer inline-flex items-center gap-2 px-6 sm:px-8 py-2.5 sm:py-3.5 bg-white text-gray-900 hover:bg-blue-50/90 active:scale-95 transition-all duration-300 rounded-full font-bold shadow-[0_8px_25px_rgba(0,0,0,0.15)] group/btn"
+                style={{ fontSize: "clamp(0.85rem, 1.5vw, 1rem)" }}
               >
-                Explore Now <ArrowRight size={14} />
+                Explore Now <ArrowRight size={16} className="group-hover/btn:translate-x-1.5 transition-transform duration-300" />
               </button>
             </div>
           </div>
@@ -266,7 +265,7 @@ export default function CategoriesSection() {
       </div>
 
       {/* ── All Categories ── */}
-      <div className="w-[95%] mx-auto">
+      <div className="w-full px-4 sm:px-6">
 
         {/* header */}
         <div className="flex items-end justify-between mb-4 px-1">
@@ -327,18 +326,18 @@ export default function CategoriesSection() {
             <button
               key={value}
               onClick={() => handleCategoryClick(value)}
-              className="cursor-pointer group flex-shrink-0 flex flex-col items-center text-center gap-2 rounded-2xl border border-gray-100 bg-white hover:border-blue-200 hover:bg-blue-50/60 hover:shadow-md transition-all duration-200 active:scale-95 px-4 py-4"
-              style={{ minWidth: "90px" }}
+              className="cursor-pointer group flex-shrink-0 flex flex-col items-center text-center gap-3 rounded-[1.5rem] border border-gray-100/60 bg-white/70 backdrop-blur-md hover:border-blue-200 hover:bg-gradient-to-b hover:from-white hover:to-blue-50/50 hover:shadow-[0_8px_25px_-5px_rgba(59,130,246,0.12)] transition-all duration-300 active:scale-95 px-4 py-5"
+              style={{ minWidth: "100px" }}
             >
               <div
-                className="flex items-center justify-center w-12 h-12 rounded-xl bg-gray-50 group-hover:bg-white group-hover:shadow-sm transition-all duration-200"
-                style={{ fontSize: "1.6rem" }}
+                className="relative flex items-center justify-center w-14 h-14 rounded-2xl bg-gray-50/80 group-hover:bg-white group-hover:shadow-[0_4px_12px_rgba(0,0,0,0.05)] group-hover:-translate-y-1 transition-all duration-300"
+                style={{ fontSize: "1.7rem" }}
               >
                 {icon}
               </div>
               <p
-                className="font-semibold text-gray-700 group-hover:text-blue-700 leading-tight transition-colors duration-150 whitespace-nowrap"
-                style={{ fontSize: "0.72rem" }}
+                className="font-bold text-gray-600 group-hover:text-blue-700 leading-tight transition-colors duration-300 whitespace-nowrap"
+                style={{ fontSize: "0.75rem" }}
               >
                 {label}
               </p>

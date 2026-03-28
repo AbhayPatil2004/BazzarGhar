@@ -96,9 +96,9 @@ async function handelGetStores(req, res) {
 
       if (userCity) {
         filter["address.city"] = {
-  $regex: `^${userCity}$`,
-  $options: "i"
-};
+          $regex: `^${userCity}$`,
+          $options: "i"
+        };
 
         console.log("NEARBY FILTER APPLIED:", filter.address);
       } else {
@@ -182,7 +182,6 @@ async function handelSaveStoreSearch(req, res) {
       .json(new ApiResponse(500, {}, "Internal server error"));
   }
 }
-
 
 async function handelGetSearchHistory(req, res) {
   try {
@@ -1015,13 +1014,12 @@ async function handelGetSearchedStore(req, res) {
   }
 }
 
-async function handleCreateStore(req, res) {
-
+const handleCreateStore = async (req, res) => {
   try {
-
-    if (req.user.role == "admin") {
+    // ❌ Restrict admin
+    if (req.user.role === "admin") {
       return res.status(400).json(
-        new ApiResponse(400, {}, "Admins are noy Allowed to open store")
+        new ApiResponse(400, {}, "Admins are not allowed to open store")
       );
     }
 
@@ -1029,20 +1027,40 @@ async function handleCreateStore(req, res) {
       storeName,
       description,
       storeProducts,
+      category, // ✅ directly from frontend
       address,
       logoUrl,
-      bannerUrl
+      bannerUrl,
     } = req.body;
 
     const ownerId = req.user._id;
     const ownerName = req.user.username;
 
-    if (!storeName) {
+    // ✅ VALIDATIONS
+    if (!storeName || storeName.trim() === "") {
       return res.status(400).json(
         new ApiResponse(400, {}, "Store name is required")
       );
     }
 
+    if (!category || category.trim() === "") {
+      return res.status(400).json(
+        new ApiResponse(400, {}, "Category is required")
+      );
+    }
+
+    // ✅ Clean products array
+    const cleanedProducts = Array.isArray(storeProducts)
+      ? storeProducts.map((p) => p.trim()).filter(Boolean)
+      : [];
+
+    if (cleanedProducts.length === 0) {
+      return res.status(400).json(
+        new ApiResponse(400, {}, "At least one product is required")
+      );
+    }
+
+    // ✅ Check duplicate store
     const existingStore = await Store.findOne({ storeName });
     if (existingStore) {
       return res.status(409).json(
@@ -1050,45 +1068,52 @@ async function handleCreateStore(req, res) {
       );
     }
 
+    // ✅ URL validation
     const isValidUrl = (url) =>
       typeof url === "string" && url.startsWith("https://");
 
     const finalLogoUrl = isValidUrl(logoUrl) ? logoUrl : "";
     const finalBannerUrl = isValidUrl(bannerUrl) ? bannerUrl : "";
 
+    // ✅ CREATE STORE
     const store = await Store.create({
       owner: ownerId,
-      storeName,
-      description,
-      storeProducts,
-      address,
-      logo: logoUrl,
-      banner: bannerUrl,
+      storeName: storeName.trim(),
+      description: description || "",
+      storeProducts: cleanedProducts,
+      category, // ✅ stored directly
+      address: address || {},
+      logo: finalLogoUrl,
+      banner: finalBannerUrl,
       isApproved: "pending",
       isActive: true,
       subscriptionPlan: "trial",
-      // trialEndsAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
     });
 
+    // ✅ Notify admins
     const admins = await User.find({ role: "admin" });
 
-    const productsList = storeProducts.join(", ");
+    const productsList = cleanedProducts.join(", ");
 
-    admins.forEach(admin => {
-      sendMailToUser(
-        admin.email,
-        "To Open a Store",
-        storeOpeningBody(
-          admin.username,
-          ownerName,
-          storeName,
-          description,
-          productsList,
-          address
+    await Promise.all(
+      admins.map((admin) =>
+        sendMailToUser(
+          admin.email,
+          "New Store Approval Request",
+          storeOpeningBody(
+            admin.username,
+            ownerName,
+            storeName,
+            description,
+            productsList,
+            address,
+            category
+          )
         )
-      );
-    });
+      )
+    );
 
+    // ✅ SUCCESS RESPONSE
     return res.status(201).json(
       new ApiResponse(
         201,
@@ -1099,11 +1124,12 @@ async function handleCreateStore(req, res) {
 
   } catch (error) {
     console.error("Create Store Error:", error);
+
     return res.status(500).json(
       new ApiResponse(500, {}, "Internal server error")
     );
   }
-}
+};
 
 async function handelClearStore(req, res) {
   try {

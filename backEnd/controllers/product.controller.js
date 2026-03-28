@@ -20,65 +20,110 @@ async function handelGetAllProducts(req, res) {
       tags,
       inStock,
       isReturnable,
+      isEarlyDelivery, // ✅ added
     } = req.query;
 
+    // 🔹 BASE FILTER
     const filter = {
       isDeleted: false,
       isActive: true,
     };
 
-    // category
+    // 🔹 CATEGORY
     if (category) filter.category = category;
 
-    // gender
+    // 🔹 GENDER
     if (gender) filter.gender = gender;
 
-    // price range
+    // 🔹 PRICE RANGE
     if (minPrice || maxPrice) {
       filter.finalPrice = {};
       if (minPrice) filter.finalPrice.$gte = Number(minPrice);
       if (maxPrice) filter.finalPrice.$lte = Number(maxPrice);
     }
 
-    // minimum rating
-    if (rating) filter.rating = { $gte: Number(rating) };
+    // 🔹 RATING
+    if (rating) {
+      filter.rating = { $gte: Number(rating) };
+    }
 
-    // in stock only
-    if (inStock === "true") filter.stock = { $gt: 0 };
+    // 🔹 STOCK
+    if (inStock === "true") {
+      filter.stock = { $gt: 0 };
+    }
 
-    // returnable only
-    if (isReturnable === "true") filter.isReturnable = true;
+    // 🔹 RETURNABLE
+    if (isReturnable === "true") {
+      filter.isReturnable = true;
+    }
 
-    // search — matches title, tags, searchKeyword
+    // 🔹 EARLY DELIVERY (FIXED)
+    if (isEarlyDelivery === "true") {
+      filter.isEarlyDelivery = true;
+    }
+
+    // 🔹 SEARCH (IMPROVED)
     if (search) {
       const regex = new RegExp(search.trim(), "i");
       filter.$or = [
         { title: regex },
-        { tags: regex },
-        { searchKeyword: regex },
         { category: regex },
+        { searchKeyword: regex },
+        { tags: { $elemMatch: { $regex: regex } } }, // ✅ fixed
       ];
     }
 
-    // tags filter
+    // 🔹 TAG FILTER (IMPROVED)
     if (tags) {
       const tagsArray = tags.split(",").map((t) => t.trim());
-      filter.tags = { $in: tagsArray };
+      filter.tags = {
+        $in: tagsArray.map((t) => new RegExp(t, "i")), // ✅ case-insensitive
+      };
     }
 
-    // sort
-    let sortOption = { createdAt: -1 }; // default: newest
-    if (sort === "trending") sortOption = { totalReviews: -1, rating: -1 };
-    if (sort === "rating") sortOption = { rating: -1 };
-    if (sort === "price_asc") sortOption = { finalPrice: 1 };
-    if (sort === "price_desc") sortOption = { finalPrice: -1 };
-    if (sort === "newest") sortOption = { createdAt: -1 };
-    if (sort === "most_reviewed") sortOption = { totalReviews: -1 };
+    // 🔹 SORTING (FIXED & IMPROVED)
+    let sortOption = { createdAt: -1 }; // default
 
+    switch (sort) {
+      case "trending":
+        sortOption = {
+          rating: -1,
+          totalReviews: -1,
+          createdAt: -1, // fallback
+        };
+        break;
+
+      case "rating":
+        sortOption = { rating: -1 };
+        break;
+
+      case "price_asc":
+        sortOption = { finalPrice: 1 };
+        break;
+
+      case "price_desc":
+        sortOption = { finalPrice: -1 };
+        break;
+
+      case "discount": // ✅ ADDED
+        sortOption = { discountPercentage: -1 };
+        break;
+
+      case "newest":
+        sortOption = { createdAt: -1 };
+        break;
+
+      case "most_reviewed":
+        sortOption = { totalReviews: -1 };
+        break;
+    }
+
+    // 🔹 PAGINATION
     const pageNum = Math.max(1, parseInt(page));
     const limitNum = Math.min(50, Math.max(1, parseInt(limit)));
     const skip = (pageNum - 1) * limitNum;
 
+    // 🔹 QUERY EXECUTION
     const [products, total] = await Promise.all([
       Product.find(filter)
         .populate("store", "storeName")
@@ -87,11 +132,16 @@ async function handelGetAllProducts(req, res) {
         .skip(skip)
         .limit(limitNum)
         .lean(),
+
       Product.countDocuments(filter),
     ]);
 
-    return res.status(200).json(
-      new ApiResponse(200, {
+    // 🔹 RESPONSE
+    return res.status(200).json({
+      success: true,
+      statusCode: 200,
+      message: "Products fetched successfully",
+      data: {
         products,
         total,
         page: pageNum,
@@ -99,15 +149,20 @@ async function handelGetAllProducts(req, res) {
         totalPages: Math.ceil(total / limitNum),
         hasNextPage: pageNum < Math.ceil(total / limitNum),
         hasPrevPage: pageNum > 1,
-      }, "Products fetched successfully")
-    );
+      },
+    });
 
   } catch (error) {
     console.error("Error fetching products:", error);
-    return res.status(500).json(new ApiResponse(500, {}, "Internal Server Error"));
+
+    return res.status(500).json({
+      success: false,
+      statusCode: 500,
+      message: "Internal Server Error",
+      error: error.message,
+    });
   }
 }
-
 
 
 async function handelAddToCart(req, res) {

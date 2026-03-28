@@ -101,20 +101,27 @@ export default function SearchWithHistory({
 
       {/* Hero */}
       <div
-        className="w-full"
+        className="relative w-full overflow-hidden shadow-[0_10px_40px_-10px_rgba(29,78,216,0.3)]"
         style={{
-          background: "linear-gradient(135deg, #0f172a 0%, #1e3a8a 50%, #1d4ed8 100%)",
+          background: "linear-gradient(135deg, #020617 0%, #1e3a8a 45%, #3730a3 75%, #2563eb 100%)",
         }}
       >
-        <div className="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16 py-10 sm:py-12 lg:py-16 flex flex-col lg:flex-row items-center gap-10 lg:gap-16">
+        <div 
+          className="absolute inset-0 opacity-10 mix-blend-overlay pointer-events-none"
+          style={{ backgroundImage: "url('https://grainy-gradients.vercel.app/noise.svg')" }}
+        ></div>
+        <div className="relative max-w-7xl mx-auto px-6 sm:px-10 lg:px-16 py-12 sm:py-16 lg:py-20 flex flex-col lg:flex-row items-center gap-10 lg:gap-20">
 
           {/* LEFT — text + search */}
           <div className="flex-1 flex flex-col items-center lg:items-start text-center lg:text-left w-full">
 
             {/* Badge */}
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-white/20 bg-white/10 backdrop-blur-sm mb-4">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-              <span className="text-white/80 text-xs sm:text-sm font-medium tracking-wide">
+            <div className="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full border border-white/20 bg-white/10 backdrop-blur-md shadow-[0_4px_15px_rgba(0,0,0,0.1)] mb-5 hover:bg-white/15 transition-all cursor-default">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+              </span>
+              <span className="text-white text-xs sm:text-sm font-semibold tracking-wider uppercase">
                 India's Local Marketplace
               </span>
             </div>
@@ -147,25 +154,25 @@ export default function SearchWithHistory({
             </p>
 
             {/* Search */}
-            <div ref={wrapperRef} className="relative w-full max-w-lg">
+            <div ref={wrapperRef} className="relative w-full max-w-lg group/search">
               <form
                 onSubmit={handleSearch}
-                className="flex items-center w-full bg-white/95 rounded-full shadow-2xl border border-white/20 overflow-hidden"
-                style={{ padding: "5px 5px 5px 16px" }}
+                className="flex items-center w-full bg-white/95 backdrop-blur-sm rounded-full shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-white/30 overflow-hidden outline outline-4 outline-transparent focus-within:outline-blue-400/30 transition-all duration-300"
+                style={{ padding: "6px 6px 6px 20px" }}
               >
-                <Search size={17} className="text-blue-400 shrink-0 mr-2" />
+                <Search size={18} className="text-blue-500 shrink-0 mr-3" />
                 <input
                   type="text"
                   placeholder={placeholder}
                   value={query}
                   onFocus={() => setShowHistory(true)}
                   onChange={(e) => setQuery(e.target.value)}
-                  className="flex-1 bg-transparent outline-none text-gray-800 placeholder-gray-400"
-                  style={{ fontSize: "clamp(0.8rem, 1.5vw, 0.9rem)", padding: "8px 4px" }}
+                  className="flex-1 bg-transparent outline-none text-gray-800 placeholder-gray-400 font-medium"
+                  style={{ fontSize: "clamp(0.85rem, 1.5vw, 0.95rem)", padding: "8px 4px" }}
                 />
                 <button
                   type="submit"
-                  className="cursor-pointer shrink-0 font-semibold rounded-full transition-all duration-200 active:scale-95"
+                  className="cursor-pointer shrink-0 font-bold rounded-full transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/30 active:scale-95 hover:scale-[1.02]"
                   style={{
                     background: "linear-gradient(135deg, #2563eb, #4f46e5)",
                     color: "white",

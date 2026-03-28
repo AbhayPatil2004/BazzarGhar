@@ -1,12 +1,37 @@
+
 "use client";
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-// import { toast } from "react-dom-toast";
-// import { toast } from "react-toastify";
 import toast from "react-hot-toast";
 
-
+const allCategories = [
+  { label: "Grocery", value: "grocery" },
+  { label: "Fashion & Clothing", value: "fashion" },
+  { label: "Electronics", value: "electronics" },
+  { label: "Home & Kitchen", value: "home-kitchen" },
+  { label: "Medical & Pharmacy", value: "medical" },
+  { label: "Books & Stationery", value: "books" },
+  { label: "Sports & Fitness", value: "sports" },
+  { label: "Beauty & Personal Care", value: "beauty" },
+  { label: "Hardware & Tools", value: "hardware" },
+  { label: "Bakery & Sweets", value: "bakery" },
+  { label: "Toys & Kids Store", value: "toys" },
+  { label: "Footwear", value: "footwear" },
+  { label: "Jewellery", value: "jewellery" },
+  { label: "Bags & Accessories", value: "bags" },
+  { label: "Handicrafts", value: "handicrafts" },
+  { label: "Kitchenware", value: "kitchenware" },
+  { label: "Garden & Plants", value: "garden" },
+  { label: "Stationery", value: "stationery" },
+  { label: "Pet Supplies", value: "pet-supplies" },
+  { label: "Automotive", value: "automotive" },
+  { label: "Festive & Gifts", value: "festive" },
+  { label: "Dairy & Eggs", value: "dairy" },
+  { label: "Organic Products", value: "organic" },
+  { label: "Clothing Rental", value: "clothing-rental" },
+  { label: "Music & Hobbies", value: "music-hobbies" },
+];
 
 export default function CreateStorePage() {
   const router = useRouter();
@@ -23,6 +48,9 @@ export default function CreateStorePage() {
       country: "India",
     },
   });
+
+  // ✅ SINGLE CATEGORY STATE
+  const [selectedCategory, setSelectedCategory] = useState("");
 
   const [logo, setLogo] = useState(null);
   const [banner, setBanner] = useState(null);
@@ -72,6 +100,7 @@ export default function CreateStorePage() {
         storeName: formData.storeName,
         description: formData.description,
         storeProducts: formData.storeProducts.split(","),
+        category: selectedCategory, // ✅ SINGLE CATEGORY
         address: formData.address,
         logoUrl,
         bannerUrl,
@@ -98,6 +127,8 @@ export default function CreateStorePage() {
       }
 
       toast.success(data.message || "Store created successfully 🎉");
+
+      // RESET
       setFormData({
         storeName: "",
         description: "",
@@ -109,12 +140,11 @@ export default function CreateStorePage() {
           postalCode: "",
           country: "India",
         },
-      })
+      });
 
-      setLogo(null)
-      setBanner(null)
-      // router.refresh()
-
+      setSelectedCategory("");
+      setLogo(null);
+      setBanner(null);
 
     } catch (error) {
       toast.error(error.message || "Something went wrong");
@@ -123,36 +153,25 @@ export default function CreateStorePage() {
     }
   }
 
-
   useEffect(() => {
     if (success) {
-      const timer = setTimeout(() => {
-        setSuccess(false);
-      }, 1000); // 1000ms = 1 second
-
-      return () => clearTimeout(timer); // cleanup if component unmounts early
+      const timer = setTimeout(() => setSuccess(false), 1000);
+      return () => clearTimeout(timer);
     }
   }, [success]);
 
   return (
-    <div className="min-h-screen bg-gray-50 px-4 py-14" id="open-store-form" >
+    <div className="min-h-screen bg-gray-50 px-4 py-14">
 
-      {/* FORM CONTAINER */}
       <div className="mx-auto max-w-4xl bg-white rounded-3xl shadow-xl p-10">
 
         <h1 className="text-3xl font-bold text-gray-900">
           Open Your Store on <span className="text-purple-700">BazzarGhar</span>
         </h1>
+
         <p className="text-gray-600 mt-2 mb-8">
           Create your store and start selling your products locally & online.
         </p>
-
-        {/* <form onSubmit={handleSubmit} className="space-y-6">
-
-          {/* Store Name */}
-        
-
-        {/* </form> } */}
 
         <form onSubmit={handleSubmit} className="space-y-6">
 
@@ -163,7 +182,7 @@ export default function CreateStorePage() {
             placeholder="Store Name"
             onChange={handleChange}
             required
-            className="w-full rounded-xl border px-4 py-3 focus:ring-2 focus:ring-purple-600"
+            className="w-full rounded-xl border px-4 py-3"
           />
 
           {/* Description */}
@@ -173,7 +192,7 @@ export default function CreateStorePage() {
             placeholder="Describe your store"
             rows={3}
             onChange={handleChange}
-            className="w-full rounded-xl border px-4 py-3 focus:ring-2 focus:ring-purple-600"
+            className="w-full rounded-xl border px-4 py-3"
           />
 
           {/* Products */}
@@ -182,12 +201,34 @@ export default function CreateStorePage() {
             value={formData.storeProducts}
             placeholder="Products (Shoes, Shirts, Watches)"
             onChange={handleChange}
-            className="w-full rounded-xl border px-4 py-3 focus:ring-2 focus:ring-purple-600"
+            className="w-full rounded-xl border px-4 py-3"
           />
 
-          {/* Address */}
+          {/* ✅ SINGLE CATEGORY DROPDOWN */}
+          <div>
+            <label className="block mb-2 font-semibold">
+              Select Category
+            </label>
+
+            <select
+              value={selectedCategory}
+              onChange={(e) => setSelectedCategory(e.target.value)}
+              required
+              className="w-full rounded-xl border px-4 py-3"
+            >
+              <option value="">Select Category</option>
+
+              {allCategories.map((cat) => (
+                <option key={cat.value} value={cat.value}>
+                  {cat.label}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* ADDRESS */}
           <div className="space-y-4">
-            <h3 className="font-semibold text-gray-900">Store Address</h3>
+            <h3 className="font-semibold">Store Address</h3>
 
             <input
               name="address.street"
@@ -197,7 +238,7 @@ export default function CreateStorePage() {
               className="w-full rounded-xl border px-4 py-3"
             />
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 gap-4">
               <input
                 name="address.city"
                 value={formData.address.city}
@@ -215,7 +256,7 @@ export default function CreateStorePage() {
               />
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 gap-4">
               <input
                 name="address.postalCode"
                 value={formData.address.postalCode}
@@ -232,67 +273,24 @@ export default function CreateStorePage() {
             </div>
           </div>
 
-          {/* File Uploads (No value needed here) */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-            <div>
-              <label className="block text-sm font-medium text-gray-900 mb-1">
-                Store Logo
-              </label>
-              <input
-                type="file"
-                accept="image/*"
-                onChange={(e) => setLogo(e.target.files[0])}
-                className="w-full text-sm file:mr-4 file:py-2 file:px-4
-        file:rounded-lg file:border-0
-        file:bg-gray-100 file:text-gray-700
-        file:cursor-pointer hover:file:bg-gray-200"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-900 mb-1">
-                Store Banner
-              </label>
-              <input
-                type="file"
-                accept="image/*"
-                onChange={(e) => setBanner(e.target.files[0])}
-                className="w-full text-sm file:mr-4 file:py-2 file:px-4
-        file:rounded-lg file:border-0
-        file:bg-gray-100 file:text-gray-700
-        file:cursor-pointer hover:file:bg-gray-200"
-              />
-            </div>
+          {/* FILE UPLOAD */}
+          <div className="grid grid-cols-2 gap-6">
+            <input type="file" onChange={(e) => setLogo(e.target.files[0])} />
+            <input type="file" onChange={(e) => setBanner(e.target.files[0])} />
           </div>
 
-          {/* Submit */}
+          {/* SUBMIT */}
           <button
             type="submit"
             disabled={loading}
-            className="cursor-pointer w-full bg-purple-700 text-white py-3 rounded-xl font-semibold hover:bg-purple-800 transition"
+            className="w-full bg-purple-700 text-white py-3 rounded-xl"
           >
-            {loading ? "Creating Store..." : "Create Store"}
+            {loading ? "Creating..." : "Create Store"}
           </button>
 
         </form>
-
       </div>
-
-      {/* SUCCESS POPUP */}
-      {/* {success && (
-        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
-          <div className="bg-white rounded-2xl p-8 max-w-md text-center shadow-2xl">
-            <h2 className="text-2xl font-bold text-green-600">
-              🎉 Store Request Sent!
-            </h2>
-            <p className="text-gray-600 mt-3">
-              Your store request has been successfully sent to the admin for verification.
-            </p>
-          </div>
-        </div>
-      )} */}
-
-
     </div>
   );
 }
+
