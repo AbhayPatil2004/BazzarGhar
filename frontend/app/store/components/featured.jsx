@@ -56,9 +56,9 @@ export default function FeaturedStores() {
                     </p>
                 </div>
 
-                <button
-  onClick={() => router.push("/store/stores?featured=true")}
-  className="
+                {/* <button
+                    onClick={() => router.push("/store/stores?featured=true")}
+                    className="
     cursor-pointer
     w-[40px] sm:w-[50px]
     h-[30px] sm:h-[34px]
@@ -70,11 +70,11 @@ export default function FeaturedStores() {
     hover:bg-blue-900
     transition
   "
->
-  <span className="text-lg sm:text-xl leading-none">
-    →
-  </span>
-</button>
+                >
+                    <span className="text-lg sm:text-xl leading-none">
+                        →
+                    </span>
+                </button> */}
 
             </div>
 

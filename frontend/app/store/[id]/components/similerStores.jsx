@@ -4,95 +4,82 @@ import { useEffect, useState } from "react";
 import StoreCard from "../../components/StoreCard";
 
 export default function SimilarStores({ category, storeId, storeName }) {
+  const [stores, setStores] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-    const [stores, setStores] = useState([]);
-    const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    if (!category) return;
 
-    useEffect(() => {
-        if (!category) return;
+    const fetchStores = async () => {
+      try {
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/store/category`,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ category }),
+          }
+        );
 
-        const fetchStores = async () => {
-            try {
-                const res = await fetch(
-                    `${process.env.NEXT_PUBLIC_API_URL}/store/category`,
-                    {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json",
-                        },
-                        body: JSON.stringify({ category }),
-                    }
-                );
+        const result = await res.json();
 
-                const result = await res.json();
+        if (result.success) {
+          setStores(result.data.filter((s) => s._id !== storeId));
+        }
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-                if (result.success) {
-                    // ❌ current store remove karo
-                    const filteredStores = result.data.filter(
-                        (store) => store._id !== storeId
-                    );
+    fetchStores();
+  }, [category, storeId]);
 
-                    setStores(filteredStores);
-                }
+  if (!category) return null;
 
-            } catch (err) {
-                console.log("Similar store fetch error:", err);
-            } finally {
-                setLoading(false);
-            }
-        };
+  return (
+    <div className="w-full bg-gray-50 px-4 sm:px-8 py-12 border-t">
+      
+      {/* Header */}
+      <div className="flex flex-wrap justify-between items-end gap-3 mb-8">
+        <div>
+          <div className="inline-flex items-center gap-1 bg-yellow-100 text-yellow-700 border border-yellow-300 rounded-full px-3 py-1 text-xs font-semibold mb-2">
+            ● {category}
+          </div>
 
-        fetchStores();
-    }, [category, storeId]);
+          <h2 className="text-xl sm:text-2xl font-bold text-gray-800">
+            Similar to <span className="text-orange-500">{storeName}</span>
+          </h2>
 
-    if (!category) return null;
+          <p className="text-sm text-gray-500 mt-1">
+            More stores you might like
+          </p>
+        </div>
 
-    return (
-        <section className="mt-16 px-4 sm:px-6 lg:px-10 xl:px-20">
+        {!loading && stores.length > 0 && (
+          <span className="text-xs font-semibold bg-white border rounded-full px-4 py-1 text-gray-600 shadow-sm">
+            {stores.length} Store{stores.length !== 1 ? "s" : ""}
+          </span>
+        )}
+      </div>
 
-            {/* Heading */}
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8">
-
-                <div>
-                    <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">
-                        Similar to{" "}
-                        <span className="text-blue-600">{storeName}</span>
-                    </h2>
-
-                    <p className="text-sm text-gray-500 mt-1">
-                        Explore more stores in {category}
-                    </p>
-                </div>
-
-                {!loading && (
-                    <div className="hidden sm:block text-sm text-gray-400 mt-2 sm:mt-0">
-                        {stores.length} Stores
-                    </div>
-                )}
-            </div>
-
-            {/* Loading */}
-            {loading ? (
-                <p className="text-gray-500 text-sm">Loading stores...</p>
-            ) : stores.length === 0 ? (
-                <p className="text-gray-500 text-sm sm:text-base">
-                    No similar stores found.
-                </p>
-            ) : (
-                <div
-                    className="grid 
-                    grid-cols-2 
-                    sm:grid-cols-2 
-                    md:grid-cols-3 
-                    lg:grid-cols-4 
-                    xl:grid-cols-5 
-                    gap-4 sm:gap-6"
-                >
-                    {stores.map((store) => (
-                        <StoreCard key={store._id} store={store} />
-                    ))}
-                </div>
-            )}
-        </section>
-    );
+      {/* Content */}
+      {loading ? (
+        <div className="text-center py-10 text-gray-400">
+          Discovering stores…
+        </div>
+      ) : stores.length === 0 ? (
+        <div className="text-center py-10 text-gray-400">
+          No similar stores found in {category}.
+        </div>
+      ) : (
+       <div className="grid [grid-template-columns:repeat(auto-fit,minmax(220px,max-content))] justify-center gap-x-8 gap-y-8">
+          {stores.map((store) => (
+            <StoreCard key={store._id} store={store} />
+          ))}
+        </div>
+      )}
+    </div>
+  );
 }

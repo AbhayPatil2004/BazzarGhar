@@ -4,9 +4,9 @@ function OpenStoreHeading() {
             className="
                 mt-8 sm:mt-0
                 relative mb-16 rounded-3xl 
-                bg-white text-gray-900
-                px-6 sm:px-10 pt-12
-                shadow-sm border border-gray-100
+                bg-gradient-to-br from-white to-blue-50 text-gray-900
+                px-6 sm:px-12 pt-12 pb-16
+                shadow-lg border border-blue-100
             "
         >
 
@@ -20,15 +20,15 @@ function OpenStoreHeading() {
                 <div className="space-y-5">
                     <span className="
                     inline-flex items-center gap-2
-                    rounded-full bg-purple-100 
-                    text-purple-700
-                    px-4 py-1.5 text-sm font-semibold mt-8 sm:mt-0">
+                    rounded-full bg-blue-50 
+                    text-blue-600
+                    px-4 py-2 text-sm font-semibold mt-8 sm:mt-0 border border-blue-100">
                         🚀 New on BazzarGhar
                     </span>
 
-                    <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold leading-tight">
+                    <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold leading-tight text-gray-900">
                         Launch your store on <br />
-                        <span className="text-purple-700">BazzarGhar</span>
+                        <span className="bg-gradient-to-r from-blue-600 to-blue-500 bg-clip-text text-transparent">BazzarGhar</span>
                     </h1>
 
                     <p className="text-gray-600 text-base max-w-lg">
@@ -38,17 +38,17 @@ function OpenStoreHeading() {
 
                     {/* HORIZONTAL STATS */}
                     <div className="flex gap-8 pt-2">
-                        <div>
-                            <p className="text-2xl font-bold text-purple-700">2K+</p>
-                            <p className="text-sm text-gray-500">Sellers</p>
+                        <div className="bg-blue-50 rounded-lg p-3">
+                            <p className="text-2xl font-bold text-blue-600">2K+</p>
+                            <p className="text-sm text-gray-600">Active Sellers</p>
                         </div>
-                        <div>
-                            <p className="text-2xl font-bold text-purple-700">50K+</p>
-                            <p className="text-sm text-gray-500">Products</p>
+                        <div className="bg-blue-50 rounded-lg p-3">
+                            <p className="text-2xl font-bold text-blue-600">50K+</p>
+                            <p className="text-sm text-gray-600">Live Products</p>
                         </div>
-                        <div>
-                            <p className="text-2xl font-bold text-purple-700">0%</p>
-                            <p className="text-sm text-gray-500">Joining Fee</p>
+                        <div className="bg-blue-50 rounded-lg p-3">
+                            <p className="text-2xl font-bold text-blue-600">0%</p>
+                            <p className="text-sm text-gray-600">Setup Cost</p>
                         </div>
                     </div>
 

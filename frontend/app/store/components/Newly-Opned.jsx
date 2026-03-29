@@ -52,7 +52,7 @@ export default function NewlyOpenedStores() {
           </p>
         </div>
 
-        <button
+        {/* <button
           onClick={() => router.push("/store/stores?newly=true")}
           className="
     cursor-pointer
@@ -70,7 +70,7 @@ export default function NewlyOpenedStores() {
           <span className="text-lg sm:text-xl leading-none">
             →
           </span>
-        </button>
+        </button> */}
 
       </div>
 

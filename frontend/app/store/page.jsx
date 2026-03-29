@@ -1,3 +1,5 @@
+"use client"
+
 import React from 'react'
 import HeroSection from './components/HomeHeroSection'
 import CategoriesSection from './components/HomeCategorySection'
@@ -6,8 +8,11 @@ import NewlyOpenedStores from './components/Newly-Opned'
 import StoresOfMyCity from './components/My-City'
 import FeaturedStores from './components/featured'
 import StoresPage from './components/AllStores'
+import { useRouter } from "next/navigation";
 
 function page() {
+
+  const router = useRouter()
   return (
     <div className="min-h-screen bg-[#0a0a0a] font-sans overflow-x-hidden">
 
@@ -33,7 +38,7 @@ function page() {
                 Top Sellers
               </h2>
             </div>
-            <button className="self-start sm:self-auto group flex items-center gap-2 text-sm text-yellow-400 font-semibold border border-yellow-400/30 hover:border-yellow-400 px-4 py-2 rounded-full transition-all duration-300 hover:bg-yellow-400/10">
+            <button onClick={() => router.push("/store/stores?trending=true")} className="cursor-pointer self-start sm:self-auto group flex items-center gap-2 text-sm text-yellow-400 font-semibold border border-yellow-400/30 hover:border-yellow-400 px-4 py-2 rounded-full transition-all duration-300 hover:bg-yellow-400/10">
               View all
               <span className="group-hover:translate-x-1 transition-transform duration-200">→</span>
             </button>
@@ -69,7 +74,7 @@ function page() {
               <span className="hidden sm:inline-block text-xs font-semibold uppercase tracking-widest text-orange-600 bg-orange-100 border border-orange-200 px-3 py-1.5 rounded-full">
                 ✦ Handpicked
               </span>
-              <button className="group flex items-center gap-2 text-sm text-[#1a1208] font-semibold border border-[#1a1208]/20 hover:border-orange-500 hover:text-orange-500 px-4 py-2 rounded-full transition-all duration-300">
+              <button onClick={() => router.push("/store/stores?featured=true")} className="cursor-pointer  group flex items-center gap-2 text-sm text-[#1a1208] font-semibold border border-[#1a1208]/20 hover:border-orange-500 hover:text-orange-500 px-4 py-2 rounded-full transition-all duration-300">
                 View all
                 <span className="group-hover:translate-x-1 transition-transform duration-200">→</span>
               </button>
@@ -104,7 +109,7 @@ function page() {
                 </h2>
               </div>
             </div>
-            <button className="self-start sm:self-auto group flex items-center gap-2 text-sm text-emerald-700 font-semibold border border-emerald-200 hover:border-emerald-500 hover:bg-emerald-50 px-4 py-2 rounded-full transition-all duration-300">
+            <button onClick={() => router.push("/store/stores?newly=true")} className="cursor-pointer self-start sm:self-auto group flex items-center gap-2 text-sm text-emerald-700 font-semibold border border-emerald-200 hover:border-emerald-500 hover:bg-emerald-50 px-4 py-2 rounded-full transition-all duration-300">
               View all
               <span className="group-hover:translate-x-1 transition-transform duration-200">→</span>
             </button>
@@ -143,7 +148,7 @@ function page() {
                 </span>
               </h2>
             </div>
-            <button className="self-start sm:self-auto group flex items-center gap-2 text-sm text-indigo-300 font-semibold border border-indigo-400/30 hover:border-indigo-400 hover:bg-indigo-400/10 px-4 py-2 rounded-full transition-all duration-300">
+            <button onClick={() => router.push("/store/stores?nearby=true")} className="cursor-pointer self-start sm:self-auto group flex items-center gap-2 text-sm text-indigo-300 font-semibold border border-indigo-400/30 hover:border-indigo-400 hover:bg-indigo-400/10 px-4 py-2 rounded-full transition-all duration-300">
               View all
               <span className="group-hover:translate-x-1 transition-transform duration-200">→</span>
             </button>
@@ -168,7 +173,7 @@ function page() {
                 All Stores
               </h2>
             </div>
-            <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+            {/* <div className="flex flex-wrap items-center gap-2 sm:gap-3">
               <button className="text-xs font-semibold uppercase tracking-wider text-gray-600 bg-white border border-gray-200 hover:border-gray-400 px-4 py-2 rounded-full transition-all duration-200 shadow-sm hover:shadow">
                 ⊞ Filter
               </button>
@@ -177,7 +182,7 @@ function page() {
               </button>
               <span className="hidden sm:inline text-gray-300">|</span>
               <span className="text-sm text-gray-400 hidden sm:inline">Browse the full catalogue</span>
-            </div>
+            </div> */}
           </div>
           <StoresPage />
         </div>

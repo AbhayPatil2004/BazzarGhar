@@ -33,16 +33,16 @@ function WhyAura() {
     ];
 
     return (
-        <section className="bg-white py-14 px-6 sm:px-10">
+        <section className="bg-gradient-to-b from-gray-50 to-white py-16 px-6 sm:px-10">
             <div className="max-w-7xl mx-auto">
 
                 {/* Heading */}
-                <div className="max-w-2xl mb-10">
+                <div className="max-w-2xl mb-12">
                     <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900">
-                        Why sell on <span className="text-purple-700">BazzarGhar ?</span>
+                        Why sell on <span className="bg-gradient-to-r from-blue-600 to-blue-500 bg-clip-text text-transparent font-semibold">BazzarGhar ?</span>
                     </h2>
-                    <p className="mt-3 text-gray-600">
-                        Everything you need to run and grow your local  online — without complexity.
+                    <p className="mt-3 text-gray-600 text-base">
+                        Everything you need to run and grow your local business online — without complexity.
                     </p>
                 </div>
 
@@ -51,10 +51,10 @@ function WhyAura() {
                     {reasons.map((item, index) => (
                         <div
                             key={index}
-                            className="rounded-2xl border border-gray-200 p-6 
-                            hover:shadow-lg transition bg-white"
+                            className="rounded-2xl border border-blue-100 bg-gradient-to-br from-white to-blue-50 p-6 
+                            hover:shadow-xl hover:border-blue-200 transition-all duration-300 hover:scale-105"
                         >
-                            <div className="text-3xl">{item.icon}</div>
+                            <div className="text-4xl bg-blue-100 rounded-lg p-3 inline-block">{item.icon}</div>
                             <h3 className="mt-4 text-lg font-semibold text-gray-900">
                                 {item.title}
                             </h3>

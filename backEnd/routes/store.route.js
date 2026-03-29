@@ -1,6 +1,6 @@
 import express from 'express'
 import { handelUserAuthentication , handelUserLogin } from '../middleware/authenticate.middleware.js'
-import {  handleCreateStore , handelGetAllStores , handelGetSearchedStore , handelClearStore , handelGetTopSeller , handelGetNewlyOpened , handelGetStoresOfMycities , handelGetFeaturedStores , handleGetFilteredStores , handleGetStoreDetails , handelGetStoresByOwner , handleGetStoresByCategory , handleCheckStoreSubscription , handleToggleStoreSubscription , handleCheckStoreRating , handleRateStore , handelGetSearchHistory , handelSaveStoreSearch , handelGetStores } from '../controllers/store.controller.js'
+import {  handleCreateStore , handelGetAllStores , handelGetSearchedStore , handelClearStore , handelGetTopSeller , handelGetNewlyOpened , handelGetStoresOfMycities , handelGetFeaturedStores , handleGetFilteredStores , handleGetStoreDetails , handelGetStoresByOwner , handleGetStoresByCategory , handleCheckStoreSubscription , handleToggleStoreSubscription , handleCheckStoreRating , handleRateStore , handelGetSearchHistory , handelSaveStoreSearch , handelGetStores , handelGetStoreProducts } from '../controllers/store.controller.js'
 import handelUserAuthorization from '../middleware/seller.authorized.middleware.js';
 
 const router = express.Router()
@@ -46,6 +46,7 @@ router.post("/search" , handelGetSearchedStore )
 
 router.delete("/clear" , handelClearStore)
 
+router.get("/:storeId/products", handelGetStoreProducts);
 router.get("/:storeId" , handleGetStoreDetails )
 router.get("/owner/:ownerId", handelGetStoresByOwner );
 

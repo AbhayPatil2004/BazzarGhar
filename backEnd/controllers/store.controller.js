@@ -1,10 +1,55 @@
 import Store from "../models/store.model.js";
 import User from "../models/user.model.js";
+import Product from "../models/product.model.js";
 import ApiResponse from "../utils/ApiResponse.js";
 import sendMailToUser from "../utils/sendMail.js";
 import storeOpeningBody from "../emailBody/storeOpening.emailBody.js";
 import SearchHistory from "../models/search.model.js";
 import mongoose from 'mongoose'
+
+
+async function handelGetStoreProducts( req , res ){
+
+  try{
+    const { storeId } = req.params ;
+
+    // Validate store ID
+    if (!mongoose.Types.ObjectId.isValid(storeId)) {
+      return res.status(400).json(
+        new ApiResponse(400, {}, "Invalid store ID")
+      );
+    }
+
+    // Check if store exists
+    const store = await Store.findById(storeId);
+    if (!store) {
+      return res.status(404).json(
+        new ApiResponse(404, {}, "Store not found")
+      );
+    }
+
+    // Fetch all active products for this store
+    const products = await Product.find({
+      store: storeId,
+      isActive: true,
+      isDeleted: false
+    })
+      .select(
+        "title description category price discountPercentage finalPrice images colors sizes stock rating totalReviews isReturnable deliveryTime gender tags"
+      )
+      .lean();
+
+    return res.status(200).json(
+      new ApiResponse(200, products, "Store products fetched successfully")
+    );
+  }
+  catch(error){
+    console.error("Get Store Products Error:", error);
+    return res.status(500).json(
+      new ApiResponse( 500 , {} , "Internal Server Error")
+    )
+  }
+} 
 
 async function handelGetStores(req, res) {
   try {
@@ -1146,6 +1191,6 @@ async function handelClearStore(req, res) {
   }
 }
 
-export { handleCreateStore, handelGetAllStores, handelGetSearchedStore, handelClearStore, handelGetTopSeller, handelGetNewlyOpened, handelGetStoresOfMycities, handelGetFeaturedStores, handleGetFilteredStores, handleGetStoreDetails, handelGetStoresByOwner, handleGetStoresByCategory, handleCheckStoreSubscription, handleToggleStoreSubscription, handleRateStore, handleCheckStoreRating, handelGetSearchHistory, handelSaveStoreSearch, handelGetStores };
+export { handleCreateStore, handelGetAllStores, handelGetSearchedStore, handelClearStore, handelGetTopSeller, handelGetNewlyOpened, handelGetStoresOfMycities, handelGetFeaturedStores, handleGetFilteredStores, handleGetStoreDetails, handelGetStoresByOwner, handleGetStoresByCategory, handleCheckStoreSubscription, handleToggleStoreSubscription, handleRateStore, handleCheckStoreRating, handelGetSearchHistory, handelSaveStoreSearch, handelGetStores, handelGetStoreProducts };
 
 

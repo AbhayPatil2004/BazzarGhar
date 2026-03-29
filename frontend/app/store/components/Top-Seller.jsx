@@ -68,7 +68,7 @@ export default function TopSellersPage() {
           </div>
 
           {/* Explore More Button */}
-          <div className="sm:flex justify-center relative z-10">
+          {/* <div className="sm:flex justify-center relative z-10">
             <button
               onClick={() => router.push("/store/stores?trending=true")}
               className="
@@ -89,7 +89,7 @@ export default function TopSellersPage() {
                 →
               </span>
             </button>
-          </div>
+          </div> */}
         </div>
 
         <div className="relative">
