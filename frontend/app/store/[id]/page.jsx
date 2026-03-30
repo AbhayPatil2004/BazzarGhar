@@ -4,6 +4,7 @@ import OwnerStores from "./components/OwnerStores";
 import SimilarStores from "./components/similerStores";
 import StoreReviews from "./components/StoreReviews";
 import StoreProducts from "./components/StoreProducts";
+import CTASection from "../../welcome/component/CTASection";
 
 export default async function Page({ params }) {
   const { id } = await params;
@@ -47,6 +48,8 @@ export default async function Page({ params }) {
         storeName={store.storeName}
       />
 
+      {/* CTA Section */}
+      <CTASection />
 
     </div>
   );

@@ -47,19 +47,29 @@ export default function StoreProducts({ storeId, storeName }) {
         .sp-root {
           font-family: 'Outfit', sans-serif;
           width: 100%;
-          background: #ffffff;
-          padding: 56px 40px 64px;
-          border-top: 1px solid #e8e3db;
-          border-bottom: 1px solid #e8e3db;
+          background: linear-gradient(135deg, #ffffff 0%, #f9fafb 100%);
+          padding: 64px 40px 80px;
+          border-top: 1.5px solid #e5e5e0;
+          border-bottom: 1.5px solid #e5e5e0;
+          position: relative;
+        }
+        .sp-root::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          height: 1px;
+          background: linear-gradient(90deg, transparent, #e5e5e0, transparent);
         }
         @media (max-width: 768px) {
           .sp-root {
-            padding: 44px 20px 52px;
+            padding: 48px 20px 64px;
           }
         }
         @media (max-width: 480px) {
           .sp-root {
-            padding: 36px 16px 44px;
+            padding: 40px 16px 56px;
           }
         }
 
@@ -67,38 +77,46 @@ export default function StoreProducts({ storeId, storeName }) {
           display: flex;
           align-items: flex-end;
           justify-content: space-between;
-          gap: 12px;
-          margin-bottom: 32px;
+          gap: 16px;
+          margin-bottom: 40px;
           flex-wrap: wrap;
         }
 
         .sp-title {
           font-family: 'Fraunces', serif;
-          font-size: clamp(20px, 3vw, 32px);
+          font-size: clamp(22px, 3.5vw, 36px);
           font-weight: 700;
           color: #1a1814;
           margin: 0;
+          letter-spacing: -0.5px;
+          line-height: 1.2;
         }
 
         .sp-title span {
-          color: #d97706;
+          background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+          font-weight: 800;
         }
 
         .sp-sub {
-          font-size: 13px;
+          font-size: 14px;
           color: #9e9994;
-          margin-top: 4px;
+          margin-top: 6px;
+          font-weight: 500;
         }
 
         .sp-count {
-          font-size: 12px;
-          font-weight: 600;
-          background: #f0ede6;
-          border: 1px solid #e8e3db;
+          font-size: 13px;
+          font-weight: 700;
+          background: linear-gradient(135deg, #dbeafe 0%, #f0f9ff 100%);
+          border: 1.5px solid #93c5fd;
           border-radius: 100px;
-          padding: 4px 14px;
-          color: #5c5852;
+          padding: 6px 16px;
+          color: #2563eb;
           white-space: nowrap;
+          box-shadow: 0 2px 8px rgba(37, 99, 235, 0.12);
         }
 
         .sp-grid {
@@ -106,6 +124,7 @@ export default function StoreProducts({ storeId, storeName }) {
           grid-template-columns: repeat(auto-fit, minmax(220px, max-content));
           justify-content: center;
           gap: 32px 24px;
+          margin-top: 12px;
         }
         @media (max-width: 768px) {
           .sp-grid {
@@ -122,23 +141,57 @@ export default function StoreProducts({ storeId, storeName }) {
 
         .sp-loading {
           text-align: center;
-          padding: 40px;
+          padding: 60px 20px;
           color: #9e9994;
-          font-size: 14px;
+          font-size: 15px;
+          font-weight: 500;
+        }
+        .sp-loading::before {
+          content: '';
+          display: inline-block;
+          width: 20px;
+          height: 20px;
+          border: 2px solid #e5e5e0;
+          border-top-color: #2563eb;
+          border-radius: 50%;
+          animation: spin 0.8s linear infinite;
+          margin-right: 10px;
+          vertical-align: middle;
+        }
+        @keyframes spin {
+          to { transform: rotate(360deg); }
         }
 
         .sp-empty {
           text-align: center;
-          padding: 60px 20px;
+          padding: 80px 20px;
           color: #9e9994;
-          font-size: 15px;
+          font-size: 16px;
+          font-weight: 500;
+        }
+        .sp-empty::before {
+          content: '';
+          display: block;
+          width: 64px;
+          height: 64px;
+          margin: 0 auto 16px;
+          background: linear-gradient(135deg, #dbeafe 0%, #f0f9ff 100%);
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
         }
 
         .sp-error {
           text-align: center;
           padding: 40px;
           color: #dc2626;
-          font-size: 14px;
+          font-size: 15px;
+          font-weight: 500;
+          background: #fee2e2;
+          border: 1.5px solid #fca5a5;
+          border-radius: 14px;
+          margin-top: 12px;
         }
       `}</style>
 

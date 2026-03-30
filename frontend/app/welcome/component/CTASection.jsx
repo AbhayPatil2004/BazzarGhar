@@ -1,9 +1,11 @@
+"use client";
+
 import React from "react";
 import { useAuth } from "@/app/context/Authcontext";
 
 const CTASection = () => {
 
-  const { user } = useAuth()
+  const { user } = useAuth();
 
   if (user) {
     return (
@@ -23,7 +25,7 @@ const CTASection = () => {
               Open Your Store
             </a>
             <a
-              href="/home"
+              href="/product"
               className="bg-transparent border-2 border-white text-white font-semibold px-8 py-4 rounded-lg hover:bg-white hover:text-indigo-600 transition-colors duration-300"
             >
               Start Shopping

@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useAuth } from "../context/Authcontext";
+import CTASection from "../welcome/component/CTASection";
 
 import ProductHeroWithSearchOnly from "./components/Header";
 import CategorySection from "./components/category";
@@ -112,10 +113,8 @@ export default function Page() {
   return (
     <div className="min-h-screen w-full bg-[#f4f6fb] text-slate-900 font-sans overflow-x-hidden">
 
-      {/* ── HEADER ── */}
-      <header className="w-full bg-white/90 backdrop-blur-xl shadow-[0_1px_3px_rgba(0,0,0,0.04)] py-3 px-4 sm:px-6 relative z-50 border-b border-gray-100/60">
-        <ProductHeroWithSearchOnly />
-      </header>
+      {/* ── SEARCH HEADER — FULL WIDTH ── */}
+      <ProductHeroWithSearchOnly />
 
       {/* ── CATEGORY STRIP ── */}
       <div className="w-full bg-white/70 backdrop-blur-xl border-b border-gray-200/50 sticky top-0 z-40 transition-all duration-300 shadow-[0_1px_2px_rgba(0,0,0,0.02)]">
@@ -238,6 +237,9 @@ export default function Page() {
         </section>
 
       </main>
+
+      {/* CTA Section */}
+      <CTASection />
     </div>
   );
 }

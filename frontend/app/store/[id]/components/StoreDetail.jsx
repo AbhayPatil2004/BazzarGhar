@@ -118,9 +118,9 @@ export default function StoreDetailsPage({
           --t1:#1a1814;
           --t2:#5c5852;
           --t3:#9e9994;
-          --amber:#d97706;
-          --amber-bg:#fef3c7;
-          --amber-bd:#fcd34d;
+          --amber:#2563eb;
+          --amber-bg:#dbeafe;
+          --amber-bd:#93c5fd;
           --green:#16a34a;
           --green-bg:#dcfce7;
           --red:#dc2626;
@@ -219,16 +219,17 @@ export default function StoreDetailsPage({
           border-radius:var(--r3);
           overflow:hidden;
           border:3px solid var(--w);
-          box-shadow:var(--sh2);
+          box-shadow:0 8px 24px rgba(37,99,235,.2);
           flex-shrink:0;
-          background:var(--bg2);
+          background:linear-gradient(135deg,var(--bg2) 0%,#f0f9ff 100%);
+          position:relative;
         }
         .sd-logo img{
           width:100%;height:100%;object-fit:cover;
           transition:transform .4s ease;
           display:block;
         }
-        .sd-logo:hover img{transform:scale(1.08);}
+        .sd-logo:hover img{transform:scale(1.12);}
         @media(max-width:480px){.sd-logo{width:72px;height:72px;}}
 
         .sd-name-col{padding-bottom:4px;}
@@ -240,102 +241,130 @@ export default function StoreDetailsPage({
           margin:0;
           display:flex;align-items:center;gap:8px;
           line-height:1.2;
+          letter-spacing:-.5px;
         }
-        .sd-verified{color:var(--indigo);font-size:18px;}
+        .sd-verified{color:#2563eb;font-size:18px;animation:pulse 2s infinite;}
+        @keyframes pulse{0%,100%{opacity:1}50%{opacity:.7}}
         .sd-cat{
           display:inline-flex;align-items:center;gap:5px;
-          margin-top:6px;
-          background:var(--bg2);
-          border:1px solid var(--bd);
+          margin-top:8px;
+          background:linear-gradient(135deg,var(--bg2) 0%,#fef3c7 100%);
+          border:1.5px solid #fcd34d;
           border-radius:100px;
-          padding:3px 12px;
-          font-size:12px;font-weight:500;
-          color:var(--t2);
+          padding:4px 14px;
+          font-size:12px;font-weight:600;
+          color:#92400e;
+          box-shadow:0 2px 4px rgba(217,119,6,.1);
         }
 
         /* BUTTONS */
         .sd-btn-follow{
-          padding:11px 26px;
+          padding:12px 28px;
           border-radius:var(--r2);
           font-size:14px;font-weight:600;
           cursor:pointer;border:none;
-          background:var(--t1);color:#fff;
+          background:linear-gradient(135deg,var(--amber) 0%,#1e40af 100%);
+          color:#fff;
           letter-spacing:.01em;
-          transition:all .18s;
+          transition:all .25s cubic-bezier(.4,.0,.2,1);
           white-space:nowrap;
-          box-shadow:var(--sh1);
+          box-shadow:0 4px 15px rgba(37,99,235,.25);
+          position:relative;
+          overflow:hidden;
         }
-        .sd-btn-follow:hover{opacity:.82;transform:translateY(-1px);box-shadow:var(--sh2);}
+        .sd-btn-follow::before{
+          content:'';position:absolute;inset:0;
+          background:linear-gradient(135deg,rgba(255,255,255,.2) 0%,transparent 50%);
+          opacity:0;transition:opacity .25s;
+        }
+        .sd-btn-follow:hover::before{opacity:1;}
+        .sd-btn-follow:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(37,99,235,.35);}
         .sd-btn-follow.following{
-          background:var(--w);color:var(--t2);
-          border:1.5px solid var(--bd2);
+          background:var(--w);color:var(--t1);
+          border:2px solid var(--amber);
+          box-shadow:0 2px 8px rgba(37,99,235,.12);
         }
-        .sd-btn-follow.following:hover{border-color:var(--red);color:var(--red);}
+        .sd-btn-follow.following:hover{border-color:var(--red);color:var(--red);background:var(--red-bg);}
         .sd-btn-follow:disabled{opacity:.5;cursor:not-allowed;transform:none;}
 
         .sd-btn-signup{
-          padding:11px 24px;
+          padding:12px 26px;
           border-radius:var(--r2);
           font-size:14px;font-weight:600;
           cursor:pointer;
-          border:1.5px solid var(--bd2);
-          background:var(--w);color:var(--t1);
-          transition:all .18s;white-space:nowrap;
+          border:2px solid var(--t1);
+          background:var(--t1);color:var(--w);
+          transition:all .25s;
+          white-space:nowrap;
+          box-shadow:0 4px 15px rgba(26,24,20,.15);
         }
-        .sd-btn-signup:hover{background:var(--t1);color:var(--w);border-color:var(--t1);}
+        .sd-btn-signup:hover{background:var(--w);color:var(--t1);border-color:var(--t1);box-shadow:0 6px 20px rgba(26,24,20,.2);transform:translateY(-2px);}
 
         /* DIVIDER */
         .sd-hr{width:100%;height:1px;background:var(--bd);margin:22px 0;}
 
         /* RATING */
         .sd-rating-row{
-          display:flex;align-items:center;gap:12px;flex-wrap:wrap;
+          display:flex;align-items:center;gap:14px;flex-wrap:wrap;
         }
-        .sd-stars{display:flex;gap:2px;}
+        .sd-stars{display:flex;gap:3px;}
         .sd-star{
-          font-size:22px;cursor:pointer;
-          color:#ddd8cf;
+          font-size:24px;cursor:pointer;
+          color:#e5e5e0;
           transition:color .12s,transform .12s;
           line-height:1;user-select:none;
+          filter:drop-shadow(0 1px 2px rgba(0,0,0,.05));
         }
-        .sd-star.lit{color:#f59e0b;}
-        .sd-star:hover{transform:scale(1.28);color:#f59e0b;}
-        .sd-rat-avg{font-size:15px;font-weight:700;color:var(--t1);}
-        .sd-rat-sub{font-size:12px;color:var(--t3);}
+        .sd-star.lit{color:#fbbf24;filter:drop-shadow(0 2px 4px rgba(251,191,36,.4));}
+        .sd-star:hover{transform:scale(1.35);color:#fbbf24;}
+        .sd-rat-avg{font-size:18px;font-weight:700;color:var(--t1);font-family:'Fraunces',serif;}
+        .sd-rat-sub{font-size:13px;color:var(--t3);font-weight:500;}
         .sd-rat-yours{
           font-size:12px;font-weight:600;
-          background:var(--amber-bg);color:var(--amber);
-          border:1px solid var(--amber-bd);
-          border-radius:100px;padding:2px 10px;
+          background:linear-gradient(135deg,var(--amber-bg) 0%,#bfdbfe 100%);
+          color:var(--amber);
+          border:1.5px solid var(--amber-bd);
+          border-radius:100px;padding:4px 12px;
+          box-shadow:0 2px 4px rgba(37,99,235,.08);
         }
 
         /* STATS STRIP */
         .sd-stats{
           display:flex;
-          background:var(--bg);
-          border:1px solid var(--bd);
+          background:linear-gradient(135deg,var(--w) 0%,#f8fafc 100%);
+          border:1.5px solid var(--bd);
           border-radius:var(--r2);
           overflow:hidden;
-          margin-top:20px;
+          margin-top:24px;
+          box-shadow:0 4px 12px rgba(0,0,0,.04);
         }
         .sd-stat{
-          flex:1;padding:14px 20px;
-          display:flex;align-items:center;gap:12px;
+          flex:1;padding:18px 20px;
+          display:flex;align-items:center;gap:14px;
           border-right:1px solid var(--bd);
-          transition:background .15s;
+          transition:all .2s;
+          position:relative;
+          overflow:hidden;
         }
+        .sd-stat::before{
+          content:'';position:absolute;left:0;top:0;bottom:0;
+          width:3px;background:var(--amber);
+          transform:scaleY(0);transition:transform .3s;transform-origin:top;
+        }
+        .sd-stat:hover::before{transform:scaleY(1);}
         .sd-stat:last-child{border-right:none;}
-        .sd-stat:hover{background:var(--w);}
+        .sd-stat:hover{background:var(--bg2);}
         .sd-stat-ico{
-          width:38px;height:38px;
-          border-radius:var(--r1);
-          background:var(--w);
-          border:1px solid var(--bd);
+          width:42px;height:42px;
+          border-radius:var(--r2);
+          background:linear-gradient(135deg,var(--amber-bg) 0%,#dbeafe 100%);
+          border:1.5px solid var(--amber-bd);
           display:flex;align-items:center;justify-content:center;
-          font-size:15px;color:var(--amber);flex-shrink:0;
+          font-size:18px;color:var(--amber);flex-shrink:0;
+          box-shadow:0 2px 6px rgba(37,99,235,.12);
         }
-        .sd-stat-v{font-size:17px;font-weight:700;color:var(--t1);line-height:1.1;}
-        .sd-stat-l{font-size:11px;color:var(--t3);font-weight:500;}
+        .sd-stat-v{font-size:19px;font-weight:700;color:var(--t1);line-height:1;font-family:'Fraunces',serif;}
+        .sd-stat-l{font-size:12px;color:var(--t3);font-weight:500;margin-top:2px;}
         @media(max-width:520px){
           .sd-stats{flex-direction:column;}
           .sd-stat{border-right:none;border-bottom:1px solid var(--bd);}
@@ -353,33 +382,45 @@ export default function StoreDetailsPage({
         /* SECTION CARD */
         .sd-card{
           width:100%;
-          background:var(--w);
-          border:1px solid var(--bd);
+          background:linear-gradient(135deg,var(--w) 0%,#fafaf8 100%);
+          border:1.5px solid var(--bd);
           border-radius:var(--r4);
           padding:30px 36px;
           margin-bottom:20px;
-          box-shadow:var(--sh1);
-          transition:box-shadow .2s;
+          box-shadow:0 4px 12px rgba(0,0,0,.05);
+          transition:all .3s cubic-bezier(.4,.0,.2,1);
+          position:relative;
+          overflow:hidden;
         }
-        .sd-card:hover{box-shadow:var(--sh2);}
+        .sd-card::before{
+          content:'';position:absolute;top:0;left:-100%;
+          width:100%;height:100%;
+          background:linear-gradient(90deg,transparent,rgba(255,255,255,.3),transparent);
+          transition:left .5s;
+        }
+        .sd-card:hover::before{left:100%;}
+        .sd-card:hover{box-shadow:0 12px 32px rgba(0,0,0,.08);transform:translateY(-2px);border-color:#dbeafe;}
         @media(max-width:600px){.sd-card{padding:22px 18px;}}
 
         .sd-card-head{
           display:flex;align-items:center;
           justify-content:space-between;
-          margin-bottom:18px;
+          margin-bottom:20px;
           gap:12px;
         }
         .sd-card-title{
           font-family:'Fraunces',serif;
-          font-size:18px;font-weight:600;
+          font-size:19px;font-weight:700;
           color:var(--t1);margin:0;
+          letter-spacing:-.3px;
         }
         .sd-card-badge{
           font-size:12px;font-weight:600;
-          background:var(--bg2);border:1px solid var(--bd);
-          border-radius:100px;padding:3px 12px;
-          color:var(--t2);
+          background:linear-gradient(135deg,var(--amber-bg) 0%,#dbeafe 100%);
+          border:1.5px solid var(--amber-bd);
+          border-radius:100px;padding:4px 14px;
+          color:var(--amber);
+          box-shadow:0 2px 4px rgba(37,99,235,.08);
         }
 
         .sd-desc{font-size:15px;line-height:1.82;color:var(--t2);margin:0;}
@@ -388,17 +429,22 @@ export default function StoreDetailsPage({
         .sd-tags{display:flex;flex-wrap:wrap;gap:8px;}
         .sd-tag{
           display:inline-flex;align-items:center;
-          padding:7px 16px;
-          background:var(--bg2);
-          border:1px solid var(--bd);
+          padding:8px 18px;
+          background:linear-gradient(135deg,var(--bg2) 0%,#f5f5f0 100%);
+          border:1.5px solid var(--bd);
           border-radius:100px;
-          font-size:13px;font-weight:500;
+          font-size:13px;font-weight:600;
           color:var(--t1);
-          transition:all .16s;cursor:default;
+          transition:all .2s;
+          cursor:default;
+          box-shadow:0 2px 4px rgba(0,0,0,.03);
         }
         .sd-tag:hover{
-          background:var(--t1);color:var(--w);
-          border-color:var(--t1);transform:translateY(-1px);
+          background:linear-gradient(135deg,var(--amber-bg) 0%,#fef3c7 100%);
+          color:var(--t1);
+          border-color:var(--amber-bd);
+          transform:translateY(-2px);
+          box-shadow:0 4px 12px rgba(37,99,235,.1);
         }
 
         /* 2 COL */
@@ -415,14 +461,15 @@ export default function StoreDetailsPage({
         .sd-owner{display:flex;align-items:center;gap:14px;}
         .sd-owner-av{
           width:60px;height:60px;border-radius:50%;
-          object-fit:cover;border:2px solid var(--bd);flex-shrink:0;
+          object-fit:cover;border:3px solid var(--amber-bd);flex-shrink:0;
+          box-shadow:0 4px 12px rgba(37,99,235,.15);
         }
-        .sd-owner-name{font-weight:700;font-size:15px;color:var(--t1);margin:0 0 4px;}
+        .sd-owner-name{font-weight:700;font-size:16px;color:var(--t1);margin:0 0 4px;}
         .sd-owner-row{
           display:flex;align-items:center;gap:6px;
-          font-size:13px;color:var(--t2);margin-top:3px;
+          font-size:13px;color:var(--t2);margin-top:4px;
         }
-        .sd-owner-row svg{color:var(--t3);}
+        .sd-owner-row svg{color:var(--amber);}
 
         /* ADDRESS */
         .sd-addr{font-size:14px;color:var(--t2);line-height:1.88;margin:12px 0 0;}
@@ -436,31 +483,34 @@ export default function StoreDetailsPage({
         @media(max-width:520px){.sd-meta{grid-template-columns:1fr;}}
 
         .sd-meta-card{
-          background:var(--w);
-          border:1px solid var(--bd);
+          background:linear-gradient(135deg,var(--w) 0%,#fafaf8 100%);
+          border:1.5px solid var(--bd);
           border-radius:var(--r3);
-          padding:22px 24px;
-          display:flex;flex-direction:column;gap:6px;
-          box-shadow:var(--sh1);
-          transition:all .18s;
+          padding:24px 26px;
+          display:flex;flex-direction:column;gap:8px;
+          box-shadow:0 4px 12px rgba(0,0,0,.04);
+          transition:all .3s cubic-bezier(.4,.0,.2,1);
+          cursor:default;
         }
-        .sd-meta-card:hover{transform:translateY(-3px);box-shadow:var(--sh3);}
+        .sd-meta-card:hover{transform:translateY(-4px);box-shadow:0 12px 32px rgba(0,0,0,.08);border-color:#93c5fd;}
         .sd-meta-lbl{
-          font-size:11px;font-weight:600;
-          text-transform:uppercase;letter-spacing:.09em;color:var(--t3);
+          font-size:11px;font-weight:700;
+          text-transform:uppercase;letter-spacing:.12em;color:var(--t3);
         }
         .sd-meta-val{
           font-family:'Fraunces',serif;
-          font-size:26px;font-weight:700;color:var(--t1);line-height:1;
+          font-size:28px;font-weight:700;color:var(--t1);line-height:1;
+          letter-spacing:-.5px;
         }
         .sd-meta-val.yes{color:var(--green);}
         .sd-meta-val.no{color:var(--red);}
         .sd-meta-chip{
-          display:inline-block;font-size:11px;font-weight:600;
-          border-radius:100px;padding:2px 10px;width:fit-content;
+          display:inline-block;font-size:11px;font-weight:700;
+          border-radius:100px;padding:4px 12px;width:fit-content;
+          box-shadow:0 2px 4px rgba(0,0,0,.05);
         }
-        .sd-meta-chip.yes{background:var(--green-bg);color:var(--green);}
-        .sd-meta-chip.no{background:var(--red-bg);color:var(--red);}
+        .sd-meta-chip.yes{background:var(--green-bg);color:var(--green);box-shadow:0 2px 8px rgba(22,163,74,.1);}
+        .sd-meta-chip.no{background:var(--red-bg);color:var(--red);box-shadow:0 2px 8px rgba(220,38,38,.1);}
 
         /* ANIMATIONS */
         @keyframes fadeUp{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
@@ -501,7 +551,7 @@ export default function StoreDetailsPage({
 
             {!user ? (
               <button className="sd-btn-signup" onClick={() => router.push("/auth/signup")}>
-                Sign up to Follow
+                Sign up to Subscribe
               </button>
             ) : (
               <button
@@ -509,7 +559,7 @@ export default function StoreDetailsPage({
                 onClick={handleSubscribe}
                 disabled={loading}
               >
-                {loading ? "..." : subscribed ? "✓ Following" : "+ Follow Store"}
+                {loading ? "..." : subscribed ? "✓ Subscribed" : "+ Subscribe Store"}
               </button>
             )}
           </div>
@@ -537,7 +587,7 @@ export default function StoreDetailsPage({
           <div className="sd-stats">
             <div className="sd-stat">
               <div className="sd-stat-ico"><FaUsers /></div>
-              <div><div className="sd-stat-v">{subscriberCount.toLocaleString()}</div><div className="sd-stat-l">Followers</div></div>
+              <div><div className="sd-stat-v">{subscriberCount.toLocaleString()}</div><div className="sd-stat-l">Subscribers</div></div>
             </div>
             <div className="sd-stat">
               <div className="sd-stat-ico"><FaBoxOpen /></div>

@@ -8,6 +8,7 @@ import NewlyOpenedStores from './components/Newly-Opned'
 import StoresOfMyCity from './components/My-City'
 import FeaturedStores from './components/featured'
 import StoresPage from './components/AllStores'
+import CTASection from "../welcome/component/CTASection"
 import { useRouter } from "next/navigation";
 
 function page() {
@@ -187,6 +188,9 @@ function page() {
           <StoresPage />
         </div>
       </section>
+
+      {/* CTA Section */}
+      <CTASection />
 
     </div>
   )

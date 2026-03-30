@@ -123,9 +123,9 @@ export default function MostDiscountedSection({ products, user, wishlistIds, api
           {canLeft && (
             <button
               onClick={() => scrollBy(-1)}
-              className="cursor-pointer hidden sm:flex absolute left-0 top-1/2 -translate-y-1/2 z-20 items-center justify-center w-9 h-9 rounded-full bg-white/90 backdrop-blur-sm border border-gray-200/80 shadow-lg text-gray-700 hover:bg-white hover:scale-110 hover:shadow-xl transition-all duration-200 opacity-0 group-hover/row:opacity-100"
+              className="cursor-pointer absolute left-2 top-1/2 -translate-y-1/2 z-20 flex items-center justify-center w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-gradient-to-r from-red-500 to-red-600 backdrop-blur-md border border-red-400 shadow-lg text-white hover:shadow-xl hover:scale-110 transition-all duration-200 active:scale-95"
             >
-              <ChevronLeft size={18} />
+              <ChevronLeft size={20} />
             </button>
           )}
 
@@ -133,15 +133,15 @@ export default function MostDiscountedSection({ products, user, wishlistIds, api
           {canRight && (
             <button
               onClick={() => scrollBy(1)}
-              className="cursor-pointer hidden sm:flex absolute right-0 top-1/2 -translate-y-1/2 z-20 items-center justify-center w-9 h-9 rounded-full bg-white/90 backdrop-blur-sm border border-gray-200/80 shadow-lg text-gray-700 hover:bg-white hover:scale-110 hover:shadow-xl transition-all duration-200 opacity-0 group-hover/row:opacity-100"
+              className="cursor-pointer absolute right-2 top-1/2 -translate-y-1/2 z-20 flex items-center justify-center w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-gradient-to-r from-red-500 to-red-600 backdrop-blur-md border border-red-400 shadow-lg text-white hover:shadow-xl hover:scale-110 transition-all duration-200 active:scale-95"
             >
-              <ChevronRight size={18} />
+              <ChevronRight size={20} />
             </button>
           )}
 
           {/* Fade edges */}
-          {canLeft && <div className="hidden sm:block absolute left-0 top-0 bottom-0 w-8 bg-gradient-to-r from-white/60 to-transparent z-10 pointer-events-none" />}
-          {canRight && <div className="hidden sm:block absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-white/60 to-transparent z-10 pointer-events-none" />}
+          {canLeft && <div className="hidden sm:block absolute left-0 top-0 bottom-0 w-12 bg-gradient-to-r from-white/80 via-white/40 to-transparent z-10 pointer-events-none" />}
+          {canRight && <div className="hidden sm:block absolute right-0 top-0 bottom-0 w-12 bg-gradient-to-l from-white/80 via-white/40 to-transparent z-10 pointer-events-none" />}
 
           <div
             ref={scrollRef}

@@ -2,6 +2,7 @@
 import { useEffect, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { useAuth } from "../../context/Authcontext";
+import CTASection from "../../welcome/component/CTASection";
 import ProductHeroWithSearchOnly from "../components/Header";
 import AllProductsSection from "../components/AllProductsSection";
 
@@ -70,9 +71,9 @@ function ProductsContent() {
 
   return (
     <div className="min-h-screen w-full bg-[#f4f6fb] text-slate-900 font-sans overflow-x-hidden">
-      <header className="w-full bg-white/90 backdrop-blur-xl shadow-[0_1px_3px_rgba(0,0,0,0.04)] py-3 px-4 sm:px-6 relative z-50 border-b border-gray-100/60">
-        <ProductHeroWithSearchOnly />
-      </header>
+      
+      {/* ── SEARCH HEADER — FULL WIDTH ── */}
+      <ProductHeroWithSearchOnly />
 
       <main className="w-full flex flex-col py-4 sm:py-6">
         <div className="w-full relative overflow-hidden bg-gradient-to-br from-white via-indigo-50/40 to-blue-50/30">
@@ -94,6 +95,9 @@ function ProductsContent() {
           />
         </div>
       </main>
+
+      {/* CTA Section */}
+      <CTASection />
     </div>
   );
 }

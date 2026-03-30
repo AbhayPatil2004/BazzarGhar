@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import StoreCard from "../components/StoreCard";
 import { Search } from "lucide-react";
 import SearchWithHistory from "../components/Search";
+import CTASection from "../../welcome/component/CTASection";
 import { useAuth } from "../../context/Authcontext";
 
 export default function StoresPage() {
@@ -38,10 +39,10 @@ export default function StoresPage() {
     const fetchStores = async () => {
       setLoading(true);
       try {
-        const res = await fetch(`${API_BASE}/store/stores/?${buildQuery()}` , 
-      {
-        credentials : "include"
-      });
+        const res = await fetch(`${API_BASE}/store/stores/?${buildQuery()}`,
+          {
+            credentials: "include"
+          });
         const data = await res.json();
         setStores(data.data || []);
       } catch (err) {
@@ -107,50 +108,44 @@ export default function StoresPage() {
   return (
     <div className="min-h-screen bg-white w-full">
 
-      {/* 🔍 ONLY ADDED SEARCH BAR (no logic touched) */}
-      <section className="w-full bg-gradient-to-br from-blue-50 to-white py-6">
-        <div className="max-w-7xl mx-auto px-4 md:px-8">
+      {/* 🔍 SEARCH BAR — FULL WIDTH */}
+      <SearchWithHistory
+        user={user}
+        token={token}
+        apiBase={API_BASE}
+        placeholder="Search stores..."
+        redirectPath="/store/stores"
+        fetchEndpoint="/store/searchhistory"
+        saveEndpoint="/store/savesearchhistory"
+        queryParam="search"
+      />
 
-          <SearchWithHistory
-            user={user}
-            token={token}
-            apiBase={API_BASE}
-            placeholder="Search stores..."
-            redirectPath="/store/stores"
-            fetchEndpoint="/store/searchhistory"
-            saveEndpoint="/store/savesearchhistory"
-            queryParam="search"
-          />
-
-        </div>
-
-        <div className="px-2 sm:px-4 md:px-6 py-6 w-full">
-
+      {/* Results Section */}
+      <section className="w-full bg-white border-b border-gray-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 py-8">
           <span className="text-[10px] sm:text-xs tracking-widest uppercase text-gray-500">
             {heading.tag}
           </span>
 
-          <h2 className="mt-1 text-lg sm:text-2xl md:text-3xl font-bold text-gray-900 leading-tight">
+          <h2 className="mt-2 text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 leading-tight">
             {heading.title}
           </h2>
 
-          <p className="mt-2 text-gray-600 text-xs sm:text-sm md:text-base max-w-2xl">
+          <p className="mt-3 text-gray-600 text-sm sm:text-base max-w-3xl">
             {heading.desc}
           </p>
 
           {!loading && (
-            <p className="mt-2 text-xs sm:text-sm text-gray-500">
+            <p className="mt-3 text-sm text-gray-500 font-medium">
               {stores.length} stores found
             </p>
           )}
         </div>
-
       </section>
 
-      {/* Heading Section */}
-
-      {/* Content */}
-      <div className="w-full px-2 sm:px-4 md:px-6 pb-10 w-full">
+      {/* Content Grid */}
+      <div className="w-full bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 py-8 pb-10">
 
         {loading && (
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 sm:gap-6">
@@ -179,7 +174,11 @@ export default function StoresPage() {
             ))}
           </div>
         )}
+        </div>
       </div>
+
+      {/* CTA Section */}
+      <CTASection />
     </div>
   );
 }

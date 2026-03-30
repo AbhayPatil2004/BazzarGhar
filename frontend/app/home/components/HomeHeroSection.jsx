@@ -45,7 +45,7 @@ export default function HeroSection() {
 
     return (
         <section className="w-full bg-gradient-to-br from-blue-50 to-white">
-            <div className="max-w-7xl mx-auto px-6 md:px-12 py-5 md:py">
+            <div className="max-w-7xl mx-auto px-6 md:px-12 py-8 md:py-16">
 
                 {/* Search Bar – Top & Full Width */}
 
