@@ -189,7 +189,7 @@ export default function Page() {
         <div className="w-full h-px bg-gradient-to-r from-transparent via-gray-200/60 to-transparent" />
 
         {/* STATIC FEATURES SECTION */}
-        <section className="w-full px-4 sm:px-6 py-10 sm:py-14 bg-white">
+        {/* <section className="w-full px-4 sm:px-6 py-10 sm:py-14 bg-white">
           <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8 text-center">
             <div className="flex flex-col items-center p-6 rounded-2xl bg-slate-50 border border-slate-100/60 hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
               <div className="w-14 h-14 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-2xl mb-4 shadow-sm">🚚</div>
@@ -212,7 +212,7 @@ export default function Page() {
               <p className="text-sm text-gray-500 leading-relaxed">Our dedicated team is always here to help you anytime you need.</p>
             </div>
           </div>
-        </section>
+        </section> */}
 
         <div className="w-full h-px bg-gradient-to-r from-transparent via-gray-200/60 to-transparent" />
 

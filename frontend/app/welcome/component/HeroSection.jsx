@@ -9,98 +9,95 @@ function HeroSection() {
 
     if (user) {
         return (
-            <section className="relative overflow-hidden bg-gradient-to-br from-white via-blue-50 to-blue-100 min-h-screen flex items-center">
-                {/* Decorative gradient blobs */}
-                <div className="absolute -top-40 -left-32 w-96 h-96 rounded-full bg-blue-200 blur-3xl opacity-40" />
-                <div className="absolute -bottom-32 -right-32 w-80 h-80 rounded-full bg-blue-300 blur-3xl opacity-30" />
+            <section className="relative overflow-hidden bg-white">
+                {/* Decorative blur (very subtle now) */}
+                <div className="absolute -top-24 -left-24 h-96 w-96 rounded-full bg-indigo-100 blur-3xl" />
+                <div className="absolute -bottom-24 -right-24 h-96 w-96 rounded-full bg-pink-100 blur-3xl" />
 
-                <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-20">
+                <div className="relative max-w-7xl mx-auto px-6 py-24 text-gray-900">
 
                     {/* MAIN GRID */}
-                    <div className="grid grid-cols-1 lg:grid-cols-2 items-center gap-8 md:gap-16">
+                    <div className="grid grid-cols-1 md:grid-cols-2 items-center gap-20">
 
                         {/* LEFT */}
-                        <div className="text-center lg:text-left">
-                            <span className="inline-block mb-4 rounded-full bg-blue-100 text-blue-700 px-4 py-2 text-xs md:text-sm font-semibold tracking-wide">
-                                🚀 BUILT FOR LOCAL BUSINESSES
+                        <div className="text-center md:text-left">
+                            <span className="inline-block mb-4 rounded-full bg-indigo-100 text-indigo-700 px-4 py-1 text-sm font-medium">
+                                🚀 Built for Local Businesses
                             </span>
 
-                            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight text-gray-900 mt-4">
-                                Empower Local <br className="hidden sm:block" />
-                                <span className="bg-gradient-to-r from-blue-600 to-blue-500 bg-clip-text text-transparent">Vendors.</span>
+                            <h1 className="text-4xl md:text-6xl font-extrabold leading-tight">
+                                Empower Local Vendors. <br />
+                                <span className="text-indigo-600">Shop Smarter.</span>
                             </h1>
 
-                            <p className="mt-6 text-base sm:text-lg text-gray-600 max-w-xl mx-auto lg:mx-0 leading-relaxed">
+                            <p className="mt-6 text-lg md:text-xl text-gray-600 max-w-xl mx-auto md:mx-0">
                                 BazzarGhar helps local vendors launch their own online store and sell
                                 directly to customers in their city — fast, simple, and secure.
                             </p>
 
                             {/* CTA */}
-                            <div className="mt-8 flex flex-col sm:flex-row gap-3 justify-center lg:justify-start">
+                            <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
                                 <a
                                     href="/store/create"
-                                    className="px-8 py-3 rounded-lg bg-gradient-to-r from-blue-600 to-blue-500 text-white font-semibold shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300"
+                                    className="px-8 py-3 rounded-xl bg-indigo-600 text-white font-semibold shadow-lg hover:scale-105 transition"
                                 >
                                     Open Your Store
                                 </a>
 
                                 <a
                                     href="/home"
-                                    className="px-8 py-3 rounded-lg border-2 border-blue-600 text-blue-600 font-semibold hover:bg-blue-600 hover:text-white transition-all duration-300"
+                                    className="px-8 py-3 rounded-xl border border-indigo-600 text-indigo-600 font-semibold hover:bg-indigo-600 hover:text-white transition"
                                 >
                                     Start Shopping
                                 </a>
                             </div>
 
                             {/* FEATURE POINTS */}
-                            <div className="mt-12 grid grid-cols-1 sm:grid-cols-3 gap-4">
-                                <div className="bg-white rounded-lg p-4 shadow-md hover:shadow-lg transition-shadow">
-                                    <p className="text-2xl mb-2">🏪</p>
-                                    <p className="font-semibold text-gray-900">Your Own Store</p>
-                                    <p className="text-gray-600 text-sm">No marketplace limits</p>
+                            <div className="mt-12 grid grid-cols-1 sm:grid-cols-3 gap-6 text-sm">
+                                <div className="bg-gray-50 rounded-xl p-4 shadow-sm">
+                                    🏪 <p className="mt-2 font-semibold">Your Own Store</p>
+                                    <p className="text-gray-500">No marketplace limits</p>
                                 </div>
-                                <div className="bg-white rounded-lg p-4 shadow-md hover:shadow-lg transition-shadow">
-                                    <p className="text-2xl mb-2">📍</p>
-                                    <p className="font-semibold text-gray-900">Local First</p>
-                                    <p className="text-gray-600 text-sm">Sell in your city</p>
+                                <div className="bg-gray-50 rounded-xl p-4 shadow-sm">
+                                    📍 <p className="mt-2 font-semibold">Local First</p>
+                                    <p className="text-gray-500">Sell in your city</p>
                                 </div>
-                                <div className="bg-white rounded-lg p-4 shadow-md hover:shadow-lg transition-shadow">
-                                    <p className="text-2xl mb-2">🔒</p>
-                                    <p className="font-semibold text-gray-900">Secure Payments</p>
-                                    <p className="text-gray-600 text-sm">Fast & trusted checkout</p>
+                                <div className="bg-gray-50 rounded-xl p-4 shadow-sm">
+                                    🔒 <p className="mt-2 font-semibold">Secure Payments</p>
+                                    <p className="text-gray-500">Fast & trusted checkout</p>
                                 </div>
                             </div>
                         </div>
 
-                        {/* RIGHT IMAGE */}
-                        <div className="flex justify-center">
-                            <div className="relative rounded-2xl bg-white p-3 shadow-2xl">
+                        {/* RIGHT IMAGE (BIG) */}
+                        <div className="relative flex justify-center md:justify-end">
+                            <div className="relative rounded-3xl bg-white p-4 shadow-2xl">
                                 <img
                                     src="/herologo.jpg"
-                                    alt="Ecommerce Platform"
-                                    className="w-full max-w-sm md:max-w-md lg:max-w-lg object-contain"
+                                    alt=" Ecommerce"
+                                    className="w-full max-w-xl md:max-w-2xl object-contain"
                                 />
                             </div>
                         </div>
                     </div>
 
                     {/* STATS BAR */}
-                    <div className="mt-16 md:mt-24 grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
-                        <div className="bg-white rounded-lg p-6 shadow-md hover:shadow-lg hover:-translate-y-1 transition-all">
-                            <p className="text-2xl md:text-3xl font-bold text-blue-600">10K+</p>
-                            <p className="text-gray-600 text-sm mt-2">Active Vendors</p>
+                    <div className="mt-24 grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+                        <div className="bg-gray-50 rounded-xl p-6 shadow-sm">
+                            <p className="text-3xl font-bold text-indigo-600">10K+</p>
+                            <p className="text-gray-500">Vendors</p>
                         </div>
-                        <div className="bg-white rounded-lg p-6 shadow-md hover:shadow-lg hover:-translate-y-1 transition-all">
-                            <p className="text-2xl md:text-3xl font-bold text-blue-600">50+</p>
-                            <p className="text-gray-600 text-sm mt-2">Cities Covered</p>
+                        <div className="bg-gray-50 rounded-xl p-6 shadow-sm">
+                            <p className="text-3xl font-bold text-indigo-600">50+</p>
+                            <p className="text-gray-500">Cities</p>
                         </div>
-                        <div className="bg-white rounded-lg p-6 shadow-md hover:shadow-lg hover:-translate-y-1 transition-all">
-                            <p className="text-2xl md:text-3xl font-bold text-blue-600">1M+</p>
-                            <p className="text-gray-600 text-sm mt-2">Products Listed</p>
+                        <div className="bg-gray-50 rounded-xl p-6 shadow-sm">
+                            <p className="text-3xl font-bold text-indigo-600">1M+</p>
+                            <p className="text-gray-500">Products</p>
                         </div>
-                        <div className="bg-white rounded-lg p-6 shadow-md hover:shadow-lg hover:-translate-y-1 transition-all">
-                            <p className="text-2xl md:text-3xl font-bold text-blue-600">24×7</p>
-                            <p className="text-gray-600 text-sm mt-2">Customer Support</p>
+                        <div className="bg-gray-50 rounded-xl p-6 shadow-sm">
+                            <p className="text-3xl font-bold text-indigo-600">24×7</p>
+                            <p className="text-gray-500">Support</p>
                         </div>
                     </div>
 
@@ -111,98 +108,95 @@ function HeroSection() {
 
 
     return (
-        <section className="relative overflow-hidden bg-gradient-to-br from-white via-blue-50 to-blue-100 min-h-screen flex items-center">
-            {/* Decorative gradient blobs */}
-            <div className="absolute -top-40 -left-32 w-96 h-96 rounded-full bg-blue-200 blur-3xl opacity-40" />
-            <div className="absolute -bottom-32 -right-32 w-80 h-80 rounded-full bg-blue-300 blur-3xl opacity-30" />
+        <section className="relative overflow-hidden bg-white">
+            {/* Decorative blur (very subtle now) */}
+            <div className="absolute -top-24 -left-24 h-96 w-96 rounded-full bg-indigo-100 blur-3xl" />
+            <div className="absolute -bottom-24 -right-24 h-96 w-96 rounded-full bg-pink-100 blur-3xl" />
 
-            <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-20">
+            <div className="relative max-w-7xl mx-auto px-6 py-24 text-gray-900">
 
                 {/* MAIN GRID */}
-                <div className="grid grid-cols-1 lg:grid-cols-2 items-center gap-8 md:gap-16">
+                <div className="grid grid-cols-1 md:grid-cols-2 items-center gap-20">
 
                     {/* LEFT */}
-                    <div className="text-center lg:text-left">
-                        <span className="inline-block mb-4 rounded-full bg-blue-100 text-blue-700 px-4 py-2 text-xs md:text-sm font-semibold tracking-wide">
-                            🚀 BUILT FOR LOCAL BUSINESSES
+                    <div className="text-center md:text-left">
+                        <span className="inline-block mb-4 rounded-full bg-indigo-100 text-indigo-700 px-4 py-1 text-sm font-medium">
+                            🚀 Built for Local Businesses
                         </span>
 
-                        <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight text-gray-900 mt-4">
-                            Empower Local <br className="hidden sm:block" />
-                            <span className="bg-gradient-to-r from-blue-600 to-blue-500 bg-clip-text text-transparent">Vendors.</span>
+                        <h1 className="text-4xl md:text-6xl font-extrabold leading-tight">
+                            Empower Local Vendors. <br />
+                            <span className="text-indigo-600">Shop Smarter.</span>
                         </h1>
 
-                        <p className="mt-6 text-base sm:text-lg text-gray-600 max-w-xl mx-auto lg:mx-0 leading-relaxed">
+                        <p className="mt-6 text-lg md:text-xl text-gray-600 max-w-xl mx-auto md:mx-0">
                             BazzarGhar helps local vendors launch their own online store and sell
                             directly to customers in their city — fast, simple, and secure.
                         </p>
 
                         {/* CTA */}
-                        <div className="mt-8 flex flex-col sm:flex-row gap-3 justify-center lg:justify-start">
+                        <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
                             <a
                                 href="/auth/signup"
-                                className="px-8 py-3 rounded-lg bg-gradient-to-r from-blue-600 to-blue-500 text-white font-semibold shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300"
+                                className="px-8 py-3 rounded-xl bg-indigo-600 text-white font-semibold shadow-lg hover:scale-105 transition"
                             >
                                 Get Started
                             </a>
 
                             <a
                                 href="/auth/login"
-                                className="px-8 py-3 rounded-lg border-2 border-blue-600 text-blue-600 font-semibold hover:bg-blue-600 hover:text-white transition-all duration-300"
+                                className="px-8 py-3 rounded-xl border border-indigo-600 text-indigo-600 font-semibold hover:bg-indigo-600 hover:text-white transition"
                             >
                                 Login
                             </a>
                         </div>
 
                         {/* FEATURE POINTS */}
-                        <div className="mt-12 grid grid-cols-1 sm:grid-cols-3 gap-4">
-                            <div className="bg-white rounded-lg p-4 shadow-md hover:shadow-lg transition-shadow">
-                                <p className="text-2xl mb-2">🏪</p>
-                                <p className="font-semibold text-gray-900">Your Own Store</p>
-                                <p className="text-gray-600 text-sm">No marketplace limits</p>
+                        <div className="mt-12 grid grid-cols-1 sm:grid-cols-3 gap-6 text-sm">
+                            <div className="bg-gray-50 rounded-xl p-4 shadow-sm">
+                                🏪 <p className="mt-2 font-semibold">Your Own Store</p>
+                                <p className="text-gray-500">No marketplace limits</p>
                             </div>
-                            <div className="bg-white rounded-lg p-4 shadow-md hover:shadow-lg transition-shadow">
-                                <p className="text-2xl mb-2">📍</p>
-                                <p className="font-semibold text-gray-900">Local First</p>
-                                <p className="text-gray-600 text-sm">Sell in your city</p>
+                            <div className="bg-gray-50 rounded-xl p-4 shadow-sm">
+                                📍 <p className="mt-2 font-semibold">Local First</p>
+                                <p className="text-gray-500">Sell in your city</p>
                             </div>
-                            <div className="bg-white rounded-lg p-4 shadow-md hover:shadow-lg transition-shadow">
-                                <p className="text-2xl mb-2">🔒</p>
-                                <p className="font-semibold text-gray-900">Secure Payments</p>
-                                <p className="text-gray-600 text-sm">Fast & trusted checkout</p>
+                            <div className="bg-gray-50 rounded-xl p-4 shadow-sm">
+                                🔒 <p className="mt-2 font-semibold">Secure Payments</p>
+                                <p className="text-gray-500">Fast & trusted checkout</p>
                             </div>
                         </div>
                     </div>
 
-                    {/* RIGHT IMAGE */}
-                    <div className="flex justify-center">
-                        <div className="relative rounded-2xl bg-white p-3 shadow-2xl">
+                    {/* RIGHT IMAGE (BIG) */}
+                    <div className="relative flex justify-center md:justify-end">
+                        <div className="relative rounded-3xl bg-white p-4 shadow-2xl">
                             <img
                                 src="/herologo.jpg"
-                                alt="Ecommerce Platform"
-                                className="w-full max-w-sm md:max-w-md lg:max-w-lg object-contain"
+                                alt=" Ecommerce"
+                                className="w-full max-w-xl md:max-w-2xl object-contain"
                             />
                         </div>
                     </div>
                 </div>
 
                 {/* STATS BAR */}
-                <div className="mt-16 md:mt-24 grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
-                    <div className="bg-white rounded-lg p-6 shadow-md hover:shadow-lg hover:-translate-y-1 transition-all">
-                        <p className="text-2xl md:text-3xl font-bold text-blue-600">10K+</p>
-                        <p className="text-gray-600 text-sm mt-2">Active Vendors</p>
+                <div className="mt-24 grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+                    <div className="bg-gray-50 rounded-xl p-6 shadow-sm">
+                        <p className="text-3xl font-bold text-indigo-600">10K+</p>
+                        <p className="text-gray-500">Vendors</p>
                     </div>
-                    <div className="bg-white rounded-lg p-6 shadow-md hover:shadow-lg hover:-translate-y-1 transition-all">
-                        <p className="text-2xl md:text-3xl font-bold text-blue-600">50+</p>
-                        <p className="text-gray-600 text-sm mt-2">Cities Covered</p>
+                    <div className="bg-gray-50 rounded-xl p-6 shadow-sm">
+                        <p className="text-3xl font-bold text-indigo-600">50+</p>
+                        <p className="text-gray-500">Cities</p>
                     </div>
-                    <div className="bg-white rounded-lg p-6 shadow-md hover:shadow-lg hover:-translate-y-1 transition-all">
-                        <p className="text-2xl md:text-3xl font-bold text-blue-600">1M+</p>
-                        <p className="text-gray-600 text-sm mt-2">Products Listed</p>
+                    <div className="bg-gray-50 rounded-xl p-6 shadow-sm">
+                        <p className="text-3xl font-bold text-indigo-600">1M+</p>
+                        <p className="text-gray-500">Products</p>
                     </div>
-                    <div className="bg-white rounded-lg p-6 shadow-md hover:shadow-lg hover:-translate-y-1 transition-all">
-                        <p className="text-2xl md:text-3xl font-bold text-blue-600">24×7</p>
-                        <p className="text-gray-600 text-sm mt-2">Customer Support</p>
+                    <div className="bg-gray-50 rounded-xl p-6 shadow-sm">
+                        <p className="text-3xl font-bold text-indigo-600">24×7</p>
+                        <p className="text-gray-500">Support</p>
                     </div>
                 </div>
 

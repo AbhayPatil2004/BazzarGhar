@@ -5,6 +5,8 @@ import SponserProduct from "../models/sponser.model.js";
 import Store from "../models/store.model.js";
 import SearchHistory from "../models/search.model.js";
 
+
+
 async function handelGetAllProducts(req, res) {
   try {
     const {
@@ -535,4 +537,45 @@ async function handelClearProduct(req, res) {
   }
 }
 
-export { handelAddProduct, handelGetAllProducts, handelGetRecommendedProducts, handelGetSearchProducts, handelGetSponseredProducts, handelGetSponseredStoreProducts, handelClearProduct, handelSaveProductSearch, handelGetProductSearchHistory }
+async function handleGetProductDetails(req, res) {
+  try {
+    const { productId } = req.params;
+
+    // Validate productId
+    if (!productId) {
+      return res.status(400).json(
+        new ApiResponse(400, {}, "Product ID is required")
+      );
+    }
+
+    // Fetch product with all details including populated references
+    const product = await Product.findById(productId)
+      .populate({
+        path: "store",
+        select: "storeName logo banner description category totalProducts totalOrders ratings address owner isApproved subscriptionPlan",
+        populate: {
+          path: "owner",
+          select: "firstName lastName email phone avatar"
+        }
+      })
+      .populate("seller", "firstName lastName email phone avatar");
+
+    // Check if product exists
+    if (!product || product.isDeleted) {
+      return res.status(404).json(
+        new ApiResponse(404, {}, "Product not found")
+      );
+    }
+
+    return res.status(200).json(
+      new ApiResponse(200, product, "Product details fetched successfully")
+    );
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json(
+      new ApiResponse(500, {}, "Internal server error")
+    );
+  }
+}
+
+export { handelAddProduct, handelGetAllProducts, handelGetRecommendedProducts, handelGetSearchProducts, handelGetSponseredProducts, handelGetSponseredStoreProducts, handelClearProduct, handelSaveProductSearch, handelGetProductSearchHistory, handleGetProductDetails }

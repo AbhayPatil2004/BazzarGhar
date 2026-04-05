@@ -71,7 +71,7 @@ export default function OwnerStores({ ownerId, ownerName, storeId }) {
         .os-grid{
           display:grid;
           grid-template-columns:repeat(auto-fit,minmax(220px,max-content));
-          justify-content:center;gap:40px 32px;
+          justify-content:center;gap:28px 24px;
         }
         @media(max-width:480px){
           .os-grid{grid-template-columns:repeat(2,1fr);gap:16px 12px;}
