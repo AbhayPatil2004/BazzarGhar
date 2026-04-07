@@ -555,10 +555,10 @@ async function handleGetProductDetails(req, res) {
         select: "storeName logo banner description category totalProducts totalOrders ratings address owner isApproved subscriptionPlan",
         populate: {
           path: "owner",
-          select: "firstName lastName email phone avatar"
+          select: "username email phone avatar"
         }
       })
-      .populate("seller", "firstName lastName email phone avatar");
+      .populate("seller", "username email phone avatar");
 
     // Check if product exists
     if (!product || product.isDeleted) {
