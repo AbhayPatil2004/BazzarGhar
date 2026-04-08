@@ -193,7 +193,7 @@ export default function ProductDetailPage() {
     }
   };
 
-  const handleBuyNow = async () => {
+  const handleBuyNow = () => {
     if (!user) {
       toast.error("Please log in to proceed", { position: "top-center" });
       router.push("/auth/signup");
@@ -205,30 +205,18 @@ export default function ProductDetailPage() {
       return;
     }
 
-    setBuyingNow(true);
-    try {
-      const res = await fetch(`${API_BASE}/cart/add/${productId}`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify({
-          quantity,
-          size: selectedSize || undefined,
-          color: selectedColor || undefined,
-        }),
-      });
-
-      if (res.ok) {
-        router.push("/profile/cart");
-      } else {
-        toast.error("Failed to process. Please try again.", { position: "top-center" });
-      }
-    } catch (err) {
-      toast.error("Error processing order", { position: "top-center" });
-      console.error(err);
-    } finally {
-      setBuyingNow(false);
-    }
+    // Store buy now product data and navigate directly to checkout
+    const buyNowData = {
+      productId: productId,
+      product: product,
+      quantity,
+      size: selectedSize,
+      color: selectedColor,
+    };
+    
+    localStorage.setItem("buyNowProduct", JSON.stringify(buyNowData));
+    toast.success("Proceeding to checkout...", { position: "top-center" });
+    router.push("/checkout");
   };
 
   const handleWishlist = async () => {
