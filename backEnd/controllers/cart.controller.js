@@ -1,5 +1,6 @@
 
 import Cart from "../models/cart.model.js";
+import Product from "../models/product.model.js";
 import ApiResponse from "../utils/ApiResponse.js";
 
 async function handelGetCartProduct(req, res) {
@@ -7,9 +8,7 @@ async function handelGetCartProduct(req, res) {
         const userId = req.user._id;
 
         const cart = await Cart.findOne({ user: userId })
-            .populate("products.product", "_id")
-            .populate("products.store", "_id")
-            .populate("products.seller", "_id")
+            .populate("products.product", "_id title brand images colors price")
             .lean();
 
         if (!cart) {
@@ -35,7 +34,7 @@ async function handelAddProductInCart(req, res) {
     const { quantity = 1, size, color } = req.body;
     
     const product = await Product.findById(productId)
-      .select("price store seller")
+      .select("price")
       .lean();
 
     if (!product) {
@@ -52,8 +51,6 @@ async function handelAddProductInCart(req, res) {
         products: [
           {
             product: productId,
-            store: product.store,
-            seller: product.seller,
             quantity,
             size,
             color,
@@ -82,8 +79,6 @@ async function handelAddProductInCart(req, res) {
     } else {
       cart.products.push({
         product: productId,
-        store: product.store,
-        seller: product.seller,
         quantity,
         size,
         color,
@@ -169,4 +164,93 @@ async function handelClearCart(req, res) {
   }
 }
 
-export { handelGetCartProduct , handelAddProductInCart , handelRemoveProductFromCart , handelClearCart }
+async function handelUpdateProductQuantity(req, res) {
+  try {
+    const userId = req.user._id;
+    const { productId } = req.params;
+    const { quantity, size, color } = req.body;
+
+    if (!quantity || quantity < 1) {
+      return res.status(400).json(
+        new ApiResponse(400, {}, "Quantity must be at least 1")
+      );
+    }
+
+    const cart = await Cart.findOne({ user: userId });
+
+    if (!cart) {
+      return res.status(400).json(
+        new ApiResponse(400, {}, "Cart not found")
+      );
+    }
+
+    const product = cart.products.find(
+      (item) =>
+        item.product.toString() === productId &&
+        item.size === size &&
+        item.color === color
+    );
+
+    if (!product) {
+      return res.status(404).json(
+        new ApiResponse(404, {}, "Product not found in cart")
+      );
+    }
+
+    product.quantity = quantity;
+    product.finalPrice = product.price * quantity;
+
+    await cart.save();
+
+    return res.status(200).json(
+      new ApiResponse(200, cart, "Quantity updated successfully")
+    );
+  } catch (error) {
+    return res.status(500).json(
+      new ApiResponse(500, {}, "Something went wrong")
+    );
+  }
+}
+
+async function handelUpdateProductColor(req, res) {
+  try {
+    const userId = req.user._id;
+    const { productId } = req.params;
+    const { newColor, oldColor, size } = req.body;
+
+    const cart = await Cart.findOne({ user: userId });
+
+    if (!cart) {
+      return res.status(400).json(
+        new ApiResponse(400, {}, "Cart not found")
+      );
+    }
+
+    const product = cart.products.find(
+      (item) =>
+        item.product.toString() === productId &&
+        item.size === size &&
+        item.color === oldColor
+    );
+
+    if (!product) {
+      return res.status(404).json(
+        new ApiResponse(404, {}, "Product not found in cart")
+      );
+    }
+
+    product.color = newColor;
+
+    await cart.save();
+
+    return res.status(200).json(
+      new ApiResponse(200, cart, "Color updated successfully")
+    );
+  } catch (error) {
+    return res.status(500).json(
+      new ApiResponse(500, {}, "Something went wrong")
+    );
+  }
+}
+
+export { handelGetCartProduct , handelAddProductInCart , handelRemoveProductFromCart , handelClearCart , handelUpdateProductQuantity , handelUpdateProductColor }
