@@ -304,7 +304,7 @@ async function handelUserLogout(req, res) {
     res.clearCookie("token", {
       httpOnly: true,
       secure: true,
-      sameSite: "strict"
+      sameSite: "None"
     })
 
     return res.status(200).json(
