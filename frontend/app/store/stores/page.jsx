@@ -1,14 +1,14 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import StoreCard from "../components/StoreCard";
 import { Search } from "lucide-react";
 import SearchWithHistory from "../components/Search";
 import CTASection from "../../welcome/component/CTASection";
 import { useAuth } from "../../context/Authcontext";
 
-export default function StoresPage() {
+function StoresPageContent() {
   const searchParams = useSearchParams();
   const { user, token } = useAuth();
 
@@ -180,5 +180,13 @@ export default function StoresPage() {
       {/* CTA Section */}
       <CTASection />
     </div>
+  );
+}
+
+export default function StoresPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-white w-full flex items-center justify-center">Loading...</div>}>
+      <StoresPageContent />
+    </Suspense>
   );
 }
