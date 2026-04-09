@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useAuth } from "../context/Authcontext";
 import {
   CreditCard,
@@ -16,7 +16,6 @@ const API_BASE = process.env.NEXT_PUBLIC_API_URL;
 
 export default function CheckoutPage() {
   const router = useRouter();
-  const searchParams = useSearchParams();
   const { user } = useAuth();
 
   const [cart, setCart] = useState(null);
