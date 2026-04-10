@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useAuth } from "../context/Authcontext";
 
 // import OwnerStoresPage from "../seller/OwnerStores.jsx"
 // import StoreOpeningRequests from "../admin/StoreOprningrequest.jsx";
@@ -9,44 +10,57 @@ import { useRouter } from "next/navigation";
 export default function ProfilePage() {
 
     const router = useRouter();
+    const { user: authUser } = useAuth();
 
     const [role, setRole] = useState(null);
-
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
 
     const [editingPhone, setEditingPhone] = useState(false);
     const [phone, setPhone] = useState("");
 
     const [uploading, setUploading] = useState(false);
 
-    // useEffect(() => {
-    //     const storedUser = localStorage.getItem("user");
-    //     if (storedUser) {
-    //         const parsedUser = JSON.parse(storedUser);
-    //         setRole(parsedUser?.role || null);
-    //     }
-    // }, []);
-
+    // 🔹 Check authentication from localStorage or context
     useEffect(() => {
-        const storedUser = localStorage.getItem("user");
-        if (!storedUser) return;
+        const checkAuth = () => {
+            // Check localStorage first
+            const storedUser = localStorage.getItem("user");
+            if (storedUser) {
+                try {
+                    const parsed = JSON.parse(storedUser);
+                    setRole(parsed.value?.role || null);
+                    setIsAuthenticated(true);
+                    return;
+                } catch (error) {
+                    console.error("Failed to parse stored user:", error);
+                    localStorage.removeItem("user");
+                }
+            }
 
-        try {
-            const parsed = JSON.parse(storedUser);
+            // Check auth context
+            if (authUser) {
+                setRole(authUser.role || null);
+                setIsAuthenticated(true);
+                return;
+            }
 
-            // 👇 yahi main fix hai
-            // setUser(parsed.value);
-            setRole(parsed.value.role)
-        } catch {
-            localStorage.removeItem("user");
-        }
-    }, []);
+            // No auth found, redirect to login
+            console.log("No authentication found, redirecting to login");
+            router.push("/auth/login");
+        };
 
+        checkAuth();
+    }, [authUser, router]);
 
-
-    // 🔹 Fetch profile
+    // 🔹 Fetch profile from API
     async function fetchProfile() {
+        if (!isAuthenticated) {
+            setLoading(false);
+            return;
+        }
+
         try {
             const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/user`, {
                 method: "GET",
@@ -56,7 +70,8 @@ export default function ProfilePage() {
             const data = await res.json();
 
             if (!res.ok) {
-                router.push("/auth/signup");
+                console.log("API returned error, redirecting to login");
+                router.push("/auth/login");
                 return;
             }
 
@@ -64,6 +79,7 @@ export default function ProfilePage() {
             setPhone(data.data?.phone || "");
         } catch (err) {
             console.error("Profile fetch error:", err);
+            router.push("/auth/login");
         } finally {
             setLoading(false);
         }
@@ -71,7 +87,7 @@ export default function ProfilePage() {
 
     useEffect(() => {
         fetchProfile();
-    }, []);
+    }, [isAuthenticated]);
 
 
     async function handleAvatarUpload(e) {
@@ -93,14 +109,16 @@ export default function ProfilePage() {
 
             const uploadData = await uploadRes.json();
 
-            await fetch("http://localhost:8000/user/update", {
+            const updateRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/user/update`, {
                 method: "PATCH",
                 headers: { "Content-Type": "application/json" },
                 credentials: "include",
                 body: JSON.stringify({ avatar: uploadData.url }),
             });
 
-            setUser((prev) => ({ ...prev, avatar: uploadData.url }));
+            if (updateRes.ok) {
+                setUser((prev) => ({ ...prev, avatar: uploadData.url }));
+            }
         } catch (err) {
             console.error("Avatar upload failed", err);
         } finally {
@@ -111,38 +129,68 @@ export default function ProfilePage() {
 
     async function handlePhoneUpdate() {
         try {
-            await fetch("http://localhost:8000/user/update", {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/user/update`, {
                 method: "PATCH",
                 headers: { "Content-Type": "application/json" },
                 credentials: "include",
                 body: JSON.stringify({ phone }),
             });
 
-            setUser((prev) => ({ ...prev, phone }));
-            setEditingPhone(false);
+            if (res.ok) {
+                setUser((prev) => ({ ...prev, phone }));
+                setEditingPhone(false);
+            }
         } catch (err) {
             console.error("Phone update failed", err);
         }
     }
 
+
     // 🔹 Logout
     async function handleLogout() {
-        await fetch("http://localhost:8000/user/logout", {
-            method: "POST",
-            credentials: "include",
-        });
-        router.replace("/");
+        try {
+            await fetch(`${process.env.NEXT_PUBLIC_API_URL}/user/logout`, {
+                method: "POST",
+                credentials: "include",
+            });
+            localStorage.removeItem("user");
+            router.push("/auth/login");
+        } catch (err) {
+            console.error("Logout error:", err);
+            router.push("/auth/login");
+        }
     }
 
     if (loading) {
         return (
             <div className="min-h-screen flex items-center justify-center bg-gray-100">
-                Loading profile...
+                <div className="text-center">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-black mx-auto mb-4"></div>
+                    <p className="text-gray-600">Loading profile...</p>
+                </div>
             </div>
         );
     }
 
-    if (!user) return null;
+    if (!isAuthenticated) {
+        return null; // Will redirect via useEffect
+    }
+
+    if (!user) {
+        return (
+            <div className="min-h-screen flex items-center justify-center bg-gray-100">
+                <div className="text-center">
+                    <p className="text-gray-600 mb-4">Unable to load profile</p>
+                    <button
+                        onClick={() => router.push("/auth/login")}
+                        className="px-6 py-2 bg-black text-white rounded-lg"
+                    >
+                        Back to Login
+                    </button>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div>
