@@ -11,17 +11,23 @@ const UpdateStatusModal = ({ order, onClose, onStatusUpdate, onSendOTP }) => {
   const [error, setError] = useState('');
 
   const statusOptions = [
-    { value: 'pending', label: 'Pending', description: 'Order is pending' },
-    { value: 'confirmed', label: 'Confirmed', description: 'Order confirmed by seller' },
     { value: 'packed', label: 'Packed', description: 'Order has been packed' },
     { value: 'shipped', label: 'Shipped', description: 'Order has been shipped' },
     { value: 'out-for-delivery', label: 'Out for Delivery', description: 'Order is out for delivery' },
   ];
 
   const getAvailableStatuses = () => {
-    const currentStatusIndex = statusOptions.findIndex(s => s.value === order.status);
-    if (currentStatusIndex === -1) return statusOptions;
-    return statusOptions.slice(currentStatusIndex);
+    // Only allow status updates to packed, shipped, or out-for-delivery
+    // if the order is already confirmed
+    if (!['confirmed', 'packed', 'shipped', 'out-for-delivery'].includes(order.status)) {
+      return [];
+    }
+    
+    const statusFlow = ['packed', 'shipped', 'out-for-delivery'];
+    const currentIndex = statusFlow.indexOf(order.status);
+    
+    // Return all statuses from current onwards (seller can update in sequence)
+    return statusOptions.slice(Math.max(0, currentIndex));
   };
 
   const handleStatusUpdate = async () => {
@@ -34,14 +40,8 @@ const UpdateStatusModal = ({ order, onClose, onStatusUpdate, onSendOTP }) => {
       setLoading(true);
       setError('');
       
-      // Prepare update data
-      const updateData = {
-        status: selectedStatus,
-        ...(trackingNumber && { trackingNumber }),
-        ...(notes && { notes })
-      };
-
-      await onStatusUpdate(order._id, updateData);
+      // Call handler with orderId and newStatus
+      await onStatusUpdate(order._id, selectedStatus, notes);
     } catch (err) {
       setError(err.message || 'Failed to update status');
     } finally {
@@ -50,8 +50,8 @@ const UpdateStatusModal = ({ order, onClose, onStatusUpdate, onSendOTP }) => {
   };
 
   const handleSendOTPClick = () => {
-    if (selectedStatus !== 'shipped') {
-      setError('You can only send OTP when order is marked as "Shipped"');
+    if (selectedStatus !== 'out-for-delivery') {
+      setError('You can only send OTP when order is marked as "Out for Delivery"');
       return;
     }
     onSendOTP(order);

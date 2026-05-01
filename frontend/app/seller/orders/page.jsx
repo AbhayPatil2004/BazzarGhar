@@ -70,35 +70,43 @@ const SellerOrdersPage = () => {
 
   const handleAcceptOrder = async (orderId, itemIndices) => {
     try {
-      await axios.post(
-        `${API_BASE_URL}/order-management/seller/accept`,
-        { orderId, itemIndices },
-        { withCredentials: true }
-      );
+      // Process each item individually since backend expects single itemIndex per request
+      for (const itemIndex of itemIndices) {
+        await axios.post(
+          `${API_BASE_URL}/order-management/seller/accept`,
+          { orderId, itemIndex },
+          { withCredentials: true }
+        );
+      }
 
-      alert('Order accepted successfully');
+      alert(`Successfully accepted ${itemIndices.length} item(s)`);
       setShowAcceptRejectModal(false);
       fetchOrders();
     } catch (err) {
       console.error('Error accepting order:', err);
-      alert(err.response?.data?.message || 'Failed to accept order');
+      const errorMsg = err.response?.data?.message || 'Failed to accept order';
+      alert(errorMsg);
     }
   };
 
   const handleRejectOrder = async (orderId, itemIndices, reason) => {
     try {
-      await axios.post(
-        `${API_BASE_URL}/order-management/seller/reject`,
-        { orderId, itemIndices, reason },
-        { withCredentials: true }
-      );
+      // Process each item individually since backend expects single itemIndex per request
+      for (const itemIndex of itemIndices) {
+        await axios.post(
+          `${API_BASE_URL}/order-management/seller/reject`,
+          { orderId, itemIndex, reason },
+          { withCredentials: true }
+        );
+      }
 
-      alert('Order rejected successfully');
+      alert(`Successfully rejected ${itemIndices.length} item(s)`);
       setShowAcceptRejectModal(false);
       fetchOrders();
     } catch (err) {
       console.error('Error rejecting order:', err);
-      alert(err.response?.data?.message || 'Failed to reject order');
+      const errorMsg = err.response?.data?.message || 'Failed to reject order';
+      alert(errorMsg);
     }
   };
 
@@ -107,11 +115,18 @@ const SellerOrdersPage = () => {
     setShowUpdateStatusModal(true);
   };
 
-  const handleStatusUpdate = async (orderId, newStatus) => {
+  const handleStatusUpdate = async (orderId, newStatus, note = '') => {
     try {
+      // Validate status
+      const allowedStatuses = ['packed', 'shipped', 'out-for-delivery'];
+      if (!allowedStatuses.includes(newStatus)) {
+        alert(`Invalid status. Allowed statuses are: ${allowedStatuses.join(', ')}`);
+        return;
+      }
+
       await axios.post(
         `${API_BASE_URL}/order-management/seller/update-status`,
-        { orderId, newStatus },
+        { orderId, newStatus, note },
         { withCredentials: true }
       );
 

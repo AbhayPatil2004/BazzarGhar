@@ -65,11 +65,9 @@ export default function SignupPage() {
       <div className="w-full max-w-md bg-white rounded-2xl shadow-xl p-8">
 
         {/* Header */}
-        <div className="text-center mb-6">
-          <h1 className="text-3xl font-bold text-gray-800">
-            Create Account
-          </h1>
-          <p className="text-gray-500 text-sm mt-1">
+        <div className="text-center mb-8">
+          <h1 className="text-3xl font-bold text-gray-800">Create Account</h1>
+          <p className="text-gray-500 text-sm mt-2">
             Sign up to get started
           </p>
         </div>
@@ -77,32 +75,56 @@ export default function SignupPage() {
         {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-4">
 
-          <input
-            type="text"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            placeholder="Username"
-            className="w-full rounded-lg border border-gray-300 px-4 py-2 text-black"
-            required
-          />
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Username</label>
+            <input
+              type="text"
+              value={username}
+              onChange={(e) => {
+                setUsername(e.target.value);
+                setError("");
+              }}
+              placeholder="Choose a username"
+              className="w-full rounded-lg border border-gray-300 px-4 py-3 text-black placeholder-gray-400
+                         focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none"
+              disabled={loading}
+              required
+            />
+          </div>
 
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="Enter your email"
-            className="w-full rounded-lg border border-gray-300 px-4 py-2 text-black"
-            required
-          />
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => {
+                setEmail(e.target.value);
+                setError("");
+              }}
+              placeholder="Enter your email"
+              className="w-full rounded-lg border border-gray-300 px-4 py-3 text-black placeholder-gray-400
+                         focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none"
+              disabled={loading}
+              required
+            />
+          </div>
 
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="Enter password"
-            className="w-full rounded-lg border border-gray-300 px-4 py-2 text-black"
-            required
-          />
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Password</label>
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => {
+                setPassword(e.target.value);
+                setError("");
+              }}
+              placeholder="Create a strong password"
+              className="w-full rounded-lg border border-gray-300 px-4 py-3 text-black placeholder-gray-400
+                         focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none"
+              disabled={loading}
+              required
+            />
+          </div>
 
           {error && (
             <div className="bg-red-50 border border-red-200 text-red-600 text-sm rounded-lg px-3 py-2">
@@ -119,21 +141,23 @@ export default function SignupPage() {
           <button
             type="submit"
             disabled={loading}
-            className="cursor-pointer w-full py-2.5 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold hover:opacity-90 transition disabled:opacity-60"
+            className="cursor-pointer w-full py-3 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold hover:opacity-90 transition disabled:opacity-60 disabled:cursor-not-allowed mt-6"
           >
             {loading ? "Creating account..." : "Sign Up"}
           </button>
         </form>
 
         {/* Footer */}
-        <p className="text-center text-sm text-gray-500 mt-6 flex justify-center gap-2">
-          Already have an account?
-          <span
-            className="text-blue-600 hover:underline cursor-pointer"
+        <p className="text-center text-sm text-gray-500 mt-8">
+          Already have an account?{" "}
+          <button
+            type="button"
             onClick={() => router.push("/auth/login")}
+            className="text-blue-600 hover:underline cursor-pointer disabled:text-gray-400 disabled:cursor-not-allowed font-medium"
+            disabled={loading}
           >
             Login
-          </span>
+          </button>
         </p>
 
       </div>

@@ -209,11 +209,9 @@ export default function LoginPage() {
       <div className="w-full max-w-md bg-white rounded-2xl shadow-xl p-8">
 
         {/* Header */}
-        <div className="text-center mb-6">
-          <h1 className="text-3xl font-bold text-gray-800">
-            Login
-          </h1>
-          <p className="text-gray-500 text-sm mt-1">
+        <div className="text-center mb-8">
+          <h1 className="text-3xl font-bold text-gray-800">Login</h1>
+          <p className="text-gray-500 text-sm mt-2">
             Welcome back! Please login to continue
           </p>
         </div>
@@ -222,22 +220,23 @@ export default function LoginPage() {
         <form onSubmit={handleSubmit} className="space-y-4">
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Email
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Email Address
             </label>
             <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="Enter your email"
-              className="w-full rounded-lg border border-gray-300 px-4 py-2
-                         focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none text-black"
+              className="w-full rounded-lg border border-gray-300 px-4 py-3
+                         focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none text-black placeholder-gray-400"
+              disabled={loading}
               required
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
               Password
             </label>
             <input
@@ -245,8 +244,9 @@ export default function LoginPage() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Enter your password"
-              className="w-full rounded-lg border border-gray-300 px-4 py-2
-                         focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none text-black"
+              className="w-full rounded-lg border border-gray-300 px-4 py-3
+                         focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none text-black placeholder-gray-400"
+              disabled={loading}
               required
             />
           </div>
@@ -254,28 +254,32 @@ export default function LoginPage() {
           <button
             type="submit"
             disabled={loading}
-            className="cursor-pointer w-full py-2.5 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold hover:opacity-90 transition disabled:opacity-60"
+            className="cursor-pointer w-full py-3 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold hover:opacity-90 transition disabled:opacity-60 disabled:cursor-not-allowed"
           >
             {loading ? "Logging in..." : "Login"}
           </button>
         </form>
 
         {/* Footer */}
-        <p className="text-center text-sm text-gray-500 mt-6 flex justify-center gap-2">
-          Don’t have an account?
-          <span
-            className="text-blue-600 hover:underline cursor-pointer"
+        <p className="text-center text-sm text-gray-500 mt-8">
+          Don't have an account?{" "}
+          <button
+            type="button"
             onClick={() => router.push("/auth/signup")}
+            className="text-blue-600 hover:underline cursor-pointer disabled:text-gray-400 disabled:cursor-not-allowed font-medium"
+            disabled={loading}
           >
             Sign up
-          </span>
-          <span className="text-gray-400">|</span>
-          <span
-            className="text-blue-600 hover:underline cursor-pointer"
+          </button>
+          <span className="text-gray-400"> | </span>
+          <button
+            type="button"
             onClick={() => router.push("/auth/forgotpassword")}
+            className="text-blue-600 hover:underline cursor-pointer disabled:text-gray-400 disabled:cursor-not-allowed font-medium"
+            disabled={loading}
           >
             Forgot Password
-          </span>
+          </button>
         </p>
       </div>
     </div>
