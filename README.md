@@ -1,4 +1,4 @@
-# 🛍️ AuraShop - Multi-Vendor E-Commerce Platform
+# 🛍️ BazzarGhar - Multi-Vendor E-Commerce Platform
 
 A modern, full-stack e-commerce platform built with **Next.js 13+**, **Node.js**, **Express**, and **MongoDB**. AuraShop enables sellers to create their stores, list products, and manage orders while providing buyers with a seamless shopping experience.
 
