@@ -24,7 +24,8 @@ const app = express();
 app.use(cors({
   origin: [
     "http://localhost:3000",
-    "https://bazzar-ghar-4nf7.vercel.app"
+    "https://bazzar-ghar-4nf7.vercel.app",
+    "https://bazzar-ghar-w99l.vercel.app"
   ],
   credentials: true
 }));
