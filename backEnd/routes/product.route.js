@@ -1,12 +1,13 @@
 import express from 'express'
 import handelUserAuthorization from '../middleware/seller.authorized.middleware.js'
 import { handelUserAuthentication } from '../middleware/authenticate.middleware.js'
-import { handelAddProduct , handelGetAllProducts , handelGetSearchProducts , handelGetRecommendedProducts , handelGetSponseredProducts ,handelGetSponseredStoreProducts , handelClearProduct , handelGetProductSearchHistory , handelSaveProductSearch , handleGetProductDetails } from "../controllers/product.controller.js"
+import { handelAddProduct , handelGetAllProducts , handelGetSearchProducts , handelGetRecommendedProducts , handelGetSponseredProducts ,handelGetSponseredStoreProducts , handelClearProduct , handelGetProductSearchHistory , handelSaveProductSearch , handleGetProductDetails, handleGetSimilarProducts } from "../controllers/product.controller.js"
 
 const router = express.Router()
 
 router.get("/products", handelGetAllProducts);
 router.get("/details/:productId", handleGetProductDetails);
+router.get("/similar/:productId", handleGetSimilarProducts);
 
 router.post("/add" , handelUserAuthentication , handelUserAuthorization , handelAddProduct )
 router.get("/search" , handelGetSearchProducts )

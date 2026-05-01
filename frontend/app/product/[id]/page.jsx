@@ -25,6 +25,10 @@ import {
   Share2,
 } from "lucide-react";
 import toast, { Toaster } from "react-hot-toast";
+import SimilarProducts from "./components/SimilarProducts";
+import MoreFromStore from "./components/MoreFromStore";
+import CategoryProducts from "./components/CategoryProducts";
+import SimilarByName from "./components/SimilarByName";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL;
 
@@ -128,9 +132,11 @@ export default function ProductDetailPage() {
 
         if (!res.ok) {
           setError(data.message || "Failed to fetch product");
+          console.error("Product fetch error:", data);
           return;
         }
 
+        console.log("✅ Product loaded:", data.data.title);
         setProduct(data.data);
 
         // Set default selections
@@ -142,7 +148,7 @@ export default function ProductDetailPage() {
         }
       } catch (err) {
         setError("Error fetching product details");
-        console.error(err);
+        console.error("❌ Product fetch error:", err);
       } finally {
         setLoading(false);
       }
@@ -845,6 +851,24 @@ export default function ProductDetailPage() {
               </div>
             </div>
           </section>
+        )}
+
+        {/* Similar Products Section */}
+        <SimilarProducts productId={productId} />
+
+        {/* More From Store Section */}
+        {product.store && (
+          <MoreFromStore storeId={product.store._id} currentProductId={productId} />
+        )}
+
+        {/* Category Products Section */}
+        {product.category && (
+          <CategoryProducts category={product.category} currentProductId={productId} />
+        )}
+
+        {/* Similar By Name Section */}
+        {product.title && (
+          <SimilarByName title={product.title} currentProductId={productId} />
         )}
       </div>
     </div>

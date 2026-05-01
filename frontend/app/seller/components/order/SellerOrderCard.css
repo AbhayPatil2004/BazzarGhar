@@ -1,0 +1,357 @@
+.seller-order-card {
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.seller-order-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+}
+
+/* Card Header */
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.order-id-section {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.order-id-section .label {
+  font-size: 12px;
+  font-weight: 600;
+  opacity: 0.9;
+}
+
+.order-id-section .value {
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.status-badge {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+}
+
+.status-badge.status-pending {
+  background: #fed7d7;
+  color: #c53030;
+}
+
+.status-badge.status-requested {
+  background: #feebc8;
+  color: #c05621;
+}
+
+.status-badge.status-confirmed {
+  background: #c6f6d5;
+  color: #22543d;
+}
+
+.status-badge.status-packed {
+  background: #bee3f8;
+  color: #2c5aa0;
+}
+
+.status-badge.status-shipped {
+  background: #b2f5ea;
+  color: #234e52;
+}
+
+.status-badge.status-delivery {
+  background: #faf089;
+  color: #5f3605;
+}
+
+.status-badge.status-delivered {
+  background: #c6f6d5;
+  color: #22543d;
+}
+
+.status-badge.status-cancelled {
+  background: #e2e8f0;
+  color: #2d3748;
+}
+
+/* Card Date */
+.card-date {
+  padding: 10px 15px;
+  background: #f7fafc;
+  border-bottom: 1px solid #e2e8f0;
+  font-size: 13px;
+  color: #718096;
+  font-weight: 500;
+}
+
+/* Customer Info */
+.customer-info {
+  padding: 15px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.customer-info h4 {
+  margin: 0 0 10px 0;
+  font-size: 13px;
+  text-transform: uppercase;
+  color: #4a5568;
+  letter-spacing: 0.5px;
+  font-weight: 600;
+}
+
+.customer-name {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: #2d3748;
+}
+
+.customer-contact,
+.customer-location {
+  margin: 5px 0;
+  font-size: 12px;
+  color: #718096;
+}
+
+/* Items Section */
+.card-items {
+  padding: 15px;
+  border-bottom: 1px solid #e2e8f0;
+  flex: 1;
+}
+
+.card-items h4 {
+  margin: 0 0 10px 0;
+  font-size: 13px;
+  text-transform: uppercase;
+  color: #4a5568;
+  letter-spacing: 0.5px;
+  font-weight: 600;
+}
+
+.items-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.item-preview {
+  display: flex;
+  gap: 10px;
+  padding: 10px;
+  background: #f7fafc;
+  border-radius: 8px;
+}
+
+.item-image {
+  width: 50px;
+  height: 50px;
+  border-radius: 6px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.item-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.item-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.product-name {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 600;
+  color: #2d3748;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.product-qty,
+.product-detail {
+  margin: 3px 0 0 0;
+  font-size: 11px;
+  color: #718096;
+}
+
+.item-price {
+  font-weight: 700;
+  color: #667eea;
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+.more-items {
+  padding: 8px 10px;
+  background: #edf2f7;
+  border-radius: 6px;
+  font-size: 12px;
+  color: #4a5568;
+  font-weight: 600;
+  text-align: center;
+}
+
+/* Card Summary */
+.card-summary {
+  padding: 15px;
+  border-bottom: 1px solid #e2e8f0;
+  background: #f7fafc;
+}
+
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  font-size: 13px;
+}
+
+.summary-row:last-child {
+  margin-bottom: 0;
+}
+
+.summary-row .label {
+  color: #718096;
+  font-weight: 600;
+}
+
+.summary-row .value {
+  color: #2d3748;
+  font-weight: 600;
+}
+
+.total-amount {
+  font-size: 16px;
+  font-weight: 700;
+  color: #667eea;
+}
+
+.payment-status {
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.payment-status.paid {
+  background: #c6f6d5;
+  color: #22543d;
+}
+
+.payment-status.pending {
+  background: #feebc8;
+  color: #c05621;
+}
+
+.payment-status.failed {
+  background: #fed7d7;
+  color: #c53030;
+}
+
+/* Card Actions */
+.card-actions {
+  padding: 15px;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.action-button {
+  flex: 1;
+  min-width: 120px;
+  padding: 10px 12px;
+  border: none;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.action-button.view-details {
+  background: #667eea;
+  color: white;
+}
+
+.action-button.view-details:hover {
+  background: #5568d3;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+.action-button.accept-reject {
+  background: #f6ad55;
+  color: white;
+}
+
+.action-button.accept-reject:hover {
+  background: #ed8936;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(237, 137, 54, 0.4);
+}
+
+.action-button.update-status {
+  background: #48bb78;
+  color: white;
+}
+
+.action-button.update-status:hover {
+  background: #38a169;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(72, 187, 120, 0.4);
+}
+
+.action-button.send-otp {
+  background: #38b6ff;
+  color: white;
+}
+
+.action-button.send-otp:hover {
+  background: #0fa3eb;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(56, 182, 255, 0.4);
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .card-actions {
+    flex-direction: column;
+  }
+
+  .action-button {
+    min-width: 100%;
+  }
+
+  .items-list {
+    max-height: 150px;
+  }
+}

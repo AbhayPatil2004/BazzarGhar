@@ -113,7 +113,7 @@ export default function CheckoutPage() {
       toast.error("Please add a shipping address", {
         position: "top-center",
       });
-      router.push("/profile/address/edit");
+      router.push("/profile/address");
       return;
     }
 
@@ -133,9 +133,13 @@ export default function CheckoutPage() {
           }),
         });
 
+        const data = await res.json();
+
         if (!res.ok) {
-          console.error("Order API error:", res.status);
-          throw new Error(`Order API error: ${res.status}`);
+          console.error("Order API error:", res.status, data);
+          toast.error(data.message || `Order failed: ${res.status}`, { position: "top-center" });
+          setProcessing(false);
+          return;
         }
 
         toast.success("Order placed successfully! 🎉", {
@@ -151,9 +155,13 @@ export default function CheckoutPage() {
           body: JSON.stringify({ paymentMethod: "COD" }),
         });
 
+        const data = await res.json();
+
         if (!res.ok) {
-          console.error("Order API error:", res.status);
-          throw new Error(`Order API error: ${res.status}`);
+          console.error("Order API error:", res.status, data);
+          toast.error(data.message || `Order failed: ${res.status}`, { position: "top-center" });
+          setProcessing(false);
+          return;
         }
 
         toast.success("Order placed successfully! 🎉", {
@@ -196,10 +204,13 @@ export default function CheckoutPage() {
       let amount;
       if (buyNowProduct) {
         const price = buyNowProduct.product.finalPrice || buyNowProduct.product.price;
-        amount = Math.round((price * buyNowQuantity + calculateTax()) * 100);
+        amount = price * buyNowQuantity + calculateTax();
       } else {
-        amount = Math.round((calculateTotal() + calculateTax()) * 100);
+        amount = calculateTotal() + calculateTax();
       }
+
+      // Round to 2 decimal places for rupees
+      amount = Math.round(amount * 100) / 100;
 
       // Create Razorpay order
       const orderRes = await fetch(
@@ -212,23 +223,50 @@ export default function CheckoutPage() {
         }
       );
 
-      if (!orderRes.ok) {
-        console.error("Razorpay order creation failed:", orderRes.status);
-        throw new Error(`Razorpay API error: ${orderRes.status}`);
+      let orderData = {};
+      try {
+        const responseText = await orderRes.text();
+        orderData = responseText ? JSON.parse(responseText) : {};
+      } catch (parseError) {
+        console.error("Failed to parse response:", parseError);
+        toast.error("Server error - invalid response format", { position: "top-center" });
+        setProcessing(false);
+        return;
       }
 
-      const orderData = await orderRes.json();
+      if (!orderRes.ok) {
+        const errorMessage = orderData?.message || `Razorpay API error: ${orderRes.status}`;
+        console.error("Razorpay order creation failed:", {
+          status: orderRes.status,
+          message: errorMessage,
+          data: orderData
+        });
+        toast.error(errorMessage, { position: "top-center" });
+        setProcessing(false);
+        return;
+      }
+
+      const { data: order } = orderData;
+
+      if (!order || !order.id) {
+        console.error("Invalid order response:", { data: orderData, order });
+        toast.error("Failed to create payment order", { position: "top-center" });
+        setProcessing(false);
+        return;
+      }
 
       const options = {
         key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
-        amount: orderData.data.amount,
+        amount: order.amount,
         currency: "INR",
         name: "AuraShop",
         description: "Order Payment",
-        order_id: orderData.data.id,
+        order_id: order.id,
 
         handler: async function (response) {
           try {
+            console.log("Razorpay response received:", response);
+
             // Verify payment and create order
             const verifyRes = await fetch(
               `${API_BASE}/order/verify-payment`,
@@ -250,22 +288,46 @@ export default function CheckoutPage() {
               }
             );
 
-            if (!verifyRes.ok) {
-              console.error("Payment verification failed:", verifyRes.status);
-              throw new Error(`Verification API error: ${verifyRes.status}`);
+            let verifyData = {};
+            try {
+              const responseText = await verifyRes.text();
+              verifyData = responseText ? JSON.parse(responseText) : {};
+            } catch (parseError) {
+              console.error("Failed to parse verification response:", parseError);
+              toast.error("Server error - invalid response", { position: "top-center" });
+              setProcessing(false);
+              return;
             }
 
-            const verifyData = await verifyRes.json();
+            if (!verifyRes.ok) {
+              const errorMessage = verifyData?.message || `Payment verification failed: ${verifyRes.status}`;
+              console.error("Payment verification failed:", {
+                status: verifyRes.status,
+                message: errorMessage,
+                data: verifyData,
+              });
+              toast.error(errorMessage, { position: "top-center" });
+              setProcessing(false);
+              return;
+            }
+
+            if (!verifyData.success) {
+              toast.error(verifyData.message || "Payment verification failed", { position: "top-center" });
+              setProcessing(false);
+              return;
+            }
+
             toast.success("Payment successful! Order placed 🎉", {
               position: "top-center",
             });
             localStorage.removeItem("buyNowProduct");
-            setTimeout(() => {
-              router.push("/profile");
-            }, 1500);
+            
+            // Close the modal or reset the page
+            setProcessing(false);
           } catch (err) {
             toast.error("Error verifying payment", { position: "top-center" });
             console.error(err);
+            setProcessing(false);
           }
         },
 

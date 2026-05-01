@@ -578,4 +578,67 @@ async function handleGetProductDetails(req, res) {
   }
 }
 
-export { handelAddProduct, handelGetAllProducts, handelGetRecommendedProducts, handelGetSearchProducts, handelGetSponseredProducts, handelGetSponseredStoreProducts, handelClearProduct, handelSaveProductSearch, handelGetProductSearchHistory, handleGetProductDetails }
+async function handleGetSimilarProducts(req, res) {
+  try {
+    const { productId } = req.params;
+    const { limit = 10 } = req.query;
+
+    // Validate productId
+    if (!productId) {
+      return res.status(400).json(
+        new ApiResponse(400, {}, "Product ID is required")
+      );
+    }
+
+    // Fetch the original product to get its characteristics
+    const product = await Product.findById(productId);
+
+    if (!product || product.isDeleted) {
+      return res.status(404).json(
+        new ApiResponse(404, {}, "Product not found")
+      );
+    }
+
+    // Build filter for similar products
+    const filter = {
+      _id: { $ne: productId }, // Exclude the current product
+      isDeleted: false,
+      isActive: true,
+      category: product.category, // Same category as primary filter
+    };
+
+    // Calculate price range (±30% of product price)
+    const priceMargin = product.finalPrice * 0.3;
+    filter.finalPrice = {
+      $gte: product.finalPrice - priceMargin,
+      $lte: product.finalPrice + priceMargin,
+    };
+
+    // Add gender filter if the product has gender specified
+    if (product.gender) {
+      filter.gender = product.gender;
+    }
+
+    // Query similar products
+    const similarProducts = await Product.find(filter)
+      .populate("store", "storeName logo")
+      .populate("seller", "username avatar")
+      .limit(parseInt(limit))
+      .lean();
+
+    return res.status(200).json(
+      new ApiResponse(
+        200,
+        { similarProducts },
+        "Similar products fetched successfully"
+      )
+    );
+  } catch (error) {
+    console.error("Get Similar Products Error:", error);
+    return res.status(500).json(
+      new ApiResponse(500, {}, "Internal server error")
+    );
+  }
+}
+
+export { handelAddProduct, handelGetAllProducts, handelGetRecommendedProducts, handelGetSearchProducts, handelGetSponseredProducts, handelGetSponseredStoreProducts, handelClearProduct, handelSaveProductSearch, handelGetProductSearchHistory, handleGetProductDetails, handleGetSimilarProducts }

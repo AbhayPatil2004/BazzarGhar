@@ -17,6 +17,7 @@ import orderRouter from './routes/order.route.js'
 import sellerRouter from './routes/seller.route.js'
 import storeReviewRouter from './routes/storeReview.route.js'
 import wishlistRouter from "./routes/wishlist.route.js";
+import orderManagementRouter from './routes/orderManagement.route.js';
 
 const app = express();
 
@@ -27,6 +28,9 @@ app.use(cors({
 
 app.use(express.json());
 app.use(cookieParser());
+
+// Serve static files for invoices
+app.use(express.static('public'));
 
 
 
@@ -40,6 +44,7 @@ app.use("/review" , reviewRouter )
 app.use("/order" , orderRouter)
 app.use("/storereview" , storeReviewRouter )
 app.use("/wishlist" , wishlistRouter )
+app.use("/order-management", orderManagementRouter);
 
 
 const PORT = process.env.PORT || 3000;

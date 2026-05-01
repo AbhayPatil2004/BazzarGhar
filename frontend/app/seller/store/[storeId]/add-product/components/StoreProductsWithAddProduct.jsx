@@ -8,7 +8,6 @@ export default function StoreDetailsWithAddProduct() {
   const { storeId } = useParams();
   const [store, setStore] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [showForm, setShowForm] = useState(false);
 
   useEffect(() => {
     if (!storeId) return;
@@ -82,19 +81,8 @@ export default function StoreDetailsWithAddProduct() {
         </div>
       )}
 
-      {/* CTA / Form */}
-      <div className="p-4 sm:p-6">
-        {showForm ? (
-          <AddProduct storeId={storeId} />
-        ) : (
-          <button
-            onClick={() => setShowForm(true)}
-            className="w-full rounded-lg bg-black text-white py-3 sm:py-4 text-base sm:text-lg font-semibold hover:opacity-90"
-          >
-            Add Product to {store.storeName}
-          </button>
-        )}
-      </div>
+      {/* Form - Always Visible */}
+      <AddProduct storeId={storeId} />
     </div>
   );
 }

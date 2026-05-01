@@ -4,7 +4,7 @@ import { handelUserAuthentication } from "../middleware/authenticate.middleware.
 
 const router = express.Router()
 
-router.post("/singleorder/:productid" , handelUserAuthentication , handelPlaceSingelItemOrder )
+router.post("/singleorder/:productId" , handelUserAuthentication , handelPlaceSingelItemOrder )
 router.post("/place-from-cart" , handelUserAuthentication , handelPlaceCartItemsOrder)
 router.post("/create-razorpay-order" , handelUserAuthentication , handelCreateRazorpayOrder)
 router.post("/verify-payment" , handelUserAuthentication , handelVerifyPayment)

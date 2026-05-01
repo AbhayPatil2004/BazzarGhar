@@ -1,0 +1,134 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Invoice - INV-092AB962</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #333; background: #f5f5f5; }
+    .container { max-width: 900px; margin: 0 auto; background: white; padding: 40px; }
+    .header { display: flex; justify-content: space-between; margin-bottom: 30px; border-bottom: 2px solid #007bff; padding-bottom: 20px; }
+    .company-info h1 { color: #007bff; font-size: 28px; }
+    .invoice-info { text-align: right; }
+    .invoice-info p { margin: 5px 0; }
+    .invoice-number { font-size: 16px; font-weight: bold; color: #007bff; }
+    .invoice-date { color: #666; }
+    
+    .sections { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-bottom: 30px; }
+    .section h3 { color: #007bff; font-size: 14px; font-weight: 600; text-transform: uppercase; margin-bottom: 10px; }
+    .section p { margin: 5px 0; font-size: 14px; }
+    
+    .items-table { width: 100%; margin-bottom: 30px; }
+    .items-table table { width: 100%; border-collapse: collapse; }
+    .items-table th { background: #007bff; color: white; padding: 12px; text-align: left; font-size: 13px; }
+    .items-table td { padding: 12px; border-bottom: 1px solid #ddd; font-size: 13px; }
+    .items-table tr:hover { background: #f9f9f9; }
+    
+    .summary { margin-bottom: 30px; }
+    .summary-row { display: flex; justify-content: flex-end; margin-bottom: 10px; }
+    .summary-label { width: 200px; font-weight: 500; }
+    .summary-value { width: 150px; text-align: right; padding-right: 20px; }
+    .summary-row.total { border-top: 2px solid #007bff; padding-top: 10px; font-size: 18px; font-weight: bold; color: #007bff; }
+    
+    .footer { text-align: center; border-top: 1px solid #ddd; padding-top: 20px; color: #666; font-size: 12px; }
+    .footer-note { font-style: italic; margin-top: 10px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <div class="header">
+      <div class="company-info">
+        <h1>AuraShop</h1>
+        <p>Your Premium Shopping Destination</p>
+      </div>
+      <div class="invoice-info">
+        <p class="invoice-number">INV-092AB962</p>
+        <p class="invoice-date">30/4/2026</p>
+        <p>Order Status: <strong>packed</strong></p>
+      </div>
+    </div>
+
+    <!-- Customer & Shipping Info -->
+    <div class="sections">
+      <div class="section">
+        <h3>Bill To</h3>
+        <p><strong>abhayPatil</strong></p>
+        <p>patilabhay484@gmail.com</p>
+        <p></p>
+      </div>
+      <div class="section">
+        <h3>Ship To</h3>
+        <p><strong>Abhay Ramkrushna Patil</strong></p>
+        <p>Vasundhara park , Vrundhavan Nagar , kamatwade k </p>
+        <p>Nashik, Maharastra 422010</p>
+        <p>India</p>
+        <p><strong>Phone:</strong> 8668596922</p>
+      </div>
+    </div>
+
+    <!-- Items Table -->
+    <div class="items-table">
+      <table>
+        <thead>
+          <tr>
+            <th style="width: 5%">S.No</th>
+            <th style="width: 40%">Product</th>
+            <th style="width: 15%">Qty</th>
+            <th style="width: 20%">Unit Price</th>
+            <th style="width: 20%">Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          
+    <tr>
+      <td>1</td>
+      <td>Men Slim Fit Jeans</td>
+      <td>1</td>
+      <td>₹500.00</td>
+      <td>₹500.00</td>
+    </tr>
+  
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Summary -->
+    <div class="summary">
+      <div class="summary-row">
+        <div class="summary-label">Subtotal:</div>
+        <div class="summary-value">₹500.00</div>
+      </div>
+      <div class="summary-row">
+        <div class="summary-label">Shipping:</div>
+        <div class="summary-value">₹0.00</div>
+      </div>
+      <div class="summary-row">
+        <div class="summary-label">Tax:</div>
+        <div class="summary-value">₹0.00</div>
+      </div>
+      <div class="summary-row total">
+        <div class="summary-label">Total:</div>
+        <div class="summary-value">₹500.00</div>
+      </div>
+    </div>
+
+    <!-- Payment Info -->
+    <div class="sections">
+      <div class="section">
+        <h3>Payment Method</h3>
+        <p>Razorpay</p>
+        <p>Status: <strong>paid</strong></p>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+      <p>Thank you for shopping with AuraShop!</p>
+      <p class="footer-note">This is an electronically generated invoice. No signature is required.</p>
+      <p>For queries, contact: support@aurashop.com</p>
+    </div>
+  </div>
+</body>
+</html>

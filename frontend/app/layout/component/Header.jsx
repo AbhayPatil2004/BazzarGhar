@@ -11,9 +11,11 @@ import {
   DollarSign,
 } from "lucide-react";
 import ProfileIcon from "../../profile/components/ProfileIcon.jsx";
+import { useAuth } from "../../context/Authcontext.jsx";
 
 export default function Header() {
-  const role = "user"; // user | seller | admin
+  const { user } = useAuth();
+  const role = user?.role?.toLowerCase(); // Get role from auth context (user | seller | admin)
   const cartCount = 3;
 
   return (

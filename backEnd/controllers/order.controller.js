@@ -20,20 +20,22 @@ async function handelPlaceSingelItemOrder(req, res) {
     }
 
     const user = await User.findById(buyerId).select("address");
-    if (!user || !user.address) {
+    if (!user || !user.address || user.address.length === 0) {
       return res.status(400).json(
         new ApiResponse(400, {}, "Shipping address not found")
       );
     }
 
+    // Get default address or first address
+    const defaultAddress = user.address.find(addr => addr.isDefault) || user.address[0];
     const shippingAddress = {
-      fullName: user.address.fullName,
-      phone: user.address.phone,
-      street: user.address.street,
-      city: user.address.city,
-      state: user.address.state,
-      postalCode: user.address.postalCode,
-      country: user.address.country || "India"
+      fullName: defaultAddress.fullName,
+      phone: defaultAddress.phone,
+      street: defaultAddress.street,
+      city: defaultAddress.city,
+      state: defaultAddress.state,
+      postalCode: defaultAddress.postalCode,
+      country: defaultAddress.country || "India"
     };
 
 
@@ -106,16 +108,23 @@ async function handelPlaceCartItemsOrder(req, res) {
       );
     }
     
-    const user = await User.findById(userId);
+    const user = await User.findById(userId).select("address");
+    if (!user || !user.address || user.address.length === 0) {
+      return res.status(400).json(
+        new ApiResponse(400, {}, "Shipping address not found")
+      );
+    }
 
+    // Get default address or first address
+    const defaultAddress = user.address.find(addr => addr.isDefault) || user.address[0];
     const shippingAddress = {
-      fullName: user.address.fullName,
-      phone: user.address.phone,
-      street: user.address.street,
-      city: user.address.city,
-      state: user.address.state,
-      postalCode: user.address.postalCode,
-      country: user.address.country || "India"
+      fullName: defaultAddress.fullName,
+      phone: defaultAddress.phone,
+      street: defaultAddress.street,
+      city: defaultAddress.city,
+      state: defaultAddress.state,
+      postalCode: defaultAddress.postalCode,
+      country: defaultAddress.country || "India"
     };
 
     let totalAmount = 0;
@@ -201,24 +210,49 @@ async function handelCreateRazorpayOrder(req, res) {
       );
     }
 
-    const razorpay = new Razorpay({
-      key_id: process.env.RAZORPAY_KEY_ID,
-      key_secret: process.env.RAZORPAY_KEY_SECRET,
-    });
+    // Verify Razorpay credentials exist
+    if (!process.env.RAZORPAY_APIKEY || !process.env.RAZORPAY_APIKEY_SECRET) {
+      console.error("Missing Razorpay credentials in environment variables");
+      return res.status(500).json(
+        new ApiResponse(500, {}, "Razorpay credentials not configured")
+      );
+    }
 
-    const order = await razorpay.orders.create({
-      amount: amount,
-      currency: "INR",
-      receipt: `order_${Date.now()}`,
-    });
+    try {
+      const razorpay = new Razorpay({
+        key_id: process.env.RAZORPAY_APIKEY,
+        key_secret: process.env.RAZORPAY_APIKEY_SECRET,
+      });
 
-    return res.status(200).json(
-      new ApiResponse(200, order, "Razorpay order created successfully")
-    );
+      const order = await razorpay.orders.create({
+        amount: amount * 100, // Razorpay expects amount in paise
+        currency: "INR",
+        receipt: `order_${Date.now()}`,
+      });
+
+      return res.status(200).json(
+        new ApiResponse(200, order, "Razorpay order created successfully")
+      );
+    } catch (razorpayError) {
+      console.error("Razorpay API error:", {
+        message: razorpayError.message,
+        code: razorpayError.code,
+        statusCode: razorpayError.statusCode,
+        error: razorpayError.error
+      });
+
+      const errorMessage = razorpayError.message || razorpayError.error?.description || "Failed to create Razorpay order";
+      return res.status(500).json(
+        new ApiResponse(500, {}, errorMessage)
+      );
+    }
   } catch (error) {
-    console.error("Razorpay order creation error:", error);
+    console.error("Order creation error:", {
+      message: error.message,
+      stack: error.stack
+    });
     return res.status(500).json(
-      new ApiResponse(500, {}, "Failed to create order")
+      new ApiResponse(500, {}, error.message || "Failed to create order")
     );
   }
 }
@@ -226,12 +260,19 @@ async function handelCreateRazorpayOrder(req, res) {
 async function handelVerifyPayment(req, res) {
   try {
     const userId = req.user._id;
-    const { razorpay_order_id, razorpay_payment_id, razorpay_signature, paymentMethod } = req.body;
+    const { razorpay_order_id, razorpay_payment_id, razorpay_signature, paymentMethod, isBuyNow, buyNowData } = req.body;
+
+    console.log("Payment verification request:", {
+      userId,
+      isBuyNow,
+      buyNowData,
+      paymentMethod
+    });
 
     // Verify payment signature
     const body = razorpay_order_id + "|" + razorpay_payment_id;
     const expectedSignature = crypto
-      .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
+      .createHmac("sha256", process.env.RAZORPAY_APIKEY_SECRET)
       .update(body.toString())
       .digest("hex");
 
@@ -241,91 +282,154 @@ async function handelVerifyPayment(req, res) {
       );
     }
 
-    // Fetch cart
-    const cart = await Cart.findOne({ user: userId })
-      .populate("products.product")
-      .populate("products.seller")
-      .populate("products.store");
-
-    if (!cart || cart.products.length === 0) {
-      return res.status(400).json(
-        new ApiResponse(400, {}, "Cart is empty")
-      );
-    }
-
     // Fetch user
     const user = await User.findById(userId).select("address");
 
-    if (!user || !user.address) {
+    if (!user || !user.address || user.address.length === 0) {
       return res.status(400).json(
         new ApiResponse(400, {}, "Shipping address not found")
       );
     }
 
+    // Get default address or first address
+    const defaultAddress = user.address.find(addr => addr.isDefault) || user.address[0];
     const shippingAddress = {
-      fullName: user.address.fullName,
-      phone: user.address.phone,
-      street: user.address.street,
-      city: user.address.city,
-      state: user.address.state,
-      postalCode: user.address.postalCode,
-      country: user.address.country || "India"
+      fullName: defaultAddress.fullName,
+      phone: defaultAddress.phone,
+      street: defaultAddress.street,
+      city: defaultAddress.city,
+      state: defaultAddress.state,
+      postalCode: defaultAddress.postalCode,
+      country: defaultAddress.country || "India"
     };
 
-    let totalAmount = 0;
-    const orderItems = [];
+    let order;
 
-    // Process items
-    for (let item of cart.products) {
-      const productDoc = item.product;
+    // Handle Buy Now Flow
+    if (isBuyNow && buyNowData) {
+      console.log("Processing Buy Now order");
+      
+      const { productId, quantity, size, color } = buyNowData;
 
-      if (productDoc.stock < item.quantity) {
-        return res.status(400).json(
-          new ApiResponse(400, {}, `Insufficient stock for ${productDoc.title}`)
+      const product = await Product.findById(productId)
+        .select("finalPrice seller store stock")
+        .populate("seller", "_id")
+        .populate("store", "_id");
+
+      if (!product) {
+        return res.status(404).json(
+          new ApiResponse(404, {}, "Product not found")
         );
       }
 
-      const itemTotal = item.finalPrice * item.quantity;
-      totalAmount += itemTotal;
+      if (product.stock < quantity) {
+        return res.status(400).json(
+          new ApiResponse(400, {}, "Insufficient stock")
+        );
+      }
 
-      orderItems.push({
-        product: productDoc._id,
-        seller: item.seller,
-        store: item.store,
-        quantity: item.quantity,
-        size: item.size,
-        color: item.color,
-        price: item.price,
-        finalPrice: item.finalPrice
+      const price = product.finalPrice;
+      const finalPrice = price * quantity;
+
+      order = await Order.create({
+        buyer: userId,
+        items: [
+          {
+            product: product._id,
+            seller: product.seller._id,
+            store: product.store._id,
+            quantity,
+            size: size || undefined,
+            color: color || undefined,
+            price,
+            finalPrice
+          }
+        ],
+        totalAmount: finalPrice,
+        paymentMethod: paymentMethod || "Razorpay",
+        paymentStatus: "paid",
+        shippingAddress
       });
 
-      productDoc.stock -= item.quantity;
-      await productDoc.save();
+      product.stock -= quantity;
+      await product.save();
+
+      console.log("Buy Now order created:", order._id);
+    } 
+    // Handle Cart Checkout Flow
+    else {
+      console.log("Processing Cart order");
+      
+      // Fetch cart
+      const cart = await Cart.findOne({ user: userId })
+        .populate("products.product");
+
+      if (!cart || cart.products.length === 0) {
+        return res.status(400).json(
+          new ApiResponse(400, {}, "Cart is empty")
+        );
+      }
+
+      let totalAmount = 0;
+      const orderItems = [];
+
+      // Process items
+      for (let item of cart.products) {
+        const productDoc = item.product;
+
+        if (productDoc.stock < item.quantity) {
+          return res.status(400).json(
+            new ApiResponse(400, {}, `Insufficient stock for ${productDoc.title}`)
+          );
+        }
+
+        const itemTotal = item.finalPrice * item.quantity;
+        totalAmount += itemTotal;
+
+        orderItems.push({
+          product: productDoc._id,
+          seller: productDoc.seller,
+          store: productDoc.store,
+          quantity: item.quantity,
+          size: item.size,
+          color: item.color,
+          price: item.price,
+          finalPrice: item.finalPrice
+        });
+
+        productDoc.stock -= item.quantity;
+        await productDoc.save();
+      }
+
+      // Create order
+      order = await Order.create({
+        buyer: userId,
+        items: orderItems,
+        totalAmount,
+        paymentMethod: paymentMethod || "Razorpay",
+        paymentStatus: "paid",
+        shippingAddress
+      });
+
+      // Clear cart
+      cart.products = [];
+      cart.coupon = null;
+      await cart.save();
+
+      console.log("Cart order created:", order._id);
     }
-
-    // Create order
-    const order = await Order.create({
-      buyer: userId,
-      items: orderItems,
-      totalAmount,
-      paymentMethod: paymentMethod || "Razorpay",
-      paymentStatus: "paid",
-      shippingAddress
-    });
-
-    // Clear cart
-    cart.products = [];
-    cart.coupon = null;
-    await cart.save();
 
     return res.status(201).json(
       new ApiResponse(201, order, "Order placed successfully")
     );
 
   } catch (error) {
-    console.error("Payment verification error:", error);
+    console.error("Payment verification error:", {
+      message: error.message,
+      stack: error.stack
+    });
     return res.status(500).json(
-      new ApiResponse(500, {}, error.message || "Something went wrong")
+      new ApiResponse(500, {}, error.message || "Payment verification failed")
     );
   }
 }

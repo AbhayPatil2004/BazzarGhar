@@ -50,6 +50,14 @@ const orderSchema = new mongoose.Schema(
           type: Number,
           required: true, 
         },
+        // Seller request status per item
+        sellerRequestStatus: {
+          type: String,
+          enum: ["pending", "accepted", "rejected"],
+          default: "pending",
+        },
+        sellerDecisionDate: Date,
+        rejectionReason: String,
       },
     ],
    
@@ -82,13 +90,15 @@ const orderSchema = new mongoose.Schema(
       type: String,
       enum: [
         "pending",
+        "seller-requested",
         "confirmed",
         "packed",
         "shipped",
         "out-for-delivery",
         "delivered",
         "cancelled",
-        "returned"
+        "returned",
+        "rejected-by-seller"
       ],
       default: "pending",
     },
@@ -101,6 +111,32 @@ const orderSchema = new mongoose.Schema(
       type: String,
       maxlength: 500,
     },
+
+    // Delivery OTP
+    deliveryOTP: {
+      code: String,
+      expiresAt: Date,
+      verified: { type: Boolean, default: false },
+      verifiedAt: Date,
+    },
+
+    // Invoice path for PDF
+    invoicePath: String,
+
+    // Order timeline
+    timeline: [
+      {
+        status: String,
+        timestamp: { type: Date, default: Date.now },
+        updatedBy: mongoose.Schema.Types.ObjectId,
+        note: String,
+      }
+    ],
+
+    // Rejection tracking
+    rejectionReason: String,
+    rejectedBysellerId: mongoose.Schema.Types.ObjectId,
+    rejectionDate: Date,
   },
   { timestamps: true }
 );
