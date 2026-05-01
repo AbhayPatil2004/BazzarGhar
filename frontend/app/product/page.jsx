@@ -159,7 +159,7 @@ export default function Page() {
         <div className="w-full h-px bg-gradient-to-r from-transparent via-gray-200/60 to-transparent" />
 
         {/* EARLY DELIVERY — emerald/teal */}
-        <section className="w-full relative overflow-hidden bg-gradient-to-br from-white via-emerald-50/50 to-teal-50/30">
+        {/* <section className="w-full relative overflow-hidden bg-gradient-to-br from-white via-emerald-50/50 to-teal-50/30">
           <div className="absolute -top-20 right-1/4 w-52 h-52 bg-emerald-200/15 rounded-full blur-3xl pointer-events-none" />
           <div className="absolute -bottom-12 -left-8 w-44 h-44 bg-teal-200/10 rounded-full blur-3xl pointer-events-none" />
           <EarlyDeliverySection
@@ -169,7 +169,7 @@ export default function Page() {
             apiBase={API_BASE}
             loading={loadingEarly}
           />
-        </section>
+        </section> */}
 
         <div className="w-full h-px bg-gradient-to-r from-transparent via-gray-200/60 to-transparent" />
 

@@ -391,6 +391,7 @@ export default function AddProductPage() {
     isReturnable: true,
     stock: "",
     deliveryTime: "3d",
+    isEarlyDelivery: false,
     sizes: [],
     colors: [],
     tags: "",
@@ -554,6 +555,22 @@ export default function AddProductPage() {
                   ))}
                 </select>
               </div>
+            </div>
+
+            {/* Early Delivery Checkbox */}
+            <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
+              <label className="flex items-center gap-3 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={form.isEarlyDelivery}
+                  onChange={(e) => setForm({ ...form, isEarlyDelivery: e.target.checked })}
+                  className="w-5 h-5 cursor-pointer accent-blue-600"
+                />
+                <div>
+                  <span className="text-sm font-bold text-gray-900">Mark as Early Delivery</span>
+                  <p className="text-xs text-gray-500 mt-1">Check this if delivery is within 24 hours or sooner</p>
+                </div>
+              </label>
             </div>
 
             {/* Price, Discount, Stock */}

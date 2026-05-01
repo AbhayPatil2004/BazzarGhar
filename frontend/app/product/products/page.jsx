@@ -38,6 +38,19 @@ function ProductsContent() {
   const [inStock, setInStock] = useState(false);
   const [returnable, setReturnable] = useState(false);
 
+  // Define the correct delivery time order for early delivery
+  const deliveryTimeOrder = {
+    "2Hours": 0,
+    "4Hours": 1,
+    "1day": 2,
+    "2Days": 3,
+    "3Days": 4,
+    "5Days": 5,
+    "7Days": 6,
+    "10Days": 7,
+    "14Days": 8,
+  };
+
   useEffect(() => {
     setSelectedCategory(searchParams.get("category") || "");
     setSortOption(searchParams.get("sort") || "newest");
@@ -65,7 +78,22 @@ function ProductsContent() {
     if (returnable) params.set("isReturnable", "true");
     
     safeFetch(`${API_BASE}/product/products?${params.toString()}`)
-      .then((d) => setAllProducts(d?.data?.products || []))
+      .then((d) => {
+        let products = d?.data?.products || [];
+        
+        // Sort by delivery time if it's an early delivery request
+        if (initialEarly) {
+          products = products.sort((a, b) => {
+            const timeA = a.deliveryTime || "14Days";
+            const timeB = b.deliveryTime || "14Days";
+            const orderA = deliveryTimeOrder[timeA] ?? 9;
+            const orderB = deliveryTimeOrder[timeB] ?? 9;
+            return orderA - orderB;
+          });
+        }
+        
+        setAllProducts(products);
+      })
       .finally(() => setLoadingAll(false));
   }, [selectedGender, selectedCategory, sortOption, minPrice, maxPrice, minRating, inStock, returnable, initialEarly, initialSearch]);
 

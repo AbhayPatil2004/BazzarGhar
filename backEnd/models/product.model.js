@@ -65,6 +65,12 @@ const productSchema = new mongoose.Schema(
             type: String,
         },
 
+        isEarlyDelivery: {
+            type: Boolean,
+            default: false,
+            index: true,
+        },
+
         finalPrice: {
             type: Number,
         },
