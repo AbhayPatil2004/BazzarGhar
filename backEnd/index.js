@@ -22,8 +22,11 @@ import orderManagementRouter from './routes/orderManagement.route.js';
 const app = express();
 
 app.use(cors({
-  origin: "http://localhost:3000", 
-  credentials: true,               
+  origin: [
+    "http://localhost:3000",
+    "https://bazzar-ghar-4nf7.vercel.app"
+  ],
+  credentials: true
 }));
 
 app.use(express.json());
